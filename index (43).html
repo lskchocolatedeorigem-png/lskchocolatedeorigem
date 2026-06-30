@@ -1,0 +1,2612 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LSK Chocolates Finos — Luxo em Cada Detalhe</title>
+
+<!-- ============================================================
+     LSK CHOCOLATES FINOS — LOJA VIRTUAL PREMIUM v2.0
+     Single File HTML | TailwindCSS | Vanilla JS | Supabase
+     ============================================================ -->
+
+<!-- Tailwind CSS via CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Supabase JS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Mercado Pago SDK -->
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+
+<!-- Fontes Premium -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<!-- Favicon SVG inline -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍫</text></svg>">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          chocolate: {
+            50:'#fbf6f0', 100:'#f3e6d3', 200:'#e6cda6', 300:'#d4ad7a',
+            400:'#b88a55', 500:'#8b5a2b', 600:'#6b4423', 700:'#4a2f18',
+            800:'#2d1c0f', 900:'#1a0f08',
+          },
+          gold: { DEFAULT:'#D4AF37', light:'#e8c869', dark:'#a8861f' }
+        },
+        fontFamily: {
+          serif:['"Playfair Display"','serif'],
+          sans:['Inter','system-ui','sans-serif'],
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  *{ -webkit-tap-highlight-color:transparent; }
+  html{ scroll-behavior:smooth; }
+  body{
+    font-family:'Inter',sans-serif;
+    background-color:#f5ebe0;
+    color:#2d1c0f;
+    position:relative;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.font-serif{ font-family:'Playfair Display',serif; }
+
+  /* Textura de fundo - marca d'água de cacau */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none; z-index:0;
+    opacity:.045;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 100 100'><g fill='%234a2f18'><ellipse cx='50' cy='45' rx='28' ry='38'/><path d='M50 5 Q45 20 50 45 Q55 20 50 5' stroke='%234a2f18' stroke-width='2' fill='%234a2f18'/><path d='M22 25 Q35 30 50 45' stroke='%234a2f18' stroke-width='1.5' fill='none'/><path d='M78 25 Q65 30 50 45' stroke='%234a2f18' stroke-width='1.5' fill='none'/><path d='M30 75 Q40 70 50 75 Q60 70 70 75' stroke='%234a2f18' stroke-width='1.5' fill='none'/><circle cx='50' cy='88' r='3'/></g></svg>");
+    background-repeat:repeat;
+  }
+  ::-webkit-scrollbar{ width:10px; height:10px; }
+  ::-webkit-scrollbar-track{ background:#f3e6d3; }
+  ::-webkit-scrollbar-thumb{ background:#8b5a2b; border-radius:5px; }
+  ::-webkit-scrollbar-thumb:hover{ background:#6b4423; }
+
+  @keyframes fadeIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .animate-fadeIn{ animation:fadeIn .5s ease-out; }
+
+  @keyframes pulse-ring{
+    0%{ box-shadow:0 0 0 0 rgba(37,211,102,.7); }
+    70%{ box-shadow:0 0 0 18px rgba(37,211,102,0); }
+    100%{ box-shadow:0 0 0 0 rgba(37,211,102,0); }
+  }
+  .pulse-whatsapp{ animation:pulse-ring 2s infinite; }
+
+  @keyframes gold-shine{
+    0%{ background-position:-200% center; }
+    100%{ background-position:200% center; }
+  }
+  .gold-shine{
+    background:linear-gradient(110deg,#D4AF37 0%,#f8e9a1 25%,#D4AF37 50%,#f8e9a1 75%,#D4AF37 100%);
+    background-size:200% auto;
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:gold-shine 3s linear infinite;
+  }
+  @keyframes wiggle{
+    0%,100%{ transform:rotate(0); }
+    25%{ transform:rotate(-8deg); }
+    75%{ transform:rotate(8deg); }
+  }
+  .wiggle{ animation:wiggle .4s ease-in-out; }
+  @keyframes slide-in{
+    from{ opacity:0; transform:translateX(20px); }
+    to{ opacity:1; transform:translateX(0); }
+  }
+  .slide-in{ animation:slide-in .6s ease-out; }
+
+  @keyframes topo-slide-enter{
+    from{ opacity:0; transform:translateY(-12px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .topo-slide-enter{ animation:topo-slide-enter .5s ease-out; }
+
+  .cart-overlay{ background:rgba(0,0,0,.55); backdrop-filter:blur(4px); }
+  .cart-sidebar{ transition:transform .4s cubic-bezier(.16,1,.3,1); }
+  .modal-backdrop{ background:rgba(0,0,0,.7); backdrop-filter:blur(6px); }
+  .product-card{ transition:all .35s cubic-bezier(.16,1,.3,1); }
+  .product-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 25px 50px -12px rgba(74,47,24,.25);
+  }
+  .btn-gold{
+    background:linear-gradient(135deg,#D4AF37 0%,#b8941f 100%);
+    transition:all .3s ease;
+  }
+  .btn-gold:hover{
+    background:linear-gradient(135deg,#e8c869 0%,#D4AF37 100%);
+    transform:translateY(-1px);
+    box-shadow:0 8px 20px rgba(212,175,55,.35);
+  }
+  .btn-gold:active{ transform:translateY(0); }
+  .input-premium{
+    background:#fff;
+    border:1.5px solid #e6cda6;
+    border-radius:12px;
+    padding:10px 14px;
+    transition:all .2s;
+  }
+  .input-premium:focus{
+    outline:none;
+    border-color:#D4AF37;
+    box-shadow:0 0 0 3px rgba(212,175,55,.15);
+  }
+  .cart-badge{
+    background:#D4AF37; color:#fff;
+    min-width:20px; height:20px;
+    border-radius:999px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:700;
+    position:absolute; top:-6px; right:-6px;
+  }
+  .tab-active{
+    background:linear-gradient(135deg,#D4AF37,#b8941f);
+    color:#fff !important;
+  }
+  /* Aviso card */
+  .aviso-card{
+    transition:all .3s ease;
+    background: linear-gradient(135deg, #fff8eb 0%, #f5ebe0 100%);
+  }
+  .aviso-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 30px -10px rgba(74,47,24,.2);
+  }
+  /* Loading spinner */
+  .spinner{
+    width:48px; height:48px;
+    border:4px solid #e6cda6;
+    border-top-color:#D4AF37;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  @media (max-width:640px){
+    .hero-title{ font-size:2.5rem !important; }
+  }
+</style>
+</head>
+
+<body class="relative">
+
+<!-- ===================== LOADING GLOBAL ===================== -->
+<div id="global-loader" class="fixed inset-0 z-[90] bg-chocolate-50 flex items-center justify-center">
+  <div class="text-center">
+    <div class="spinner mx-auto mb-4"></div>
+    <p class="font-serif text-chocolate-700 text-lg">Carregando LSK Chocolates...</p>
+  </div>
+</div>
+
+<!-- ===================== BARRA PROMOCIONAL TOPO (CARROSSEL DE SLIDES) ===================== -->
+<div id="topo-bar" class="sticky top-0 z-50 bg-gradient-to-r from-gold-dark via-gold to-gold-light text-chocolate-900 shadow-md">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-10">
+      <!-- Slide à esquerda (ícone + texto) -->
+      <div class="flex-1 flex items-center justify-center min-w-0">
+        <div class="flex items-center gap-2 overflow-hidden">
+          <span id="topo-slide-icon" class="text-base flex-shrink-0">✨</span>
+          <div id="topo-slide-track" class="relative h-5 overflow-hidden">
+            <!-- slides injetados via JS -->
+          </div>
+        </div>
+      </div>
+      <!-- Setas -->
+      <div class="hidden sm:flex items-center gap-1 flex-shrink-0 ml-3">
+        <button id="topo-prev" class="w-7 h-7 rounded-full hover:bg-chocolate-900/20 flex items-center justify-center transition" title="Anterior">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <button id="topo-next" class="w-7 h-7 rounded-full hover:bg-chocolate-900/20 flex items-center justify-center transition" title="Próximo">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+      <!-- Botão fechar -->
+      <button id="topo-close" class="w-7 h-7 ml-2 rounded-full hover:bg-chocolate-900/20 flex items-center justify-center transition flex-shrink-0" title="Fechar barra">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== HEADER ===================== -->
+<header id="site-header" class="sticky top-10 z-40 backdrop-blur-md bg-chocolate-50/85 border-b border-chocolate-100 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <a href="#home" class="flex items-center gap-3 group">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-gold to-gold-dark flex items-center justify-center text-white text-2xl shadow-md group-hover:scale-110 transition">🍫</div>
+        <div>
+          <h1 class="font-serif text-2xl font-bold text-chocolate-700 leading-none">LSK</h1>
+          <p class="text-[10px] tracking-[3px] text-gold font-semibold">CHOCOLATES FINOS</p>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-chocolate-700">
+        <a href="#home" class="hover:text-gold transition">Início</a>
+        <a href="#catalogo" class="hover:text-gold transition">Catálogo</a>
+        <a href="#marca" class="hover:text-gold transition">A Marca</a>
+        <a href="#avisos" class="hover:text-gold transition">Avisos</a>
+        <a href="#contato" class="hover:text-gold transition">Contato</a>
+      </nav>
+      <div class="flex items-center gap-2 sm:gap-4">
+        <a href="#" id="link-instagram" target="_blank" rel="noopener" class="hidden sm:flex w-10 h-10 rounded-full bg-white border border-chocolate-100 items-center justify-center text-chocolate-600 hover:bg-gradient-to-br hover:from-pink-500 hover:to-yellow-500 hover:text-white hover:border-transparent transition" title="Instagram">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="#" id="link-email" class="hidden sm:flex w-10 h-10 rounded-full bg-white border border-chocolate-100 items-center justify-center text-chocolate-600 hover:bg-gold hover:text-white hover:border-gold transition" title="E-mail">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </a>
+        <a href="#" id="link-whatsapp-header" target="_blank" rel="noopener" class="hidden sm:flex w-10 h-10 rounded-full bg-white border border-chocolate-100 items-center justify-center text-chocolate-600 hover:bg-green-500 hover:text-white hover:border-green-500 transition" title="WhatsApp">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        </a>
+        <button id="open-cart" class="relative w-11 h-11 rounded-full bg-white border border-chocolate-100 flex items-center justify-center text-chocolate-700 hover:bg-gold hover:text-white hover:border-gold transition" title="Carrinho">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          <span id="cart-count" class="cart-badge hidden">0</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section id="home" class="relative z-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="animate-fadeIn">
+        <p class="inline-block px-4 py-1.5 rounded-full bg-gold/10 text-gold-dark text-xs font-semibold tracking-widest mb-6 border border-gold/20">
+          ✦ CACAU PREMIUM • 70% ORGÂNICO
+        </p>
+        <h2 class="hero-title font-serif text-5xl md:text-6xl font-bold text-chocolate-800 leading-tight mb-6">
+          A arte do <span class="gold-shine">chocolate fino</span> em cada detalhe
+        </h2>
+        <p class="text-chocolate-600 text-lg mb-8 leading-relaxed">
+          Da seleção criteriosa do cacau à temperagem artesanal, cada produto LSK é uma experiência sensorial. Criamos chocolates finos para quem valoriza os melhores momentos da vida.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#catalogo" class="btn-gold text-white font-semibold px-8 py-4 rounded-2xl inline-flex items-center gap-2">
+            Ver Catálogo
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
+          <a href="#marca" class="bg-white text-chocolate-700 font-semibold px-8 py-4 rounded-2xl border-2 border-chocolate-200 hover:border-gold transition inline-flex items-center gap-2">
+            Nossa História
+          </a>
+        </div>
+        <div class="flex items-center gap-8 mt-10 text-sm text-chocolate-600">
+          <div><span class="block text-2xl font-serif font-bold text-gold">100%</span>Cacau rastreado</div>
+          <div class="w-px h-10 bg-chocolate-200"></div>
+          <div><span class="block text-2xl font-serif font-bold text-gold">Premium</span>Qualidade artesanal</div>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="absolute -inset-4 bg-gradient-to-br from-gold/20 to-chocolate-200/30 rounded-3xl blur-2xl"></div>
+        <!-- Quadro marrom premium com carrossel da fazenda -->
+        <div class="relative bg-gradient-to-br from-chocolate-700 to-chocolate-900 rounded-3xl p-3 md:p-4 shadow-2xl">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-6 py-1 bg-gold text-chocolate-900 text-[10px] sm:text-xs font-bold tracking-widest rounded-full z-10 whitespace-nowrap">
+            LSK • NOSSA FAZENDA CACAUEIRA
+          </div>
+          <div class="relative overflow-hidden rounded-2xl bg-chocolate-800" id="hero-fazenda-carousel">
+            <div id="hero-fazenda-track" class="flex transition-transform duration-700 ease-out">
+              <!-- slides via JS -->
+            </div>
+            <button id="hero-fazenda-prev" class="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-gold text-white flex items-center justify-center backdrop-blur-md transition z-10">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button id="hero-fazenda-next" class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-gold text-white flex items-center justify-center backdrop-blur-md transition z-10">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+            <div id="hero-fazenda-dots" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CATÁLOGO ===================== -->
+<section id="catalogo" class="relative z-10 py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <p class="text-gold font-semibold tracking-widest text-sm mb-2">CATÁLOGO EXCLUSIVO</p>
+      <h3 class="font-serif text-4xl md:text-5xl font-bold text-chocolate-800 mb-3">Nossos Produtos</h3>
+      <p class="text-chocolate-600 max-w-2xl mx-auto">Cada peça é moldada artesanalmente com ingredientes selecionados, do grão de cacau à embalagem final.</p>
+    </div>
+    <!-- Filtros de categoria gerados dinamicamente a partir dos produtos cadastrados -->
+    <div class="flex flex-wrap justify-center gap-3 mb-10" id="filter-bar">
+      <!-- Populado via renderFilters() -->
+    </div>
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div class="col-span-full flex justify-center py-12"><div class="spinner"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SEÇÃO A MARCA (3 cards) ===================== -->
+<section id="marca" class="relative z-10 py-20 bg-gradient-to-br from-chocolate-700 to-chocolate-900 text-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <p class="text-gold-light tracking-widest text-sm mb-2">CONHEÇA A LSK</p>
+      <h3 class="font-serif text-4xl md:text-5xl font-bold mb-3">A Marca</h3>
+      <p class="text-chocolate-100/80 max-w-2xl mx-auto">Três pilares que definem cada chocolate que sai do nosso atelier.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8 text-center">
+      <div class="p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-gold/20">
+        <div class="text-5xl mb-4">🌱</div>
+        <h4 class="font-serif text-2xl font-bold mb-3 text-gold-light">Origem Rastreada</h4>
+        <p class="text-chocolate-100/80 text-sm leading-relaxed">Trabalhamos diretamente com produtores de cacau selecionados na Bahia e na Amazônia, com rastreabilidade completa do grão.</p>
+      </div>
+      <div class="p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-gold/20">
+        <div class="text-5xl mb-4">👨‍🍳</div>
+        <h4 class="font-serif text-2xl font-bold mb-3 text-gold-light">Qualidade e Cuidado na Produção</h4>
+        <p class="text-chocolate-100/80 text-sm leading-relaxed">Cada etapa é conduzida com rigor artesanal: seleção dos grãos, torra, temperagem e acabamento feito à mão por nossos maîtres chocolatiers.</p>
+      </div>
+      <div class="p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-gold/20">
+        <div class="text-5xl mb-4">✨</div>
+        <h4 class="font-serif text-2xl font-bold mb-3 text-gold-light">Experiência Sensorial</h4>
+        <p class="text-chocolate-100/80 text-sm leading-relaxed">Do aroma ao derretimento, cada chocolate LSK é desenhado para proporcionar uma jornada completa de sabores e texturas inesquecíveis.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== QUADRO DE AVISOS ===================== -->
+<section id="avisos" class="relative z-10 py-20 bg-gradient-to-br from-chocolate-100 to-chocolate-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <p class="text-gold font-semibold tracking-widest text-sm mb-2">📌 MURAL OFICIAL</p>
+      <h3 class="font-serif text-4xl md:text-5xl font-bold text-chocolate-800 mb-3">Quadro de Avisos</h3>
+      <p class="text-chocolate-600 max-w-2xl mx-auto">Comunicados, novidades, eventos e tudo o que acontece na nossa chocolateria.</p>
+    </div>
+
+    <!-- Moldura estilo cortiça -->
+    <div class="relative bg-gradient-to-br from-amber-900 to-amber-950 rounded-3xl p-4 md:p-6 shadow-2xl">
+      <div class="absolute inset-2 border-2 border-gold/40 rounded-2xl pointer-events-none"></div>
+      <div id="avisos-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 relative">
+        <!-- Cards injetados via JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer id="contato" class="relative z-10 bg-chocolate-900 text-chocolate-100 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-4 gap-8">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-10 h-10 rounded-full bg-gold flex items-center justify-center text-white text-xl">🍫</div>
+          <h5 class="font-serif text-2xl font-bold text-gold-light">LSK</h5>
+        </div>
+        <p class="text-sm text-chocolate-200/70 leading-relaxed">Chocolates finos que celebram a vida. Tradição, qualidade e sofisticação em cada mordida.</p>
+      </div>
+      <div>
+        <h6 class="font-serif text-lg font-bold text-gold-light mb-4">Navegação</h6>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#home" class="hover:text-gold transition">Início</a></li>
+          <li><a href="#catalogo" class="hover:text-gold transition">Catálogo</a></li>
+          <li><a href="#marca" class="hover:text-gold transition">A Marca</a></li>
+          <li><a href="#avisos" class="hover:text-gold transition">Quadro de Avisos</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6 class="font-serif text-lg font-bold text-gold-light mb-4">Atendimento</h6>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" id="link-whatsapp-footer" target="_blank" rel="noopener" class="hover:text-gold transition inline-flex items-center gap-2">📱 WhatsApp</a></li>
+          <li><a href="#" id="link-instagram-footer" target="_blank" rel="noopener" class="hover:text-gold transition inline-flex items-center gap-2">📷 Instagram</a></li>
+          <li><a href="#" id="link-email-footer" class="hover:text-gold transition inline-flex items-center gap-2">✉️ E-mail</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6 class="font-serif text-lg font-bold text-gold-light mb-4">Pagamento</h6>
+        <p class="text-sm text-chocolate-200/70 mb-3">Aceitamos:</p>
+        <div class="flex gap-2 text-2xl">💳 💰 🏦</div>
+        <p class="text-xs text-chocolate-200/50 mt-3">Pago via Mercado Pago</p>
+      </div>
+    </div>
+    <div class="border-t border-chocolate-700 mt-10 pt-6 text-center text-xs text-chocolate-200/50">
+      © <span id="year"></span> LSK Chocolates Finos — Todos os direitos reservados.
+    </div>
+
+    <!-- ===================== POLÍTICAS (ACCORDION) ===================== -->
+    <div id="politicas-accordion" class="border-t border-chocolate-700 mt-10 pt-8">
+      <h4 class="font-serif text-xl font-bold text-gold-light mb-5 text-center">📋 Documentos Legais</h4>
+      <div class="max-w-3xl mx-auto space-y-3" id="policy-accordion-root">
+        <!-- Accordions injetados via JS -->
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ===================== WHATSAPP FLUTUANTE ===================== -->
+<a href="#" id="whatsapp-float" target="_blank" rel="noopener"
+   class="pulse-whatsapp fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center shadow-2xl transition">
+  <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+</a>
+
+<!-- ===================== CARRINHO LATERAL ===================== -->
+<div id="cart-overlay" class="cart-overlay fixed inset-0 z-50 hidden"></div>
+<aside id="cart-sidebar" class="cart-sidebar fixed top-0 right-0 h-full w-full sm:w-[440px] bg-chocolate-50 z-50 shadow-2xl transform translate-x-full flex flex-col">
+  <div class="flex items-center justify-between p-6 border-b border-chocolate-100 bg-white">
+    <h3 class="font-serif text-2xl font-bold text-chocolate-800">Seu Carrinho</h3>
+    <button id="close-cart" class="w-10 h-10 rounded-full hover:bg-chocolate-100 flex items-center justify-center transition">
+      <svg class="w-6 h-6 text-chocolate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4">
+    <p class="text-center text-chocolate-400 py-12">Seu carrinho está vazio.<br>Adicione chocolates premium! 🍫</p>
+  </div>
+  <div class="px-6 py-4 bg-white border-t border-chocolate-100">
+    <label class="block text-xs font-semibold text-chocolate-600 mb-2">Calcular Frete (CEP)</label>
+    <div class="flex gap-2">
+      <input id="cep-input" type="text" maxlength="9" placeholder="00000-000" class="input-premium flex-1" />
+      <button id="calc-frete" class="btn-gold text-white px-5 rounded-xl font-medium">Calcular</button>
+    </div>
+    <p id="frete-msg" class="text-xs mt-2 text-chocolate-500"></p>
+  </div>
+  <div class="p-6 bg-white border-t border-chocolate-100">
+    <div class="space-y-2 mb-4 text-sm">
+      <div class="flex justify-between text-chocolate-600"><span>Subtotal</span><span id="subtotal">R$ 0,00</span></div>
+      <div class="flex justify-between text-chocolate-600"><span>Frete</span><span id="frete-val">R$ 0,00</span></div>
+      <div class="flex justify-between text-lg font-bold text-chocolate-800 pt-2 border-t border-chocolate-100"><span>Total</span><span id="total-val">R$ 0,00</span></div>
+    </div>
+    <button id="checkout-btn" class="w-full btn-gold text-white font-bold py-4 rounded-2xl text-base">
+      🔒 Finalizar Compra Segura
+    </button>
+    <p class="text-center text-xs text-chocolate-400 mt-3">Pago via Mercado Pago • Pix ou Cartão</p>
+  </div>
+</aside>
+
+<!-- ===================== MODAL LOGIN ADMIN ===================== -->
+<div id="admin-login-modal" class="fixed inset-0 z-[60] hidden modal-backdrop items-center justify-center p-4">
+  <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 animate-fadeIn">
+    <div class="text-center mb-6">
+      <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-gold to-gold-dark flex items-center justify-center text-white text-2xl mb-3">🔐</div>
+      <h3 class="font-serif text-2xl font-bold text-chocolate-800">Acesso Restrito</h3>
+      <p class="text-sm text-chocolate-500">Painel Administrativo LSK</p>
+    </div>
+    <form id="admin-login-form" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Usuário</label>
+        <input id="admin-user" type="text" class="input-premium w-full" placeholder="admin" required>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Senha</label>
+        <input id="admin-pass" type="password" class="input-premium w-full" placeholder="••••••••" required>
+      </div>
+      <p id="admin-error" class="text-red-500 text-sm hidden">Usuário ou senha inválidos.</p>
+      <button type="submit" class="w-full btn-gold text-white font-bold py-3 rounded-xl">Entrar</button>
+      <button type="button" id="cancel-admin-login" class="w-full text-chocolate-500 text-sm hover:text-chocolate-700">Cancelar</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== PAINEL ADMIN ===================== -->
+<div id="admin-panel" class="fixed inset-0 z-[60] hidden bg-chocolate-50 overflow-y-auto">
+  <div class="bg-chocolate-800 text-white shadow-lg sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gold flex items-center justify-center">🍫</div>
+        <div>
+          <h3 class="font-serif text-xl font-bold">Painel Administrativo</h3>
+          <p class="text-xs text-chocolate-200">LSK Chocolates Finos</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="supabase-status" class="hidden">
+          <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
+          <span>Verificando Supabase...</span>
+        </span>
+        <button id="admin-view-site" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm transition">Ver Loja</button>
+        <button id="admin-logout" class="px-4 py-2 rounded-lg bg-red-500/80 hover:bg-red-500 text-sm transition">Sair</button>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-6 pb-2 flex gap-2 overflow-x-auto">
+      <button data-tab="produtos" class="admin-tab tab-active px-4 py-2 rounded-t-lg text-sm font-medium">📦 Produtos</button>
+      <button data-tab="topo" class="admin-tab px-4 py-2 rounded-t-lg text-sm font-medium text-chocolate-100 hover:bg-white/10">📢 Topo/Banner</button>
+      <button data-tab="politicas" class="admin-tab px-4 py-2 rounded-t-lg text-sm font-medium text-chocolate-100 hover:bg-white/10">📜 Políticas</button>
+      <button data-tab="fazenda" class="admin-tab px-4 py-2 rounded-t-lg text-sm font-medium text-chocolate-100 hover:bg-white/10">🌿 Fazenda</button>
+      <button data-tab="avisos" class="admin-tab px-4 py-2 rounded-t-lg text-sm font-medium text-chocolate-100 hover:bg-white/10">📌 Avisos</button>
+      <button data-tab="frete" class="admin-tab px-4 py-2 rounded-t-lg text-sm font-medium text-chocolate-100 hover:bg-white/10">🚚 Frete</button>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- ABA PRODUTOS -->
+    <section data-section="produtos">
+      <div class="flex items-center justify-between mb-6">
+        <h4 class="font-serif text-2xl font-bold text-chocolate-800">Gerenciar Produtos</h4>
+        <button id="add-product" class="btn-gold text-white px-5 py-2.5 rounded-xl text-sm font-medium">+ Novo Produto</button>
+      </div>
+      <div id="admin-products" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- ABA FAZENDA -->
+    <!-- ABA TOPO / BANNER -->
+    <section data-section="topo" class="hidden">
+      <div class="flex items-center justify-between mb-6">
+        <h4 class="font-serif text-2xl font-bold text-chocolate-800">Slides da Barra Superior</h4>
+        <div class="flex gap-2">
+          <button onclick="reopenTopoBar()" class="bg-chocolate-100 hover:bg-gold hover:text-white text-chocolate-700 px-4 py-2.5 rounded-xl text-sm font-medium transition">🔓 Reabrir barra</button>
+          <button id="add-topo-slide" class="btn-gold text-white px-5 py-2.5 rounded-xl text-sm font-medium">+ Novo Slide</button>
+        </div>
+      </div>
+      <p class="text-sm text-chocolate-600 mb-6">Esses slides aparecem em formato carrossel na barra dourada no topo do site (auto-play). Cada slide tem ícone, texto curto e link opcional.</p>
+      <div id="admin-topo" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- ABA POLÍTICAS -->
+    <section data-section="politicas" class="hidden">
+      <div class="flex items-center justify-between mb-6">
+        <h4 class="font-serif text-2xl font-bold text-chocolate-800">📜 Gerenciar Políticas (Termos, Privacidade, Devolução)</h4>
+        <button id="add-policy-block" class="btn-gold text-white px-5 py-2.5 rounded-xl text-sm font-medium">+ Novo Bloco</button>
+      </div>
+      <p class="text-sm text-chocolate-600 mb-4">Cada política é composta por blocos de conteúdo empilhados. Edite, adicione ou remova blocos livremente.</p>
+
+      <!-- Sub-abas das 3 políticas -->
+      <div class="flex gap-2 mb-6 border-b border-chocolate-200">
+        <button data-policy-tab="termos" class="policy-subtab tab-active px-4 py-2 rounded-t-lg text-sm font-medium">Termos e Condições</button>
+        <button data-policy-tab="privacidade" class="policy-subtab px-4 py-2 rounded-t-lg text-sm font-medium text-chocolate-100 hover:bg-white/10">Política de Privacidade</button>
+        <button data-policy-tab="devolucao" class="policy-subtab px-4 py-2 rounded-t-lg text-sm font-medium text-chocolate-100 hover:bg-white/10">Política de Devolução</button>
+      </div>
+
+      <!-- Lista de blocos da política selecionada -->
+      <div id="admin-policy-blocks" class="space-y-3 max-w-4xl">
+        <p class="text-chocolate-500 text-sm">Nenhum bloco cadastrado. Clique em "+ Novo Bloco".</p>
+      </div>
+    </section>
+
+    <section data-section="fazenda" class="hidden">
+      <div class="flex items-center justify-between mb-6">
+        <h4 class="font-serif text-2xl font-bold text-chocolate-800">Carrossel da Fazenda Cacaueira</h4>
+        <button id="add-fazenda-slide" class="btn-gold text-white px-5 py-2.5 rounded-xl text-sm font-medium">+ Novo Slide</button>
+      </div>
+      <p class="text-sm text-chocolate-600 mb-6">Adicione slides com fotos da fazenda, plantação, colheita ou processo. Cada slide tem imagem e texto descritivo.</p>
+      <div id="admin-fazenda" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- ABA QUADRO DE AVISOS -->
+    <section data-section="avisos" class="hidden">
+      <div class="flex items-center justify-between mb-6">
+        <h4 class="font-serif text-2xl font-bold text-chocolate-800">Quadro de Avisos</h4>
+        <button id="add-aviso" class="btn-gold text-white px-5 py-2.5 rounded-xl text-sm font-medium">+ Novo Aviso</button>
+      </div>
+      <p class="text-sm text-chocolate-600 mb-6">Crie avisos com texto, imagem (.jpeg/.bmp), data e categoria. Cada aviso aparece como um "recado pregado" no mural.</p>
+      <div id="admin-avisos" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- ABA FRETE -->
+    <section data-section="frete" class="hidden">
+      <h4 class="font-serif text-2xl font-bold text-chocolate-800 mb-6">Regras de Frete</h4>
+      <div class="bg-white rounded-2xl p-6 shadow-sm max-w-2xl">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-chocolate-700 mb-1">Valor base do frete (R$)</label>
+            <input id="frete-base" type="number" step="0.01" class="input-premium w-full">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-chocolate-700 mb-1">Prefixos de CEP com frete grátis (separar por vírgula)</label>
+            <input id="frete-gratis-prefixos" type="text" class="input-premium w-full" placeholder="Ex: 04, 08, 13">
+            <p class="text-xs text-chocolate-500 mt-1">Se o CEP começar com algum desses números, o frete será grátis.</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-chocolate-700 mb-1">Adicional por região</label>
+            <div class="grid grid-cols-2 gap-2">
+              <input id="frete-norte" type="number" step="0.01" class="input-premium" placeholder="Norte (89)">
+              <input id="frete-nordeste" type="number" step="0.01" class="input-premium" placeholder="Nordeste (40-49)">
+              <input id="frete-sul" type="number" step="0.01" class="input-premium" placeholder="Sul (80-99)">
+              <input id="frete-centro-oeste" type="number" step="0.01" class="input-premium" placeholder="Centro-Oeste (70-77)">
+            </div>
+          </div>
+          <button id="save-frete" class="btn-gold text-white px-6 py-2.5 rounded-xl font-medium">Salvar Regras de Frete</button>
+          <p id="frete-saved-msg" class="text-green-600 text-sm hidden">✓ Regras salvas com sucesso!</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===================== MODAL EDITAR/CRIAR PRODUTO ===================== -->
+<div id="product-edit-modal" class="fixed inset-0 z-[70] hidden modal-backdrop items-center justify-center p-4">
+  <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 animate-fadeIn">
+    <div class="flex items-center justify-between mb-6">
+      <h3 id="edit-modal-title" class="font-serif text-2xl font-bold text-chocolate-800">Editar Produto</h3>
+      <button id="close-edit-modal" class="w-10 h-10 rounded-full hover:bg-chocolate-100 flex items-center justify-center">
+        <svg class="w-6 h-6 text-chocolate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="product-form" class="space-y-4">
+      <input type="hidden" id="edit-product-id">
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Título do Produto</label>
+        <input id="edit-title" type="text" required class="input-premium w-full" placeholder="Trufas Belgas Premium">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Categoria</label>
+        <input id="edit-category" type="text" required class="input-premium w-full" placeholder="Digite a categoria (ex: Trufas, Coleção, Natal...)" list="category-suggestions" autocomplete="off">
+        <datalist id="category-suggestions">
+          <!-- Sugestões injetadas via JS a partir dos produtos existentes -->
+        </datalist>
+        <p class="text-xs text-chocolate-500 mt-1">Crie quantas categorias quiser. Elas aparecerão como filtros no site.</p>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Descrição detalhada</label>
+        <textarea id="edit-desc" required rows="3" class="input-premium w-full" placeholder="Trufas artesanais feitas com chocolate belga 70% cacau..."></textarea>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-chocolate-700 mb-1">Preço (R$)</label>
+          <input id="edit-price" type="number" step="0.01" required class="input-premium w-full" placeholder="49.90">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-chocolate-700 mb-1">Estoque</label>
+          <input id="edit-stock" type="number" required class="input-premium w-full" placeholder="50">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Link do produto (Mercado Pago) — opcional</label>
+        <input id="edit-mp-link" type="url" class="input-premium w-full" placeholder="https://mpago.la/...">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Imagem (.jpeg, .jpg, .bmp)</label>
+        <input id="edit-image-file" type="file" accept=".jpeg,.jpg,.bmp,image/jpeg,image/bmp" class="input-premium w-full text-sm">
+        <p class="text-xs text-chocolate-500 mt-1">Será salva como Base64 no Supabase.</p>
+        <div id="edit-image-preview" class="mt-3 hidden">
+          <p class="text-xs text-chocolate-500 mb-1">Pré-visualização:</p>
+          <img id="edit-image-preview-img" class="w-32 h-32 object-cover rounded-xl border-2 border-gold">
+        </div>
+        <input type="hidden" id="edit-image-data">
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="flex-1 btn-gold text-white font-bold py-3 rounded-xl">Salvar</button>
+        <button type="button" id="cancel-edit" class="px-6 py-3 rounded-xl border border-chocolate-200 text-chocolate-600 hover:bg-chocolate-50">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== MODAL EDITAR SLIDE FAZENDA ===================== -->
+<div id="fazenda-edit-modal" class="fixed inset-0 z-[70] hidden modal-backdrop items-center justify-center p-4">
+  <div class="bg-white rounded-3xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-8 animate-fadeIn">
+    <div class="flex items-center justify-between mb-6">
+      <h3 id="fazenda-modal-title" class="font-serif text-2xl font-bold text-chocolate-800">Slide da Fazenda</h3>
+      <button id="close-fazenda-modal" class="w-10 h-10 rounded-full hover:bg-chocolate-100 flex items-center justify-center">
+        <svg class="w-6 h-6 text-chocolate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="fazenda-form" class="space-y-4">
+      <input type="hidden" id="edit-fazenda-id">
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Título do slide</label>
+        <input id="edit-fazenda-title" type="text" required class="input-premium w-full" placeholder="Plantação de Cacau na Bahia">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Texto descritivo</label>
+        <textarea id="edit-fazenda-text" required rows="3" class="input-premium w-full" placeholder="Nossas plantações de cacau ficam situadas no sul da Bahia..."></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Imagem (.jpeg, .jpg, .bmp)</label>
+        <input id="edit-fazenda-image-file" type="file" accept=".jpeg,.jpg,.bmp,image/jpeg,image/bmp" class="input-premium w-full text-sm">
+        <div id="edit-fazenda-image-preview" class="mt-3 hidden">
+          <p class="text-xs text-chocolate-500 mb-1">Pré-visualização:</p>
+          <img id="edit-fazenda-image-preview-img" class="w-full h-40 object-cover rounded-xl border-2 border-gold">
+        </div>
+        <input type="hidden" id="edit-fazenda-image-data">
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="flex-1 btn-gold text-white font-bold py-3 rounded-xl">Salvar Slide</button>
+        <button type="button" id="cancel-fazenda-edit" class="px-6 py-3 rounded-xl border border-chocolate-200 text-chocolate-600 hover:bg-chocolate-50">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== MODAL EDITAR AVISO ===================== -->
+<div id="aviso-edit-modal" class="fixed inset-0 z-[70] hidden modal-backdrop items-center justify-center p-4">
+  <div class="bg-white rounded-3xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-8 animate-fadeIn">
+    <div class="flex items-center justify-between mb-6">
+      <h3 id="aviso-modal-title" class="font-serif text-2xl font-bold text-chocolate-800">Aviso do Mural</h3>
+      <button id="close-aviso-modal" class="w-10 h-10 rounded-full hover:bg-chocolate-100 flex items-center justify-center">
+        <svg class="w-6 h-6 text-chocolate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="aviso-form" class="space-y-4">
+      <input type="hidden" id="edit-aviso-id">
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Título do aviso</label>
+        <input id="edit-aviso-title" type="text" required class="input-premium w-full" placeholder="🎉 Nova coleção de Páscoa disponível!">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Categoria / Etiqueta</label>
+        <select id="edit-aviso-category" class="input-premium w-full">
+          <option value="Promoção">🏷️ Promoção</option>
+          <option value="Evento">📅 Evento</option>
+          <option value="Novidade">✨ Novidade</option>
+          <option value="Importante">⚠️ Importante</option>
+          <option value="Geral">📌 Geral</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Texto do aviso</label>
+        <textarea id="edit-aviso-text" required rows="4" class="input-premium w-full" placeholder="Estamos com 20% off em toda a linha de trufas..."></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Imagem (.jpeg, .jpg, .bmp) — opcional</label>
+        <input id="edit-aviso-image-file" type="file" accept=".jpeg,.jpg,.bmp,image/jpeg,image/bmp" class="input-premium w-full text-sm">
+        <div id="edit-aviso-image-preview" class="mt-3 hidden">
+          <p class="text-xs text-chocolate-500 mb-1">Pré-visualização:</p>
+          <img id="edit-aviso-image-preview-img" class="w-full h-40 object-cover rounded-xl border-2 border-gold">
+        </div>
+        <input type="hidden" id="edit-aviso-image-data">
+      </div>
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input id="edit-aviso-pinned" type="checkbox" class="w-4 h-4 accent-gold">
+        <span class="text-sm text-chocolate-700">📌 Fixar no topo do mural</span>
+      </label>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="flex-1 btn-gold text-white font-bold py-3 rounded-xl">Salvar Aviso</button>
+        <button type="button" id="cancel-aviso-edit" class="px-6 py-3 rounded-xl border border-chocolate-200 text-chocolate-600 hover:bg-chocolate-50">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== MODAL EDITAR SLIDE TOPO ===================== -->
+<div id="topo-edit-modal" class="fixed inset-0 z-[70] hidden modal-backdrop items-center justify-center p-4">
+  <div class="bg-white rounded-3xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-8 animate-fadeIn">
+    <div class="flex items-center justify-between mb-6">
+      <h3 id="topo-modal-title" class="font-serif text-2xl font-bold text-chocolate-800">Slide do Topo</h3>
+      <button id="close-topo-modal" class="w-10 h-10 rounded-full hover:bg-chocolate-100 flex items-center justify-center">
+        <svg class="w-6 h-6 text-chocolate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="topo-form" class="space-y-4">
+      <input type="hidden" id="edit-topo-id">
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Ícone (emoji)</label>
+        <input id="edit-topo-icon" type="text" maxlength="4" class="input-premium w-full" placeholder="✨" required>
+        <p class="text-xs text-chocolate-500 mt-1">Use um emoji. Exemplos: ✨ 🎁 📞 🚀 💝 🎉 🔥 ⭐</p>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Texto do slide</label>
+        <input id="edit-topo-text" type="text" required class="input-premium w-full" placeholder="Frete GRÁTIS para São Paulo Capital em compras acima de R$ 150">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Link (opcional)</label>
+        <input id="edit-topo-link" type="text" class="input-premium w-full" placeholder="#catalogo ou https://...">
+        <p class="text-xs text-chocolate-500 mt-1">Use #secao pra navegar internamente, ou URL completa pra abrir em outra aba.</p>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="flex-1 btn-gold text-white font-bold py-3 rounded-xl">Salvar Slide</button>
+        <button type="button" id="cancel-topo-edit" class="px-6 py-3 rounded-xl border border-chocolate-200 text-chocolate-600 hover:bg-chocolate-50">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== MODAL EDITAR BLOCO DE POLÍTICA ===================== -->
+<div id="policy-edit-modal" class="fixed inset-0 z-[70] hidden modal-backdrop items-center justify-center p-4">
+  <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 animate-fadeIn">
+    <div class="flex items-center justify-between mb-6">
+      <h3 id="policy-modal-title" class="font-serif text-2xl font-bold text-chocolate-800">Bloco de Política</h3>
+      <button id="close-policy-modal" class="w-10 h-10 rounded-full hover:bg-chocolate-100 flex items-center justify-center">
+        <svg class="w-6 h-6 text-chocolate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="policy-form" class="space-y-4">
+      <input type="hidden" id="edit-policy-id">
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Pertence à política</label>
+        <select id="edit-policy-type" required class="input-premium w-full">
+          <option value="termos">Termos e Condições</option>
+          <option value="privacidade">Política de Privacidade</option>
+          <option value="devolucao">Política de Devolução</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Título do bloco</label>
+        <input id="edit-policy-title" type="text" required class="input-premium w-full" placeholder="Ex: 1. Aceitação dos Termos">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-chocolate-700 mb-1">Conteúdo / Texto</label>
+        <textarea id="edit-policy-content" required rows="8" class="input-premium w-full" placeholder="Escreva aqui o conteúdo deste bloco..."></textarea>
+        <p class="text-xs text-chocolate-500 mt-1">Pode usar parágrafos. O texto aparece com formatação preservada.</p>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="flex-1 btn-gold text-white font-bold py-3 rounded-xl">Salvar Bloco</button>
+        <button type="button" id="cancel-policy-edit" class="px-6 py-3 rounded-xl border border-chocolate-200 text-chocolate-600 hover:bg-chocolate-50">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== TOAST ===================== -->
+<div id="toast" class="fixed top-20 right-6 z-[80] bg-chocolate-800 text-white px-6 py-3 rounded-2xl shadow-2xl hidden transform transition translate-x-96">
+  <span id="toast-msg">Item adicionado!</span>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT PRINCIPAL
+     ============================================================ -->
+<script>
+'use strict';
+
+/* ============================================================
+   LS K CHOCOLATES — MÓDULO PRINCIPAL v2.0
+   - Supabase (produtos, fazenda, avisos)
+   - LocalStorage (fallback + frete + config + carrinho)
+   - Renderização dinâmica
+   - Carrinho + Mercado Pago
+   - Painel Admin (CRUD completo)
+   ============================================================ */
+
+/* ----------------------------------------------------------------
+   1) CONFIGURAÇÃO SUPABASE (PLACEHOLDERS)
+   - Crie o projeto em https://supabase.com
+   - Pegue URL e anon key em Project Settings > API
+   - Cole no painel admin (Ctrl+Shift+A > Configurações)
+   - Rode o SQL (também está no painel) para criar as tabelas
+   - Crie bucket público 'lsk-images' em Storage
+   ---------------------------------------------------------------- */
+const SB_DEFAULT = {
+  url: '',        // Ex: https://abcdefgh.supabase.co
+  key: '',        // Ex: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+};
+
+/* ----------------------------------------------------------------
+   2) PRODUTOS PADRÃO (FALLBACK se Supabase falhar)
+   ---------------------------------------------------------------- */
+const DEFAULT_PRODUCTS = [
+  { id: 1,  title: 'Trufas Belgas Premium',         category: 'trufas',    price: 49.90,  stock: 30, description: 'Trufas artesanais feitas com chocolate belga Callebaut 70% cacau, recheadas com ganache clássico.',           image: '', mp_link: '' },
+  { id: 2,  title: 'Trufas de Pistache',             category: 'trufas',    price: 59.90,  stock: 25, description: 'Trufas recheadas com pasta pura de pistache iraniano e finalizadas com ouro comestível.',                 image: '', mp_link: '' },
+  { id: 3,  title: 'Bombons Artesanais Sortidos',    category: 'bombons',   price: 39.90,  stock: 40, description: 'Caixa com 12 bombons sortidos: maracujá, morango, avelã, café e laranja.',                                  image: '', mp_link: '' },
+  { id: 4,  title: 'Bombons de Licor de Cereja',     category: 'bombons',   price: 54.90,  stock: 20, description: 'Bombons recheados com licor Kirsch importado, cobertos com chocolate meio amargo.',                      image: '', mp_link: '' },
+  { id: 5,  title: 'Barra 70% Cacau da Bahia',       category: 'barras',    price: 24.90,  stock: 60, description: 'Barra de chocolate 70% cacau produzido na região sul da Bahia, com notas de frutas vermelhas.',          image: '', mp_link: '' },
+  { id: 6,  title: 'Barra Recheada de Brigadeiro',   category: 'barras',    price: 19.90,  stock: 50, description: 'Barra de chocolate ao leite recheada com brigadeiro gourmet brasileiro.',                                  image: '', mp_link: '' },
+  { id: 7,  title: 'Barra com Lascas de Pistache',   category: 'barras',    price: 34.90,  stock: 35, description: 'Chocolate branco premium com lascas generosas de pistache da Sicília.',                                    image: '', mp_link: '' },
+  { id: 8,  title: 'Caixa Presente 16 Trufas',       category: 'caixas',    price: 119.90, stock: 15, description: 'Elegante caixa de madeira com 16 trufas sortidas. Perfeita para presentes memoráveis.',                  image: '', mp_link: '' },
+  { id: 9,  title: 'Caixa Premium 24 Bombons',       category: 'caixas',    price: 159.90, stock: 12, description: 'Caixa forrada em veludo com 24 bombons finos de sabores exclusivos.',                                     image: '', mp_link: '' },
+  { id: 10, title: 'Caixa Coleção 9 Barras',         category: 'caixas',    price: 199.90, stock: 8,  description: 'Coleção especial com 9 barras de origem única, embaladas individualmente em papel nobre.',               image: '', mp_link: '' },
+  { id: 11, title: 'Lascas de Chocolate com Pistache',category: 'especiais', price: 44.90,  stock: 30, description: 'Lascas de chocolate amargo 70% acompanhadas de pistaches tostados.',                                       image: '', mp_link: '' },
+  { id: 12, title: 'Drageados Mistos 200g',          category: 'especiais', price: 38.90,  stock: 40, description: 'Amêndoas, avelãs e castanhas cobertas com chocolate ao leite, branco e amargo.',                          image: '', mp_link: '' },
+  { id: 13, title: 'Brownie Premium Individual',     category: 'especiais', price: 14.90,  stock: 80, description: 'Brownie denso de chocolate belga, com crosta crocante e interior macio.',                                 image: '', mp_link: '' },
+  { id: 14, title: 'Chocolate Quente Gourmet 250g',   category: 'especiais', price: 39.90,  stock: 25, description: 'Mistura premium para chocolate quente, com cacau 60% e especiarias selecionadas.',                        image: '', mp_link: '' },
+  { id: 15, title: 'Trufas de Champagne',            category: 'trufas',    price: 69.90,  stock: 18, description: 'Trufas recheadas com creme de champagne brut, finalizadas com açúcar cristal.',                          image: '', mp_link: '' },
+  { id: 16, title: 'Bombons de Maracujá',            category: 'bombons',   price: 42.90,  stock: 30, description: 'Bombons com recheio cremoso de maracujá, cobertos com chocolate branco.',                                 image: '', mp_link: '' },
+  { id: 17, title: 'Barra Caramelo Salgado',         category: 'barras',    price: 22.90,  stock: 45, description: 'Chocolate ao leite com recheio generoso de caramelo e flor de sal de Mossoró.',                            image: '', mp_link: '' },
+  { id: 18, title: 'Caixa Presente Luxo 30 unidades',category: 'caixas',    price: 289.90, stock: 6,  description: 'A maior e mais sofisticada caixa da casa. 30 unidades mistas em embalagem rígida personalizada.',         image: '', mp_link: '' },
+  { id: 19, title: 'Tabletes de Origem 80%',         category: 'especiais', price: 29.90,  stock: 50, description: 'Tabletes bean-to-bar de origem única Ghana, Venezuela e Madagascar, 80% cacau.',                         image: '', mp_link: '' },
+  { id: 20, title: 'Ovo Trufado 200g',               category: 'caixas',    price: 89.90,  stock: 20, description: 'Ovo de Páscoa artesanal recheado com mix de trufas, em embalagem premium.',                               image: '', mp_link: '' },
+];
+
+const DEFAULT_FAZENDA = [
+  { id: 1, title: 'Plantação de Cacau', text: 'Nossas plantações de cacau ficam situadas no sul da Bahia, em região de Mata Atlântica preservada. Cada pé é tratado com técnicas agroflorestais que respeitam o solo e a biodiversidade local.', image: '' },
+  { id: 2, title: 'Colheita Seletiva', text: 'A colheita é feita manualmente, escolhendo apenas os frutos no ponto exato de maturação. Esse cuidado garante o sabor encorpado e os aromas frutados característicos do nosso chocolate.', image: '' },
+  { id: 3, title: 'Fermentação e Secagem', text: 'Os grãos passam por um processo de fermentação controlada por até 7 dias, seguido de secagem natural ao sol. Esse é o segredo das notas complexas que você encontra em cada barra LSK.', image: '' },
+  { id: 4, title: 'Mestres Chocolatiers', text: 'No nosso atelier, cada chocolate é temperado à mão por maîtres chocolatiers formados na tradição europeia. Do conche ao molde, tudo é arte e dedicação.', image: '' },
+];
+
+const DEFAULT_AVISOS = [
+  { id: 1, title: '🎉 Nova Coleção de Páscoa 2026', text: 'Já está disponível nossa linha especial de Páscoa com ovos trufados, barras temáticas e caixas presenteáveis. Garantia de qualidade LSK em cada detalhe. Encomendas abertas!', image: '', category: 'Novidade', pinned: true },
+  { id: 2, title: 'Frete Grátis para SP Capital', text: 'Para pedidos acima de R$ 150 entregamos com frete grátis nas regiões 04xxx, 08xxx e parte da 13xxx. Aproveite!', image: '', category: 'Promoção', pinned: false },
+  { id: 3, title: 'Workshop de Chocolate Fino', text: 'Estaremos no Atelier Gourmet ministrando workshop sobre temperagem e produção artesanal. Vagas limitadas, inscrições pelo WhatsApp.', image: '', category: 'Evento', pinned: false },
+];
+
+/* Slides da barra superior (carrossel no topo do site) */
+const DEFAULT_TOPO_SLIDES = [
+  { id: 1, icon: '✨', text: 'Frete GRÁTIS para São Paulo Capital em compras acima de R$ 150', link: '#catalogo' },
+  { id: 2, icon: '🎁', text: 'Nova coleção de Páscoa 2026 disponível — confira!', link: '#catalogo' },
+  { id: 3, icon: '📞', text: 'Atendimento exclusivo via WhatsApp — clique aqui', link: '' },
+  { id: 4, icon: '🚀', text: 'Entrega para todo o Brasil em até 5 dias úteis', link: '' },
+];
+
+const DEFAULT_POLICY_BLOCKS = [
+  // === TERMOS E CONDIÇÕES ===
+  { id: 1, policy: 'termos',      blockTitle: '1. Aceitação dos Termos', blockContent: 'Ao acessar e utilizar o site da LSK Chocolates Finos, você concorda com os presentes Termos e Condições de Uso. Recomendamos a leitura atenta antes de realizar qualquer compra. Caso não concorde com algum item, por favor não utilize o site.', order_index: 0 },
+  { id: 2, policy: 'termos',      blockTitle: '2. Compras e Pagamentos', blockContent: 'Todas as compras estão sujeitas à disponibilidade de estoque. Os pagamentos podem ser feitos via Pix, cartão de crédito ou débito através do Mercado Pago. Pedidos são confirmados somente após a compensação do pagamento.', order_index: 1 },
+  { id: 3, policy: 'termos',      blockTitle: '3. Entrega e Prazos',      blockContent: 'Os prazos de entrega são informados no momento da compra e podem variar de acordo com a região. A LSK não se responsabiliza por atrasos causados pelos Correios ou transportadora.', order_index: 2 },
+
+  // === POLÍTICA DE PRIVACIDADE ===
+  { id: 4, policy: 'privacidade', blockTitle: '1. Dados Coletados',       blockContent: 'Coletamos dados pessoais como nome, e-mail, telefone e endereço de entrega para viabilizar suas compras. Esses dados são fornecidos voluntariamente pelo usuário no momento do cadastro ou checkout.', order_index: 0 },
+  { id: 5, policy: 'privacidade', blockTitle: '2. Uso das Informações',    blockContent: 'Os dados coletados são utilizados exclusivamente para processar pedidos, emitir notas fiscais e melhorar sua experiência. Não compartilhamos seus dados com terceiros, exceto quando necessário para concluir a entrega ou por obrigação legal.', order_index: 1 },
+  { id: 6, policy: 'privacidade', blockTitle: '3. Direitos do Titular',   blockContent: 'Você pode solicitar a exclusão ou alteração dos seus dados a qualquer momento através do nosso atendimento via WhatsApp ou e-mail. Seguimos rigorosamente a Lei Geral de Proteção de Dados (LGPD).', order_index: 2 },
+
+  // === POLÍTICA DE DEVOLUÇÃO ===
+  { id: 7, policy: 'devolucao',   blockTitle: '1. Trocas e Devoluções',   blockContent: 'Devido à natureza perecível dos produtos, aceitamos devoluções em até 7 dias corridos após o recebimento, conforme o Código de Defesa do Consumidor. O produto deve estar lacrado, sem sinais de violação e em perfeitas condições.', order_index: 0 },
+  { id: 8, policy: 'devolucao',   blockTitle: '2. Como Solicitar',        blockContent: 'Entre em contato pelo WhatsApp ou e-mail informando o número do pedido e o motivo da devolução. Após análise, enviaremos as instruções de envio. O reembolso será processado em até 10 dias úteis após o recebimento e conferência do produto.', order_index: 1 },
+  { id: 9, policy: 'devolucao',   blockTitle: '3. Reembolso',             blockContent: 'O valor será estornado pelo mesmo meio de pagamento utilizado na compra. Em caso de Pix, será feita transferência bancária para a conta do titular do pedido.', order_index: 2 },
+];
+
+const DEFAULT_FRETE = {
+  base: 25.00,
+  gratisPrefixos: ['04', '08', '13'],
+  adicional: {
+    norte: 35.00, nordeste: 30.00, sul: 20.00, centroOeste: 28.00,
+  }
+};
+
+const DEFAULT_CONFIG = {
+  whatsapp: '5511999999999',
+  instagram: 'https://instagram.com/lskchocolates',
+  email: 'contato@lskchocolates.com.br',
+  mpPublicKey: '',
+  mpAccessToken: '',
+  sbUrl: '',
+  sbKey: '',
+};
+
+/* ----------------------------------------------------------------
+   3) ESTADO / PERSISTÊNCIA
+   ---------------------------------------------------------------- */
+const STORAGE_KEYS = {
+  cart:      'lsk_cart',
+  frete:     'lsk_frete',
+  config:    'lsk_config',
+  adminAuth: 'lsk_admin_session',
+  productsLocal:  'lsk_products_local',  // fallback local
+  fazendaLocal:   'lsk_fazenda_local',
+  avisosLocal:    'lsk_avisos_local',
+  topoSlidesLocal:'lsk_topo_slides',
+  topoClosed:     'lsk_topo_closed',
+  policyBlocksLocal: 'lsk_policy_blocks',
+};
+
+function loadState(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return JSON.parse(JSON.stringify(fallback));
+    return JSON.parse(raw);
+  } catch { return JSON.parse(JSON.stringify(fallback)); }
+}
+function saveState(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+
+let cart      = loadState(STORAGE_KEYS.cart, []);
+let frete     = Object.assign({}, DEFAULT_FRETE, loadState(STORAGE_KEYS.frete, {}));
+let config    = Object.assign({}, DEFAULT_CONFIG, loadState(STORAGE_KEYS.config, {}));
+let products  = loadState(STORAGE_KEYS.productsLocal, DEFAULT_PRODUCTS);
+let fazenda   = loadState(STORAGE_KEYS.fazendaLocal, DEFAULT_FAZENDA);
+let avisos    = loadState(STORAGE_KEYS.avisosLocal, DEFAULT_AVISOS);
+let topoSlides = loadState(STORAGE_KEYS.topoSlidesLocal, DEFAULT_TOPO_SLIDES);
+let topoClosed = localStorage.getItem(STORAGE_KEYS.topoClosed) === '1';
+let policyBlocks = loadState(STORAGE_KEYS.policyBlocksLocal, DEFAULT_POLICY_BLOCKS);
+
+/* Supabase client (lazy) — wrapped in IIFE pra não conflitar com o global window.supabase */
+let sbClient = null;
+function getSupabase() {
+  if (sbClient) return sbClient;
+  if (!config.sbUrl || !config.sbKey) return null;
+  try {
+    const sbLib = window.supabase;
+    if (!sbLib || typeof sbLib.createClient !== 'function') return null;
+    sbClient = sbLib.createClient(config.sbUrl, config.sbKey);
+    return sbClient;
+  } catch (e) {
+    console.error('Supabase init failed:', e);
+    return null;
+  }
+}
+
+/* ----------------------------------------------------------------
+   4) PLACEHOLDER SVG
+   ---------------------------------------------------------------- */
+function getPlaceholder(category, w = 400, h = 400) {
+  const palette = {
+    trufas:    ['#3a2510', '#D4AF37'],
+    bombons:   ['#5a2e1a', '#f8e9a1'],
+    barras:    ['#2d1c0f', '#e8c869'],
+    caixas:    ['#4a2f18', '#D4AF37'],
+    especiais: ['#6b4423', '#f8e9a1'],
+    Geral:     ['#4a2f18', '#D4AF37'],
+    Novidade:  ['#8b5a2b', '#f8e9a1'],
+    Evento:    ['#6b4423', '#e8c869'],
+    Promoção:  ['#a8861f', '#f8e9a1'],
+    Importante:['#2d1c0f', '#f8e9a1'],
+  };
+  const [bg, gold] = palette[category] || ['#4a2f18', '#D4AF37'];
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'>
+    <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0' stop-color='${bg}'/><stop offset='1' stop-color='#1a0f08'/>
+    </linearGradient></defs>
+    <rect width='400' height='400' fill='url(#g)'/>
+    <circle cx='200' cy='180' r='100' fill='${bg}' stroke='${gold}' stroke-width='2' opacity='0.6'/>
+    <circle cx='200' cy='180' r='60' fill='${gold}' opacity='0.15'/>
+    <text x='200' y='200' text-anchor='middle' font-size='80' fill='${gold}' opacity='0.8'>🍫</text>
+    <text x='200' y='320' text-anchor='middle' font-family='Playfair Display' font-size='28' font-weight='700' fill='${gold}'>LSK</text>
+  </svg>`;
+  return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+}
+
+function formatBRL(v) {
+  return 'R$ ' + (parseFloat(v) || 0).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+/* ----------------------------------------------------------------
+   5) CARREGAR DADOS DO SUPABASE (com fallback local)
+   ---------------------------------------------------------------- */
+async function loadProducts() {
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      const { data, error } = await sb.from('products').select('*').eq('active', true).order('id');
+      if (!error && data && data.length) {
+        products = data.map(p => ({
+          id: p.id, title: p.title, category: p.category, price: parseFloat(p.price),
+          stock: p.stock || 0, description: p.description || '', image: p.image || '',
+          mp_link: p.mp_link || p.mpLink || '',
+        }));
+        saveState(STORAGE_KEYS.productsLocal, products);
+        return products;
+      }
+    } catch (e) {
+      console.warn('Supabase products load failed, using local:', e);
+    }
+  }
+  return products;
+}
+
+async function loadFazenda() {
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      const { data, error } = await sb.from('fazenda_slides').select('*').order('order_index', { ascending: true });
+      if (!error && data) {
+        fazenda = data.map(s => ({ id: s.id, title: s.title, text: s.text, image: s.image || '' }));
+        saveState(STORAGE_KEYS.fazendaLocal, fazenda);
+        return fazenda;
+      }
+    } catch (e) {
+      console.warn('Supabase fazenda load failed:', e);
+    }
+  }
+  return fazenda;
+}
+
+async function loadAvisos() {
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      const { data, error } = await sb.from('avisos').select('*').order('pinned', { ascending: false }).order('created_at', { ascending: false });
+      if (!error && data) {
+        avisos = data.map(a => ({ id: a.id, title: a.title, text: a.text, image: a.image || '', category: a.category || 'Geral', pinned: a.pinned || false }));
+        saveState(STORAGE_KEYS.avisosLocal, avisos);
+        return avisos;
+      }
+    } catch (e) {
+      console.warn('Supabase avisos load failed:', e);
+    }
+  }
+  return avisos;
+}
+
+/* Atualizar indicador no admin */
+function updateSupabaseStatus() {
+  const sb = getSupabase();
+  const status = document.getElementById('supabase-status');
+  if (!status) return;
+  if (sb) {
+    status.innerHTML = '<span class="w-2 h-2 rounded-full bg-green-400"></span><span class="text-green-300">Supabase conectado</span>';
+    status.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs bg-green-900/40';
+  } else {
+    status.innerHTML = '<span class="w-2 h-2 rounded-full bg-yellow-400"></span><span>Modo local (configure Supabase)</span>';
+    status.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs bg-white/10';
+  }
+}
+
+/* ----------------------------------------------------------------
+   6) RENDERIZAÇÃO DO CATÁLOGO
+   ---------------------------------------------------------------- */
+function renderProducts(category = 'all') {
+  const grid = document.getElementById('product-grid');
+  const list = category === 'all' ? products : products.filter(p => p.category === category);
+  if (!list.length) {
+    grid.innerHTML = '<p class="col-span-full text-center text-chocolate-500 py-10">Nenhum produto nesta categoria.</p>';
+    return;
+  }
+  grid.innerHTML = list.map(p => {
+    const img = p.image || getPlaceholder(p.category);
+    return `
+    <article class="product-card bg-white rounded-2xl overflow-hidden shadow-md border border-chocolate-100 flex flex-col" data-id="${p.id}">
+      <div class="relative aspect-square overflow-hidden bg-chocolate-100">
+        <img src="${img}" alt="${p.title}" class="w-full h-full object-cover transition duration-500 hover:scale-110" onerror="this.src='${getPlaceholder(p.category)}'">
+        <span class="absolute top-3 left-3 px-2.5 py-1 bg-gold text-white text-[10px] font-bold tracking-wider rounded-full uppercase">${p.category}</span>
+      </div>
+      <div class="p-5 flex-1 flex flex-col">
+        <h4 class="font-serif text-lg font-bold text-chocolate-800 mb-2 leading-tight">${p.title}</h4>
+        <p class="text-xs text-chocolate-500 mb-4 flex-1 line-clamp-3">${p.description || ''}</p>
+        <div class="flex items-end justify-between mt-auto">
+          <span class="text-2xl font-bold text-gold-dark">${formatBRL(p.price)}</span>
+          <button onclick="addToCart(${p.id})" class="btn-gold text-white w-10 h-10 rounded-full flex items-center justify-center" title="Adicionar ao carrinho">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          </button>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+/* ----------------------------------------------------------------
+   6.1) FILTROS DINÂMICOS
+   - Extrai as categorias únicas dos produtos cadastrados
+   - Cria um botão pra cada categoria + botão "Todos"
+   - Se não houver produtos, mostra apenas "Todos"
+   - Mantém o filtro atualmente ativo entre renders
+   ---------------------------------------------------------------- */
+let activeCategory = 'all';
+
+function renderFilters() {
+  const bar = document.getElementById('filter-bar');
+  if (!bar) return;
+
+  // Extrair categorias únicas (preservando ordem alfabética)
+  const cats = [...new Set(
+    products
+      .map(p => (p.category || '').trim().toLowerCase())
+      .filter(Boolean)
+  )].sort();
+
+  // Garante que a categoria ativa ainda existe; senão volta pra 'all'
+  if (activeCategory !== 'all' && !cats.includes(activeCategory)) {
+    activeCategory = 'all';
+  }
+
+  // Mapear nome exibido (primeira letra maiúscula)
+  const formatCat = c => c.charAt(0).toUpperCase() + c.slice(1);
+
+  bar.innerHTML = `
+    <button data-cat="all" class="filter-btn ${activeCategory==='all'?'tab-active':'bg-white text-chocolate-600 border border-chocolate-100 hover:border-gold'} px-5 py-2 rounded-full text-sm font-medium transition">Todos</button>
+    ${cats.map(c => `
+      <button data-cat="${c}" class="filter-btn ${activeCategory===c?'tab-active':'bg-white text-chocolate-600 border border-chocolate-100 hover:border-gold'} px-5 py-2 rounded-full text-sm font-medium transition">${formatCat(c)}</button>
+    `).join('')}
+  `;
+  updateCategorySuggestions();
+}
+
+/* Atualiza o <datalist> do formulário de cadastro com as categorias já existentes */
+function updateCategorySuggestions() {
+  const dl = document.getElementById('category-suggestions');
+  if (!dl) return;
+  const cats = [...new Set(
+    products
+      .map(p => (p.category || '').trim())
+      .filter(Boolean)
+  )].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+  // Mostrar formatado (primeira letra maiúscula) mas salvar valor em minúsculo
+  dl.innerHTML = cats.map(c => {
+    const lower = c.toLowerCase();
+    const formatted = c.charAt(0).toUpperCase() + c.slice(1);
+    return `<option value="${formatted}">`;
+  }).join('');
+}
+
+document.getElementById('filter-bar').addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.remove('tab-active');
+    b.classList.add('bg-white', 'text-chocolate-600', 'border', 'border-chocolate-100');
+  });
+  btn.classList.add('tab-active');
+  btn.classList.remove('bg-white', 'text-chocolate-600', 'border', 'border-chocolate-100');
+  activeCategory = btn.dataset.cat;
+  renderProducts(btn.dataset.cat);
+});
+
+/* ----------------------------------------------------------------
+   7) CARROSSEL FAZENDA
+   ---------------------------------------------------------------- */
+let fazendaIndex = 0;
+let fazendaAuto;
+
+/* Helper: monta o HTML dos slides (reusado no hero e na seção da fazenda) */
+function buildFazendaSlides(height = 'h-[480px]') {
+  return fazenda.map(s => {
+    const img = s.image || getPlaceholder('Geral');
+    return `
+      <div class="min-w-full ${height} relative flex flex-col md:flex-row">
+        <div class="md:w-2/3 h-1/2 md:h-full overflow-hidden bg-chocolate-900">
+          <img src="${img}" alt="${s.title}" class="w-full h-full object-cover" onerror="this.src='${getPlaceholder('Geral')}'">
+        </div>
+        <div class="md:w-1/3 h-1/2 md:h-full flex items-center p-6 md:p-8 bg-gradient-to-br from-chocolate-700 to-chocolate-900 text-white">
+          <div class="slide-in">
+            <div class="text-gold text-3xl md:text-4xl mb-3">🌿</div>
+            <h4 class="font-serif text-xl md:text-2xl font-bold mb-3 text-gold-light leading-tight">${s.title}</h4>
+            <p class="text-chocolate-100 leading-relaxed text-xs md:text-sm">${s.text}</p>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* Renderiza o carrossel da SEÇÃO da fazenda (removida do HTML público,
+   mas a função existe só pra retrocompatibilidade — o HERO é o principal) */
+function renderFazenda() {
+  // Sempre renderiza o carrossel do HERO (que é o local principal)
+  renderHeroFazenda();
+  updateFazendaPosition();
+  // Se a seção antiga voltar a existir, este trecho preenche ela
+  const track = document.getElementById('fazenda-track');
+  const dots = document.getElementById('fazenda-dots');
+  if (!track) return;
+  if (!fazenda.length) {
+    track.innerHTML = `
+      <div class="min-w-full h-[480px] flex flex-col items-center justify-center text-chocolate-100 p-12 text-center bg-gradient-to-br from-chocolate-700 to-chocolate-900">
+        <div class="text-7xl mb-4">🌿</div>
+        <h4 class="font-serif text-3xl font-bold mb-3 text-gold-light">Em breve: fotos da nossa fazenda</h4>
+        <p class="text-chocolate-200 max-w-md">Use o painel administrativo (Ctrl+Shift+A) para adicionar slides com fotos e textos sobre a fazenda cacaueira.</p>
+      </div>`;
+    if (dots) dots.innerHTML = '';
+    return;
+  }
+  track.innerHTML = buildFazendaSlides('h-[480px]');
+  if (dots) dots.innerHTML = fazenda.map((_, i) =>
+    `<button class="fazenda-dot w-2.5 h-2.5 rounded-full transition ${i===0?'bg-gold w-8':'bg-white/50 hover:bg-white'}" data-idx="${i}"></button>`
+  ).join('');
+}
+
+/* Renderiza o carrossel do HERO (mesmos slides, layout proporcional) */
+function renderHeroFazenda() {
+  const track = document.getElementById('hero-fazenda-track');
+  const dots = document.getElementById('hero-fazenda-dots');
+  if (!track) return;
+  if (!fazenda.length) {
+    track.innerHTML = `
+      <div class="min-w-full aspect-square flex flex-col items-center justify-center text-chocolate-100 p-8 text-center bg-gradient-to-br from-chocolate-700 to-chocolate-900">
+        <div class="text-6xl mb-3">🌿</div>
+        <h4 class="font-serif text-2xl font-bold mb-2 text-gold-light">Em breve</h4>
+        <p class="text-chocolate-200 text-xs max-w-xs">Adicione slides pelo painel admin (Ctrl+Shift+A).</p>
+      </div>`;
+    if (dots) dots.innerHTML = '';
+    return;
+  }
+  track.innerHTML = buildFazendaSlides('aspect-square');
+  if (dots) dots.innerHTML = fazenda.map((_, i) =>
+    `<button class="hero-fazenda-dot w-2 h-2 rounded-full transition ${i===0?'bg-gold w-6':'bg-white/50 hover:bg-white'}" data-idx="${i}"></button>`
+  ).join('');
+}
+
+function updateFazendaPosition() {
+  const track = document.getElementById('fazenda-track');
+  const heroTrack = document.getElementById('hero-fazenda-track');
+  if (track) track.style.transform = `translateX(-${fazendaIndex * 100}%)`;
+  if (heroTrack) heroTrack.style.transform = `translateX(-${fazendaIndex * 100}%)`;
+  document.querySelectorAll('.fazenda-dot').forEach((d, i) => {
+    d.className = `fazenda-dot w-2.5 h-2.5 rounded-full transition ${i === fazendaIndex ? 'bg-gold w-8' : 'bg-white/50 hover:bg-white'}`;
+  });
+  document.querySelectorAll('.hero-fazenda-dot').forEach((d, i) => {
+    d.className = `hero-fazenda-dot w-2 h-2 rounded-full transition ${i === fazendaIndex ? 'bg-gold w-6' : 'bg-white/50 hover:bg-white'}`;
+  });
+}
+
+function startFazendaAuto() {
+  stopFazendaAuto();
+  fazendaAuto = setInterval(() => {
+    if (!fazenda.length) return;
+    fazendaIndex = (fazendaIndex + 1) % fazenda.length;
+    updateFazendaPosition();
+  }, 6000);
+}
+function stopFazendaAuto() { if (fazendaAuto) clearInterval(fazendaAuto); }
+
+/* Eventos da seção da fazenda (protegidos — seção removida do HTML) */
+const _fn = document.getElementById('fazenda-next');
+if (_fn) _fn.addEventListener('click', () => {
+  if (!fazenda.length) return;
+  fazendaIndex = (fazendaIndex + 1) % fazenda.length;
+  updateFazendaPosition();
+  startFazendaAuto();
+});
+const _fp = document.getElementById('fazenda-prev');
+if (_fp) _fp.addEventListener('click', () => {
+  if (!fazenda.length) return;
+  fazendaIndex = (fazendaIndex - 1 + fazenda.length) % fazenda.length;
+  updateFazendaPosition();
+  startFazendaAuto();
+});
+const _fd = document.getElementById('fazenda-dots');
+if (_fd) _fd.addEventListener('click', (e) => {
+  const d = e.target.closest('.fazenda-dot');
+  if (!d) return;
+  fazendaIndex = parseInt(d.dataset.idx, 10);
+  updateFazendaPosition();
+  startFazendaAuto();
+});
+
+/* Eventos do HERO (sincronizado com o índice principal) */
+document.getElementById('hero-fazenda-next').addEventListener('click', () => {
+  if (!fazenda.length) return;
+  fazendaIndex = (fazendaIndex + 1) % fazenda.length;
+  updateFazendaPosition();
+  startFazendaAuto();
+});
+document.getElementById('hero-fazenda-prev').addEventListener('click', () => {
+  if (!fazenda.length) return;
+  fazendaIndex = (fazendaIndex - 1 + fazenda.length) % fazenda.length;
+  updateFazendaPosition();
+  startFazendaAuto();
+});
+document.getElementById('hero-fazenda-dots').addEventListener('click', (e) => {
+  const d = e.target.closest('.hero-fazenda-dot');
+  if (!d) return;
+  fazendaIndex = parseInt(d.dataset.idx, 10);
+  updateFazendaPosition();
+  startFazendaAuto();
+});
+
+/* ----------------------------------------------------------------
+   7.5) CARROSSEL DA BARRA SUPERIOR (TOPO)
+   - Mostra avisos curtos com auto-play
+   - Usuário pode fechar (fica oculto até reset)
+   - CRUD completo no painel admin (aba "Topo/Banner")
+   ---------------------------------------------------------------- */
+let topoIndex = 0;
+let topoAuto;
+
+async function loadTopoSlides() {
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      const { data, error } = await sb.from('topo_slides').select('*').order('order_index', { ascending: true });
+      if (!error && data && data.length) {
+        topoSlides = data.map(s => ({ id: s.id, icon: s.icon || '✨', text: s.text, link: s.link || '' }));
+        saveState(STORAGE_KEYS.topoSlidesLocal, topoSlides);
+        return topoSlides;
+      }
+    } catch (e) { console.warn('Supabase topo load failed:', e); }
+  }
+  return topoSlides;
+}
+
+function renderTopoBar() {
+  const bar = document.getElementById('topo-bar');
+  const track = document.getElementById('topo-slide-track');
+  const iconEl = document.getElementById('topo-slide-icon');
+  const headerEl = document.getElementById('site-header');
+  if (!bar || !track) return;
+  if (topoClosed) {
+    bar.classList.add('hidden');
+    if (headerEl) headerEl.classList.remove('top-10');
+    return;
+  }
+  bar.classList.remove('hidden');
+  if (headerEl) headerEl.classList.add('top-10');
+  if (!topoSlides.length) {
+    iconEl.textContent = '✨';
+    track.innerHTML = '<a class="block font-semibold text-sm">Use o painel admin (Ctrl+Shift+A) para adicionar slides</a>';
+    return;
+  }
+  // Reseta índice se necessário
+  if (topoIndex >= topoSlides.length) topoIndex = 0;
+  const s = topoSlides[topoIndex];
+  iconEl.textContent = s.icon || '✨';
+  const inner = `<a href="${s.link || '#'}" ${s.link && !s.link.startsWith('#') ? 'target="_blank" rel="noopener"' : ''} class="block font-semibold text-sm whitespace-nowrap hover:underline">${s.text}</a>`;
+  track.innerHTML = `<div class="topo-slide-enter">${inner}</div>`;
+}
+
+function startTopoAuto() {
+  stopTopoAuto();
+  if (topoClosed || topoSlides.length < 2) return;
+  topoAuto = setInterval(() => {
+    topoIndex = (topoIndex + 1) % topoSlides.length;
+    renderTopoBar();
+  }, 4500);
+}
+function stopTopoAuto() { if (topoAuto) clearInterval(topoAuto); }
+
+document.getElementById('topo-prev')?.addEventListener('click', () => {
+  if (!topoSlides.length) return;
+  topoIndex = (topoIndex - 1 + topoSlides.length) % topoSlides.length;
+  renderTopoBar();
+  startTopoAuto();
+});
+document.getElementById('topo-next')?.addEventListener('click', () => {
+  if (!topoSlides.length) return;
+  topoIndex = (topoIndex + 1) % topoSlides.length;
+  renderTopoBar();
+  startTopoAuto();
+});
+document.getElementById('topo-close')?.addEventListener('click', () => {
+  topoClosed = true;
+  localStorage.setItem(STORAGE_KEYS.topoClosed, '1');
+  renderTopoBar();
+  showToast('Barra fechada (use o painel admin pra reabrir).');
+});
+/* Botão pra reabrir a barra caso tenha fechado */
+window.addEventListener('storage', () => {});
+
+function reopenTopoBar() {
+  topoClosed = false;
+  localStorage.removeItem(STORAGE_KEYS.topoClosed);
+  renderTopoBar();
+  startTopoAuto();
+  showToast('Barra reaberta!');
+}
+window.reopenTopoBar = reopenTopoBar;
+
+/* ----------------------------------------------------------------
+   7.9) POLÍTICAS (Accordion no site + CRUD no admin)
+   - policyBlocks = [{ id, policy, blockTitle, blockContent, order_index }]
+   - policy pode ser: 'termos' | 'privacidade' | 'devolucao'
+   ---------------------------------------------------------------- */
+const POLICY_LABELS = {
+  termos:      { title: 'Termos e Condições', icon: '📄', subtitle: 'Regras de uso da loja' },
+  privacidade: { title: 'Política de Privacidade', icon: '🔒', subtitle: 'Como usamos seus dados' },
+  devolucao:   { title: 'Política de Devolução',   icon: '🔄', subtitle: 'Trocas e reembolsos' },
+};
+
+/* ---- FRONTEND: renderiza o accordion no site ---- */
+function renderPoliciesAccordion() {
+  const root = document.getElementById('policy-accordion-root');
+  if (!root) return;
+  const groups = ['termos', 'privacidade', 'devolucao'];
+  let total = 0;
+  groups.forEach(p => {
+    if (policyBlocks.filter(b => b.policy === p).length) total++;
+  });
+  if (total === 0) {
+    root.innerHTML = '<p class="text-center text-chocolate-500/70 text-sm py-2">Nenhuma política cadastrada.</p>';
+    return;
+  }
+  root.innerHTML = groups.map(policy => {
+    const blocks = policyBlocks
+      .filter(b => b.policy === policy)
+      .sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+    if (!blocks.length) return '';
+    const meta = POLICY_LABELS[policy];
+    const accordionId = 'acc-' + policy;
+    return `
+    <div class="bg-chocolate-800/50 border border-chocolate-700 rounded-2xl overflow-hidden">
+      <button onclick="togglePolicyAccordion('${accordionId}')" class="w-full flex items-center justify-between p-4 text-left hover:bg-chocolate-700/40 transition">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">${meta.icon}</span>
+          <div>
+            <div class="font-serif font-bold text-gold-light">${meta.title}</div>
+            <div class="text-xs text-chocolate-200/60">${meta.subtitle}</div>
+          </div>
+        </div>
+        <svg id="${accordionId}-icon" class="w-5 h-5 text-gold-light transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+      <div id="${accordionId}" class="hidden">
+        <div class="px-5 pb-5 space-y-4 border-t border-chocolate-700/50">
+          ${blocks.map(b => `
+            <div class="pt-4">
+              <h5 class="font-serif text-base font-bold text-gold-light mb-2">${escapeHtml(b.blockTitle)}</h5>
+              <p class="text-sm text-chocolate-100/80 leading-relaxed whitespace-pre-line">${escapeHtml(b.blockContent)}</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).filter(Boolean).join('');
+}
+
+/* Função helper pra escapar HTML (evita XSS) */
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/* Toggle accordion */
+window.togglePolicyAccordion = function(id) {
+  const content = document.getElementById(id);
+  const icon = document.getElementById(id + '-icon');
+  if (!content) return;
+  const isOpen = !content.classList.contains('hidden');
+  // Fecha todos primeiro (accordion single-open)
+  document.querySelectorAll('#policy-accordion-root > div > div[id]').forEach(c => c.classList.add('hidden'));
+  document.querySelectorAll('#policy-accordion-root svg[id$="-icon"]').forEach(i => i.classList.remove('rotate-180'));
+  if (!isOpen) {
+    content.classList.remove('hidden');
+    if (icon) icon.classList.add('rotate-180');
+  }
+};
+
+/* ---- ADMIN: estado da sub-aba selecionada ---- */
+let activePolicyTab = 'termos';
+
+/* Renderiza a lista de blocos da política ativa no admin */
+function renderAdminPolicyBlocks() {
+  const cont = document.getElementById('admin-policy-blocks');
+  if (!cont) return;
+  const blocks = policyBlocks
+    .filter(b => b.policy === activePolicyTab)
+    .sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+  if (!blocks.length) {
+    cont.innerHTML = '<p class="text-chocolate-500 text-sm bg-white rounded-xl p-6 text-center">Nenhum bloco nesta política. Clique em "+ Novo Bloco" para adicionar.</p>';
+    return;
+  }
+  cont.innerHTML = blocks.map((b, i) => `
+    <div class="bg-white rounded-2xl shadow-sm border border-chocolate-200 p-5">
+      <div class="flex items-start justify-between gap-3">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-bold text-gold-dark bg-gold/10 px-2 py-0.5 rounded-full">#${i + 1}</span>
+            <h5 class="font-bold text-chocolate-800 font-serif truncate">${escapeHtml(b.blockTitle)}</h5>
+          </div>
+          <p class="text-sm text-chocolate-600 leading-relaxed whitespace-pre-line line-clamp-3">${escapeHtml(b.blockContent)}</p>
+        </div>
+      </div>
+      <div class="flex gap-2 mt-4 pt-3 border-t border-chocolate-100">
+        <button onclick="editPolicyBlock(${b.id})" class="flex-1 bg-chocolate-100 hover:bg-gold hover:text-white text-chocolate-700 text-sm font-medium py-2 rounded-lg transition">✏️ Editar</button>
+        <button onclick="deletePolicyBlock(${b.id})" class="bg-red-100 hover:bg-red-500 hover:text-white text-red-600 text-sm font-medium px-4 py-2 rounded-lg transition">🗑️ Excluir</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* CRUD */
+async function deletePolicyBlock(id) {
+  if (!confirm('Excluir este bloco? Ele sumirá do accordion no site.')) return;
+  policyBlocks = policyBlocks.filter(b => b.id !== id);
+  saveState(STORAGE_KEYS.policyBlocksLocal, policyBlocks);
+  renderAdminPolicyBlocks();
+  renderPoliciesAccordion();
+  showToast('🗑️ Bloco excluído!');
+}
+
+function editPolicyBlock(id) {
+  const b = policyBlocks.find(x => x.id === id);
+  if (!b) return;
+  document.getElementById('policy-modal-title').textContent = 'Editar Bloco de Política';
+  document.getElementById('edit-policy-id').value = b.id;
+  document.getElementById('edit-policy-type').value = b.policy;
+  document.getElementById('edit-policy-title').value = b.blockTitle;
+  document.getElementById('edit-policy-content').value = b.blockContent;
+  openPolicyModal();
+}
+
+document.getElementById('add-policy-block')?.addEventListener('click', () => {
+  document.getElementById('policy-modal-title').textContent = 'Novo Bloco de Política';
+  document.getElementById('policy-form').reset();
+  document.getElementById('edit-policy-id').value = '';
+  // Pré-preenche o tipo com a aba ativa
+  document.getElementById('edit-policy-type').value = activePolicyTab;
+  openPolicyModal();
+});
+
+function openPolicyModal() {
+  document.getElementById('policy-edit-modal').classList.remove('hidden');
+  document.getElementById('policy-edit-modal').classList.add('flex');
+}
+function closePolicyModal() {
+  document.getElementById('policy-edit-modal').classList.add('hidden');
+  document.getElementById('policy-edit-modal').classList.remove('flex');
+}
+document.getElementById('close-policy-modal')?.addEventListener('click', closePolicyModal);
+document.getElementById('cancel-policy-edit')?.addEventListener('click', closePolicyModal);
+
+document.getElementById('policy-form')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const id = document.getElementById('edit-policy-id').value;
+  const data = {
+    policy: document.getElementById('edit-policy-type').value,
+    blockTitle: document.getElementById('edit-policy-title').value.trim(),
+    blockContent: document.getElementById('edit-policy-content').value.trim(),
+  };
+  if (id) {
+    const idx = policyBlocks.findIndex(b => b.id === parseInt(id, 10));
+    if (idx >= 0) policyBlocks[idx] = { ...policyBlocks[idx], ...data };
+  } else {
+    const newId = policyBlocks.length ? Math.max(...policyBlocks.map(b => b.id)) + 1 : 1;
+    // Calcula ordem = próximo índice dentro da política escolhida
+    const existingInPolicy = policyBlocks.filter(b => b.policy === data.policy).length;
+    policyBlocks.push({ id: newId, ...data, order_index: existingInPolicy });
+  }
+  saveState(STORAGE_KEYS.policyBlocksLocal, policyBlocks);
+  renderAdminPolicyBlocks();
+  renderPoliciesAccordion();
+  closePolicyModal();
+  showToast(id ? '✓ Bloco atualizado!' : '✓ Bloco criado!');
+});
+
+/* Troca de sub-aba (termos / privacidade / devolucao) */
+document.querySelectorAll('.policy-subtab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.policy-subtab').forEach(b => {
+      b.classList.remove('tab-active');
+      b.classList.add('text-chocolate-100', 'hover:bg-white/10');
+    });
+    btn.classList.add('tab-active');
+    btn.classList.remove('text-chocolate-100', 'hover:bg-white/10');
+    activePolicyTab = btn.dataset.policyTab;
+    renderAdminPolicyBlocks();
+  });
+});
+
+/* ----------------------------------------------------------------
+   8) QUADRO DE AVISOS
+   ---------------------------------------------------------------- */
+function renderAvisos() {
+  const grid = document.getElementById('avisos-grid');
+  if (!avisos.length) {
+    grid.innerHTML = '<p class="col-span-full text-center text-chocolate-500 py-10">Nenhum aviso no mural ainda. Use o painel admin para criar.</p>';
+    return;
+  }
+  const sorted = [...avisos].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+  grid.innerHTML = sorted.map(a => {
+    const img = a.image || getPlaceholder(a.category || 'Geral');
+    const catColor = {
+      'Promoção':   'bg-yellow-500',
+      'Evento':     'bg-blue-500',
+      'Novidade':   'bg-green-500',
+      'Importante': 'bg-red-500',
+      'Geral':      'bg-gold',
+    }[a.category] || 'bg-gold';
+    return `
+    <div class="aviso-card rounded-2xl overflow-hidden border-2 border-gold/30 ${a.pinned ? 'ring-2 ring-gold shadow-xl' : 'shadow-md'} relative">
+      ${a.pinned ? '<div class="absolute top-3 right-3 z-10 bg-gold text-chocolate-900 text-[10px] font-bold px-2 py-1 rounded-full">📌 FIXADO</div>' : ''}
+      <div class="aspect-video overflow-hidden bg-chocolate-100">
+        <img src="${img}" alt="${a.title}" class="w-full h-full object-cover" onerror="this.src='${getPlaceholder(a.category || 'Geral')}'">
+      </div>
+      <div class="p-5">
+        <span class="inline-block ${catColor} text-white text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full mb-3">${a.category || 'Geral'}</span>
+        <h4 class="font-serif text-lg font-bold text-chocolate-800 mb-2 leading-tight">${a.title}</h4>
+        <p class="text-sm text-chocolate-600 leading-relaxed whitespace-pre-line">${a.text}</p>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ----------------------------------------------------------------
+   9) CARRINHO
+   ---------------------------------------------------------------- */
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  if (!product) return;
+  const item = cart.find(c => c.id === id);
+  if (item) item.qty += 1;
+  else cart.push({ id: product.id, qty: 1 });
+  saveState(STORAGE_KEYS.cart, cart);
+  updateCartCount();
+  renderCart();
+  openCart();
+  const badge = document.getElementById('cart-count');
+  badge.classList.add('wiggle');
+  setTimeout(() => badge.classList.remove('wiggle'), 500);
+  showToast('✓ ' + product.title + ' adicionado!');
+}
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  saveState(STORAGE_KEYS.cart, cart);
+  updateCartCount();
+  renderCart();
+}
+function changeQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty < 1) { removeFromCart(id); return; }
+  saveState(STORAGE_KEYS.cart, cart);
+  renderCart();
+  updateCartCount();
+}
+function updateCartCount() {
+  const total = cart.reduce((s, i) => s + i.qty, 0);
+  const badge = document.getElementById('cart-count');
+  if (total > 0) { badge.textContent = total; badge.classList.remove('hidden'); }
+  else badge.classList.add('hidden');
+}
+let currentFrete = 0;
+function renderCart() {
+  const cont = document.getElementById('cart-items');
+  if (!cart.length) {
+    cont.innerHTML = '<p class="text-center text-chocolate-400 py-12">Seu carrinho está vazio.<br>Adicione chocolates premium! 🍫</p>';
+  } else {
+    cont.innerHTML = cart.map(item => {
+      const p = products.find(x => x.id === item.id);
+      if (!p) return '';
+      const img = p.image || getPlaceholder(p.category);
+      return `
+      <div class="bg-white rounded-2xl p-3 flex gap-3 shadow-sm border border-chocolate-100">
+        <img src="${img}" class="w-20 h-20 rounded-xl object-cover" onerror="this.src='${getPlaceholder(p.category)}'">
+        <div class="flex-1 min-w-0">
+          <h5 class="font-semibold text-chocolate-800 text-sm leading-tight truncate">${p.title}</h5>
+          <p class="text-gold-dark font-bold text-sm mt-1">${formatBRL(p.price)}</p>
+          <div class="flex items-center justify-between mt-2">
+            <div class="flex items-center gap-2 bg-chocolate-50 rounded-lg p-1">
+              <button onclick="changeQty(${p.id}, -1)" class="w-7 h-7 rounded-md bg-white shadow-sm hover:bg-gold hover:text-white transition text-chocolate-700 font-bold">−</button>
+              <span class="text-sm font-bold w-6 text-center">${item.qty}</span>
+              <button onclick="changeQty(${p.id}, 1)" class="w-7 h-7 rounded-md bg-white shadow-sm hover:bg-gold hover:text-white transition text-chocolate-700 font-bold">+</button>
+            </div>
+            <button onclick="removeFromCart(${p.id})" class="text-red-500 hover:text-red-700 text-xs font-medium">Remover</button>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="text-sm font-bold text-chocolate-800">${formatBRL(p.price * item.qty)}</p>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  updateTotals();
+}
+function updateTotals() {
+  const subtotal = cart.reduce((s, i) => {
+    const p = products.find(x => x.id === i.id);
+    return s + (p ? p.price * i.qty : 0);
+  }, 0);
+  document.getElementById('subtotal').textContent = formatBRL(subtotal);
+  document.getElementById('frete-val').textContent = formatBRL(currentFrete);
+  document.getElementById('total-val').textContent = formatBRL(subtotal + currentFrete);
+}
+const cartOverlay = document.getElementById('cart-overlay');
+const cartSidebar = document.getElementById('cart-sidebar');
+function openCart() { cartOverlay.classList.remove('hidden'); cartSidebar.classList.remove('translate-x-full'); }
+function closeCart() { cartSidebar.classList.add('translate-x-full'); cartOverlay.classList.add('hidden'); }
+document.getElementById('open-cart').addEventListener('click', openCart);
+document.getElementById('close-cart').addEventListener('click', closeCart);
+cartOverlay.addEventListener('click', closeCart);
+
+/* ----------------------------------------------------------------
+  10) FRETE
+   ---------------------------------------------------------------- */
+document.getElementById('calc-frete').addEventListener('click', () => {
+  const cepInput = document.getElementById('cep-input');
+  const cep = cepInput.value.replace(/\D/g, '');
+  const msg = document.getElementById('frete-msg');
+  if (cep.length !== 8) {
+    msg.textContent = '⚠️ CEP inválido. Use o formato 00000-000.';
+    msg.className = 'text-xs mt-2 text-red-500';
+    currentFrete = 0; updateTotals(); return;
+  }
+  const prefixo2 = cep.substring(0, 2);
+  if (frete.gratisPrefixos && frete.gratisPrefixos.includes(prefixo2)) {
+    currentFrete = 0;
+    msg.textContent = '🎉 Parabéns! Frete GRÁTIS para sua região.';
+    msg.className = 'text-xs mt-2 text-green-600 font-semibold';
+  } else {
+    let adicional = 0;
+    if (prefixo2.startsWith('8') && prefixo2 === '89') adicional = frete.adicional.norte;
+    else if (prefixo2.startsWith('4')) adicional = frete.adicional.nordeste;
+    else if (prefixo2.startsWith('8') || prefixo2.startsWith('9')) adicional = frete.adicional.sul;
+    else if (prefixo2.startsWith('7')) adicional = frete.adicional.centroOeste;
+    currentFrete = (parseFloat(frete.base) || 0) + adicional;
+    msg.textContent = '✓ Frete calculado: entrega em até 5 dias úteis.';
+    msg.className = 'text-xs mt-2 text-chocolate-600';
+  }
+  updateTotals();
+});
+document.getElementById('cep-input').addEventListener('input', (e) => {
+  let v = e.target.value.replace(/\D/g, '').substring(0, 8);
+  if (v.length > 5) v = v.substring(0, 5) + '-' + v.substring(5);
+  e.target.value = v;
+});
+
+/* ----------------------------------------------------------------
+  11) CHECKOUT MERCADO PAGO
+   ---------------------------------------------------------------- */
+document.getElementById('checkout-btn').addEventListener('click', () => {
+  if (!cart.length) { showToast('⚠️ Seu carrinho está vazio.'); return; }
+  if (!config.mpPublicKey && !config.mpAccessToken) {
+    showToast('⚠️ Configure as chaves do Mercado Pago no Painel Admin (Ctrl+Shift+A)');
+    return;
+  }
+  const items = cart.map(item => {
+    const p = products.find(x => x.id === item.id);
+    return { id: p.id, title: p.title, description: p.description || '', picture_url: p.image || '', quantity: item.qty, currency_id: 'BRL', unit_price: p.price };
+  });
+  const directLink = products.find(p => p.id === cart[0].id && p.mp_link);
+  if (cart.length === 1 && directLink && directLink.mp_link) {
+    window.open(directLink.mp_link, '_blank');
+    showToast('🔄 Redirecionando ao Mercado Pago...');
+    return;
+  }
+  const subtotal = cart.reduce((s, i) => {
+    const p = products.find(x => x.id === i.id);
+    return s + (p ? p.price * i.qty : 0);
+  }, 0);
+  const total = subtotal + currentFrete;
+  const summary = items.map(i => `${i.quantity}x ${i.title} — ${formatBRL(i.unit_price * i.quantity)}`).join('\n');
+  const msg = `Olá! Gostaria de finalizar minha compra na LSK Chocolates:\n\n${summary}\n\nFrete: ${formatBRL(currentFrete)}\nTotal: ${formatBRL(total)}\n\nAguardo o link de pagamento.`;
+  const whatsappUrl = `https://wa.me/${config.whatsapp}?text=${encodeURIComponent(msg)}`;
+  window.open(whatsappUrl, '_blank');
+  showToast('🔄 Redirecionando ao WhatsApp para finalizar!');
+});
+
+/* ----------------------------------------------------------------
+  12) LINKS ATENDIMENTO
+   ---------------------------------------------------------------- */
+function updateContactLinks() {
+  const ig = config.instagram || '#';
+  const em = config.email ? `mailto:${config.email}` : '#';
+  const wa = `https://wa.me/${config.whatsapp}`;
+  document.getElementById('link-instagram').href = ig;
+  document.getElementById('link-instagram-footer').href = ig;
+  document.getElementById('link-email').href = em;
+  document.getElementById('link-email-footer').href = em;
+  document.getElementById('link-whatsapp-header').href = wa;
+  document.getElementById('link-whatsapp-footer').href = wa;
+  document.getElementById('whatsapp-float').href = wa;
+}
+
+/* ----------------------------------------------------------------
+  13) PAINEL ADMINISTRATIVO
+   ---------------------------------------------------------------- */
+const ADMIN_CRED = { user: 'admin', pass: 'admin123' };
+let isAdminLogged = sessionStorage.getItem(STORAGE_KEYS.adminAuth) === '1';
+
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+    e.preventDefault();
+    if (isAdminLogged) showAdminPanel();
+    else showAdminLogin();
+  }
+  if (e.key === 'Escape') {
+    if (!document.getElementById('admin-login-modal').classList.contains('hidden')) hideAdminLogin();
+    if (!document.getElementById('admin-panel').classList.contains('hidden')) hideAdminPanel();
+  }
+});
+function showAdminLogin() {
+  document.getElementById('admin-login-modal').classList.remove('hidden');
+  document.getElementById('admin-login-modal').classList.add('flex');
+  document.getElementById('admin-user').focus();
+}
+function hideAdminLogin() {
+  document.getElementById('admin-login-modal').classList.add('hidden');
+  document.getElementById('admin-login-modal').classList.remove('flex');
+  document.getElementById('admin-error').classList.add('hidden');
+  document.getElementById('admin-user').value = '';
+  document.getElementById('admin-pass').value = '';
+}
+document.getElementById('cancel-admin-login').addEventListener('click', hideAdminLogin);
+document.getElementById('admin-login-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const u = document.getElementById('admin-user').value;
+  const p = document.getElementById('admin-pass').value;
+  if (u === ADMIN_CRED.user && p === ADMIN_CRED.pass) {
+    isAdminLogged = true;
+    sessionStorage.setItem(STORAGE_KEYS.adminAuth, '1');
+    hideAdminLogin();
+    showAdminPanel();
+  } else {
+    document.getElementById('admin-error').classList.remove('hidden');
+  }
+});
+function showAdminPanel() {
+  document.getElementById('admin-panel').classList.remove('hidden');
+  refreshAllAdminData();
+}
+function hideAdminPanel() { document.getElementById('admin-panel').classList.add('hidden'); }
+document.getElementById('admin-view-site').addEventListener('click', hideAdminPanel);
+document.getElementById('admin-logout').addEventListener('click', () => {
+  isAdminLogged = false;
+  sessionStorage.removeItem(STORAGE_KEYS.adminAuth);
+  hideAdminPanel();
+  showToast('🔒 Sessão encerrada.');
+});
+document.querySelectorAll('.admin-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.admin-tab').forEach(t => {
+      t.classList.remove('tab-active');
+      t.classList.add('text-chocolate-100', 'hover:bg-white/10');
+    });
+    tab.classList.add('tab-active');
+    tab.classList.remove('text-chocolate-100', 'hover:bg-white/10');
+    const target = tab.dataset.tab;
+    document.querySelectorAll('[data-section]').forEach(s => {
+      s.classList.toggle('hidden', s.dataset.section !== target);
+    });
+  });
+});
+
+async function refreshAllAdminData() {
+  updateSupabaseStatus();
+  await loadProducts();      renderAdminProducts();
+  await loadTopoSlides();     renderAdminTopo();
+  await loadFazenda();       renderAdminFazenda();
+  await loadAvisos();        renderAdminAvisos();
+  loadAdminFrete();
+  loadAdminConfig();
+  renderFilters();
+  renderProducts();
+  renderTopoBar();
+  startTopoAuto();
+  renderFazenda();
+  renderAvisos();
+  renderAdminPolicyBlocks();
+  renderPoliciesAccordion();
+}
+
+/* ----------------------------------------------------------------
+  13.4) ADMIN — ABA SUPABASE (copiar SQL, testar conexão, limpar)
+   ---------------------------------------------------------------- */
+window.copySql = function(elementId) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const text = el.innerText || el.textContent;
+  // API moderna
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('✓ SQL copiado para a área de transferência!');
+    }).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+};
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); showToast('✓ SQL copiado!'); }
+  catch(e) { showToast('⚠️ Não foi possível copiar. Selecione manualmente.'); }
+  document.body.removeChild(ta);
+}
+
+document.getElementById('supabase-test-btn')?.addEventListener('click', async () => {
+  const msg = document.getElementById('supabase-test-msg');
+  msg.classList.remove('hidden', 'text-green-600', 'text-red-500', 'text-yellow-600');
+  msg.textContent = '🔄 Testando conexão...';
+  msg.classList.add('text-yellow-600');
+  const sb = getSupabase();
+  if (!sb) {
+    msg.textContent = '❌ Não foi possível inicializar. Verifique URL e Key.';
+    msg.classList.add('text-red-500');
+    return;
+  }
+  try {
+    const { data, error } = await sb.from('products').select('id').limit(1);
+    if (error) throw error;
+    msg.textContent = `✅ Conexão OK! Banco de dados acessível. Produtos encontrados: ${data ? data.length : 0}`;
+    msg.classList.remove('text-yellow-600');
+    msg.classList.add('text-green-600');
+    updateSupabaseStatus();
+  } catch (err) {
+    msg.textContent = '❌ Erro: ' + (err.message || 'Verifique se rodou o SQL do Bloco 1 e configurou as credenciais.');
+    msg.classList.remove('text-yellow-600');
+    msg.classList.add('text-red-500');
+  }
+});
+
+document.getElementById('supabase-clear-btn')?.addEventListener('click', () => {
+  if (!confirm('Apagar as credenciais do Supabase do navegador? Os dados continuam salvos no LocalStorage normalmente.')) return;
+  config.sbUrl = '';
+  config.sbKey = '';
+  saveState(STORAGE_KEYS.config, config);
+  sbClient = null;
+  document.getElementById('cfg-sb-url').value = '';
+  document.getElementById('cfg-sb-key').value = '';
+  updateSupabaseStatus();
+  showToast('🗑️ Credenciais Supabase removidas.');
+});
+
+/* ----------------------------------------------------------------
+  13.5) ADMIN — TOPO / BANNER (CRUD SUPABASE)
+   ---------------------------------------------------------------- */
+function renderAdminTopo() {
+  const cont = document.getElementById('admin-topo');
+  if (!cont) return;
+  if (!topoSlides.length) {
+    cont.innerHTML = '<p class="col-span-full text-center text-chocolate-500 py-10">Nenhum slide cadastrado. Clique em "+ Novo Slide".</p>';
+    return;
+  }
+  cont.innerHTML = topoSlides.map((s, i) => `
+    <div class="bg-white rounded-2xl shadow-sm border-2 border-gold/30 overflow-hidden">
+      <div class="bg-gradient-to-r from-gold-dark via-gold to-gold-light p-4 flex items-center gap-3">
+        <span class="text-2xl">${s.icon || '✨'}</span>
+        <span class="text-xs font-bold text-chocolate-900 bg-white/30 px-2 py-0.5 rounded-full">#${i+1}</span>
+      </div>
+      <div class="p-4">
+        <p class="text-sm text-chocolate-800 font-medium line-clamp-3 mb-3">${s.text}</p>
+        ${s.link ? `<p class="text-xs text-chocolate-500 mb-3 truncate">🔗 ${s.link}</p>` : ''}
+        <div class="flex gap-2">
+          <button onclick="editTopo(${s.id})" class="flex-1 bg-chocolate-100 hover:bg-gold hover:text-white text-chocolate-700 text-sm font-medium py-2 rounded-lg transition">Editar</button>
+          <button onclick="deleteTopo(${s.id})" class="bg-red-100 hover:bg-red-500 hover:text-white text-red-600 text-sm font-medium px-4 py-2 rounded-lg transition">Excluir</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function deleteTopo(id) {
+  if (!confirm('Excluir este slide?')) return;
+  const sb = getSupabase();
+  if (sb) { try { await sb.from('topo_slides').delete().eq('id', id); } catch(e){} }
+  topoSlides = topoSlides.filter(s => s.id !== id);
+  saveState(STORAGE_KEYS.topoSlidesLocal, topoSlides);
+  if (topoIndex >= topoSlides.length) topoIndex = 0;
+  renderTopoBar(); startTopoAuto(); renderAdminTopo();
+  showToast('🗑️ Slide excluído.');
+}
+
+function editTopo(id) {
+  const s = topoSlides.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('topo-modal-title').textContent = 'Editar Slide';
+  document.getElementById('edit-topo-id').value = s.id;
+  document.getElementById('edit-topo-icon').value = s.icon || '✨';
+  document.getElementById('edit-topo-text').value = s.text;
+  document.getElementById('edit-topo-link').value = s.link || '';
+  openTopoModal();
+}
+
+document.getElementById('add-topo-slide')?.addEventListener('click', () => {
+  document.getElementById('topo-modal-title').textContent = 'Novo Slide';
+  document.getElementById('topo-form').reset();
+  document.getElementById('edit-topo-id').value = '';
+  document.getElementById('edit-topo-icon').value = '✨';
+  openTopoModal();
+});
+
+function openTopoModal() {
+  document.getElementById('topo-edit-modal').classList.remove('hidden');
+  document.getElementById('topo-edit-modal').classList.add('flex');
+}
+function closeTopoModal() {
+  document.getElementById('topo-edit-modal').classList.add('hidden');
+  document.getElementById('topo-edit-modal').classList.remove('flex');
+}
+document.getElementById('close-topo-modal')?.addEventListener('click', closeTopoModal);
+document.getElementById('cancel-topo-edit')?.addEventListener('click', closeTopoModal);
+
+document.getElementById('topo-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('edit-topo-id').value;
+  const data = {
+    icon: document.getElementById('edit-topo-icon').value.trim() || '✨',
+    text: document.getElementById('edit-topo-text').value.trim(),
+    link: document.getElementById('edit-topo-link').value.trim(),
+  };
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      if (id) await sb.from('topo_slides').update(data).eq('id', parseInt(id, 10));
+      else { data.order_index = topoSlides.length; await sb.from('topo_slides').insert([data]); }
+    } catch(err) { console.warn('Supabase save topo failed:', err); }
+  }
+  if (id) {
+    const idx = topoSlides.findIndex(s => s.id === parseInt(id, 10));
+    if (idx >= 0) topoSlides[idx] = { ...topoSlides[idx], ...data };
+  } else {
+    const newId = topoSlides.length ? Math.max(...topoSlides.map(s => s.id)) + 1 : 1;
+    topoSlides.push({ id: newId, ...data, order_index: topoSlides.length });
+  }
+  saveState(STORAGE_KEYS.topoSlidesLocal, topoSlides);
+  topoIndex = 0;
+  await loadTopoSlides();
+  renderTopoBar();
+  startTopoAuto();
+  renderAdminTopo();
+  closeTopoModal();
+  showToast(id ? '✓ Slide atualizado!' : '✓ Slide criado!');
+});
+
+/* ----------------------------------------------------------------
+  14) ADMIN — PRODUTOS (CRUD SUPABASE)
+   ---------------------------------------------------------------- */
+function renderAdminProducts() {
+  const cont = document.getElementById('admin-products');
+  if (!products.length) {
+    cont.innerHTML = '<p class="col-span-full text-center text-chocolate-500 py-10">Nenhum produto cadastrado.</p>';
+    return;
+  }
+  cont.innerHTML = products.map(p => {
+    const img = p.image || getPlaceholder(p.category);
+    return `
+    <div class="bg-white rounded-2xl shadow-sm border border-chocolate-100 overflow-hidden flex flex-col">
+      <div class="aspect-square overflow-hidden bg-chocolate-100">
+        <img src="${img}" class="w-full h-full object-cover" onerror="this.src='${getPlaceholder(p.category)}'">
+      </div>
+      <div class="p-4 flex-1 flex flex-col">
+        <span class="text-[10px] uppercase tracking-wider text-gold-dark font-bold">${p.category}</span>
+        <h5 class="font-bold text-chocolate-800 text-sm mt-1 line-clamp-2">${p.title}</h5>
+        <p class="text-xs text-chocolate-500 mt-1 flex-1 line-clamp-2">${p.description || ''}</p>
+        <div class="flex items-center justify-between mt-3">
+          <span class="text-lg font-bold text-gold-dark">${formatBRL(p.price)}</span>
+          <span class="text-xs text-chocolate-500">Estoque: ${p.stock}</span>
+        </div>
+        <div class="flex gap-2 mt-3">
+          <button onclick="editProduct(${p.id})" class="flex-1 bg-chocolate-100 hover:bg-gold hover:text-white text-chocolate-700 text-sm font-medium py-2 rounded-lg transition">Editar</button>
+          <button onclick="deleteProduct(${p.id})" class="bg-red-100 hover:bg-red-500 hover:text-white text-red-600 text-sm font-medium px-4 py-2 rounded-lg transition">Excluir</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function deleteProduct(id) {
+  if (!confirm('Tem certeza que deseja excluir este produto?')) return;
+  const sb = getSupabase();
+  if (sb) {
+    try { await sb.from('products').delete().eq('id', id); } catch (e) { console.warn('Supabase delete failed:', e); }
+  }
+  products = products.filter(p => p.id !== id);
+  saveState(STORAGE_KEYS.productsLocal, products);
+  renderFilters();
+  renderProducts();
+  renderAdminProducts();
+  showToast('🗑️ Produto excluído.');
+}
+
+function editProduct(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('edit-modal-title').textContent = 'Editar Produto';
+  document.getElementById('edit-product-id').value = p.id;
+  document.getElementById('edit-title').value = p.title;
+  // Exibe categoria com primeira letra maiúscula pra ficar amigável
+  const catDisplay = (p.category || '').charAt(0).toUpperCase() + (p.category || '').slice(1);
+  document.getElementById('edit-category').value = catDisplay;
+  document.getElementById('edit-desc').value = p.description || '';
+  document.getElementById('edit-price').value = p.price;
+  document.getElementById('edit-stock').value = p.stock;
+  document.getElementById('edit-mp-link').value = p.mp_link || '';
+  document.getElementById('edit-image-data').value = p.image || '';
+  if (p.image) {
+    document.getElementById('edit-image-preview-img').src = p.image;
+    document.getElementById('edit-image-preview').classList.remove('hidden');
+  } else {
+    document.getElementById('edit-image-preview').classList.add('hidden');
+  }
+  document.getElementById('edit-image-file').value = '';
+  openEditModal();
+}
+document.getElementById('add-product').addEventListener('click', () => {
+  document.getElementById('edit-modal-title').textContent = 'Novo Produto';
+  document.getElementById('product-form').reset();
+  document.getElementById('edit-product-id').value = '';
+  document.getElementById('edit-image-data').value = '';
+  document.getElementById('edit-image-preview').classList.add('hidden');
+  openEditModal();
+});
+function openEditModal() {
+  document.getElementById('product-edit-modal').classList.remove('hidden');
+  document.getElementById('product-edit-modal').classList.add('flex');
+}
+function closeEditModal() {
+  document.getElementById('product-edit-modal').classList.add('hidden');
+  document.getElementById('product-edit-modal').classList.remove('flex');
+}
+document.getElementById('close-edit-modal').addEventListener('click', closeEditModal);
+document.getElementById('cancel-edit').addEventListener('click', closeEditModal);
+document.getElementById('edit-image-file').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const validTypes = ['image/jpeg', 'image/bmp', 'image/jpg'];
+  const fileName = file.name.toLowerCase();
+  if (!validTypes.includes(file.type) && !fileName.endsWith('.jpeg') && !fileName.endsWith('.jpg') && !fileName.endsWith('.bmp')) {
+    showToast('⚠️ Apenas arquivos .jpeg, .jpg ou .bmp são aceitos.');
+    e.target.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    document.getElementById('edit-image-data').value = ev.target.result;
+    document.getElementById('edit-image-preview-img').src = ev.target.result;
+    document.getElementById('edit-image-preview').classList.remove('hidden');
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('product-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('edit-product-id').value;
+  // Normaliza categoria pra minúsculo e trim — evita duplicação tipo "Trufas" vs "trufas"
+  const rawCat = document.getElementById('edit-category').value.trim().toLowerCase();
+  const data = {
+    title: document.getElementById('edit-title').value.trim(),
+    category: rawCat,
+    description: document.getElementById('edit-desc').value.trim(),
+    price: parseFloat(document.getElementById('edit-price').value),
+    stock: parseInt(document.getElementById('edit-stock').value, 10),
+    mp_link: document.getElementById('edit-mp-link').value.trim(),
+    image: document.getElementById('edit-image-data').value,
+    active: true,
+  };
+
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      if (id) {
+        await sb.from('products').update(data).eq('id', parseInt(id, 10));
+      } else {
+        await sb.from('products').insert([data]);
+      }
+    } catch (err) {
+      console.error('Supabase save error:', err);
+      showToast('⚠️ Erro ao salvar no Supabase. Dados salvos localmente.');
+    }
+  }
+
+  if (id) {
+    const idx = products.findIndex(p => p.id === parseInt(id, 10));
+    if (idx >= 0) products[idx] = { ...products[idx], ...data };
+  } else {
+    const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
+    products.push({ id: newId, ...data });
+  }
+  saveState(STORAGE_KEYS.productsLocal, products);
+  await loadProducts();
+  renderFilters();
+  renderProducts();
+  renderAdminProducts();
+  closeEditModal();
+  showToast(id ? '✓ Produto atualizado!' : '✓ Produto criado!');
+});
+
+/* ----------------------------------------------------------------
+  15) ADMIN — FAZENDA (CRUD SUPABASE)
+   ---------------------------------------------------------------- */
+function renderAdminFazenda() {
+  const cont = document.getElementById('admin-fazenda');
+  if (!fazenda.length) {
+    cont.innerHTML = '<p class="col-span-full text-center text-chocolate-500 py-10">Nenhum slide cadastrado.</p>';
+    return;
+  }
+  cont.innerHTML = fazenda.map(s => {
+    const img = s.image || getPlaceholder('Geral');
+    return `
+    <div class="bg-white rounded-2xl shadow-sm border border-chocolate-100 overflow-hidden flex flex-col">
+      <div class="aspect-video overflow-hidden bg-chocolate-100">
+        <img src="${img}" class="w-full h-full object-cover" onerror="this.src='${getPlaceholder('Geral')}'">
+      </div>
+      <div class="p-4 flex-1 flex flex-col">
+        <h5 class="font-bold text-chocolate-800 text-sm line-clamp-2">${s.title}</h5>
+        <p class="text-xs text-chocolate-500 mt-1 flex-1 line-clamp-3">${s.text}</p>
+        <div class="flex gap-2 mt-3">
+          <button onclick="editFazenda(${s.id})" class="flex-1 bg-chocolate-100 hover:bg-gold hover:text-white text-chocolate-700 text-sm font-medium py-2 rounded-lg transition">Editar</button>
+          <button onclick="deleteFazenda(${s.id})" class="bg-red-100 hover:bg-red-500 hover:text-white text-red-600 text-sm font-medium px-4 py-2 rounded-lg transition">Excluir</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function deleteFazenda(id) {
+  if (!confirm('Excluir este slide?')) return;
+  const sb = getSupabase();
+  if (sb) { try { await sb.from('fazenda_slides').delete().eq('id', id); } catch (e) {} }
+  fazenda = fazenda.filter(s => s.id !== id);
+  saveState(STORAGE_KEYS.fazendaLocal, fazenda);
+  await loadFazenda();
+  renderFazenda();
+  renderAdminFazenda();
+  showToast('🗑️ Slide excluído.');
+}
+function editFazenda(id) {
+  const s = fazenda.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('fazenda-modal-title').textContent = 'Editar Slide';
+  document.getElementById('edit-fazenda-id').value = s.id;
+  document.getElementById('edit-fazenda-title').value = s.title;
+  document.getElementById('edit-fazenda-text').value = s.text;
+  document.getElementById('edit-fazenda-image-data').value = s.image || '';
+  if (s.image) {
+    document.getElementById('edit-fazenda-image-preview-img').src = s.image;
+    document.getElementById('edit-fazenda-image-preview').classList.remove('hidden');
+  } else document.getElementById('edit-fazenda-image-preview').classList.add('hidden');
+  document.getElementById('edit-fazenda-image-file').value = '';
+  openFazendaModal();
+}
+document.getElementById('add-fazenda-slide').addEventListener('click', () => {
+  document.getElementById('fazenda-modal-title').textContent = 'Novo Slide';
+  document.getElementById('fazenda-form').reset();
+  document.getElementById('edit-fazenda-id').value = '';
+  document.getElementById('edit-fazenda-image-data').value = '';
+  document.getElementById('edit-fazenda-image-preview').classList.add('hidden');
+  openFazendaModal();
+});
+function openFazendaModal() {
+  document.getElementById('fazenda-edit-modal').classList.remove('hidden');
+  document.getElementById('fazenda-edit-modal').classList.add('flex');
+}
+function closeFazendaModal() {
+  document.getElementById('fazenda-edit-modal').classList.add('hidden');
+  document.getElementById('fazenda-edit-modal').classList.remove('flex');
+}
+document.getElementById('close-fazenda-modal').addEventListener('click', closeFazendaModal);
+document.getElementById('cancel-fazenda-edit').addEventListener('click', closeFazendaModal);
+document.getElementById('edit-fazenda-image-file').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const fileName = file.name.toLowerCase();
+  if (!file.type.match(/image\/(jpeg|bmp|jpg)/) && !fileName.endsWith('.jpeg') && !fileName.endsWith('.jpg') && !fileName.endsWith('.bmp')) {
+    showToast('⚠️ Apenas .jpeg, .jpg ou .bmp.');
+    e.target.value = ''; return;
+  }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    document.getElementById('edit-fazenda-image-data').value = ev.target.result;
+    document.getElementById('edit-fazenda-image-preview-img').src = ev.target.result;
+    document.getElementById('edit-fazenda-image-preview').classList.remove('hidden');
+  };
+  reader.readAsDataURL(file);
+});
+document.getElementById('fazenda-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('edit-fazenda-id').value;
+  const data = {
+    title: document.getElementById('edit-fazenda-title').value.trim(),
+    text: document.getElementById('edit-fazenda-text').value.trim(),
+    image: document.getElementById('edit-fazenda-image-data').value,
+  };
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      if (id) await sb.from('fazenda_slides').update(data).eq('id', parseInt(id, 10));
+      else { data.order_index = fazenda.length; await sb.from('fazenda_slides').insert([data]); }
+    } catch (err) { console.warn('Supabase save fazenda failed:', err); }
+  }
+  if (id) {
+    const idx = fazenda.findIndex(s => s.id === parseInt(id, 10));
+    if (idx >= 0) fazenda[idx] = { ...fazenda[idx], ...data };
+  } else {
+    const newId = fazenda.length ? Math.max(...fazenda.map(s => s.id)) + 1 : 1;
+    fazenda.push({ id: newId, ...data, order_index: fazenda.length });
+  }
+  saveState(STORAGE_KEYS.fazendaLocal, fazenda);
+  await loadFazenda();
+  renderFazenda();
+  renderAdminFazenda();
+  closeFazendaModal();
+  showToast(id ? '✓ Slide atualizado!' : '✓ Slide criado!');
+});
+
+/* ----------------------------------------------------------------
+  16) ADMIN — QUADRO DE AVISOS (CRUD SUPABASE)
+   ---------------------------------------------------------------- */
+function renderAdminAvisos() {
+  const cont = document.getElementById('admin-avisos');
+  if (!avisos.length) {
+    cont.innerHTML = '<p class="col-span-full text-center text-chocolate-500 py-10">Nenhum aviso cadastrado.</p>';
+    return;
+  }
+  cont.innerHTML = avisos.map(a => {
+    const img = a.image || getPlaceholder(a.category || 'Geral');
+    return `
+    <div class="bg-white rounded-2xl shadow-sm border border-chocolate-100 overflow-hidden flex flex-col">
+      <div class="aspect-video overflow-hidden bg-chocolate-100">
+        <img src="${img}" class="w-full h-full object-cover" onerror="this.src='${getPlaceholder(a.category || 'Geral')}'">
+      </div>
+      <div class="p-4 flex-1 flex flex-col">
+        <span class="text-[10px] uppercase tracking-wider text-gold-dark font-bold">${a.category || 'Geral'}${a.pinned ? ' • 📌 FIXADO' : ''}</span>
+        <h5 class="font-bold text-chocolate-800 text-sm mt-1 line-clamp-2">${a.title}</h5>
+        <p class="text-xs text-chocolate-500 mt-1 flex-1 line-clamp-3">${a.text}</p>
+        <div class="flex gap-2 mt-3">
+          <button onclick="editAviso(${a.id})" class="flex-1 bg-chocolate-100 hover:bg-gold hover:text-white text-chocolate-700 text-sm font-medium py-2 rounded-lg transition">Editar</button>
+          <button onclick="deleteAviso(${a.id})" class="bg-red-100 hover:bg-red-500 hover:text-white text-red-600 text-sm font-medium px-4 py-2 rounded-lg transition">Excluir</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function deleteAviso(id) {
+  if (!confirm('Excluir este aviso?')) return;
+  const sb = getSupabase();
+  if (sb) { try { await sb.from('avisos').delete().eq('id', id); } catch (e) {} }
+  avisos = avisos.filter(a => a.id !== id);
+  saveState(STORAGE_KEYS.avisosLocal, avisos);
+  await loadAvisos();
+  renderAvisos();
+  renderAdminAvisos();
+  showToast('🗑️ Aviso excluído.');
+}
+function editAviso(id) {
+  const a = avisos.find(x => x.id === id);
+  if (!a) return;
+  document.getElementById('aviso-modal-title').textContent = 'Editar Aviso';
+  document.getElementById('edit-aviso-id').value = a.id;
+  document.getElementById('edit-aviso-title').value = a.title;
+  document.getElementById('edit-aviso-category').value = a.category || 'Geral';
+  document.getElementById('edit-aviso-text').value = a.text;
+  document.getElementById('edit-aviso-pinned').checked = !!a.pinned;
+  document.getElementById('edit-aviso-image-data').value = a.image || '';
+  if (a.image) {
+    document.getElementById('edit-aviso-image-preview-img').src = a.image;
+    document.getElementById('edit-aviso-image-preview').classList.remove('hidden');
+  } else document.getElementById('edit-aviso-image-preview').classList.add('hidden');
+  document.getElementById('edit-aviso-image-file').value = '';
+  openAvisoModal();
+}
+document.getElementById('add-aviso').addEventListener('click', () => {
+  document.getElementById('aviso-modal-title').textContent = 'Novo Aviso';
+  document.getElementById('aviso-form').reset();
+  document.getElementById('edit-aviso-id').value = '';
+  document.getElementById('edit-aviso-image-data').value = '';
+  document.getElementById('edit-aviso-image-preview').classList.add('hidden');
+  document.getElementById('edit-aviso-pinned').checked = false;
+  openAvisoModal();
+});
+function openAvisoModal() {
+  document.getElementById('aviso-edit-modal').classList.remove('hidden');
+  document.getElementById('aviso-edit-modal').classList.add('flex');
+}
+function closeAvisoModal() {
+  document.getElementById('aviso-edit-modal').classList.add('hidden');
+  document.getElementById('aviso-edit-modal').classList.remove('flex');
+}
+document.getElementById('close-aviso-modal').addEventListener('click', closeAvisoModal);
+document.getElementById('cancel-aviso-edit').addEventListener('click', closeAvisoModal);
+document.getElementById('edit-aviso-image-file').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const fileName = file.name.toLowerCase();
+  if (!file.type.match(/image\/(jpeg|bmp|jpg)/) && !fileName.endsWith('.jpeg') && !fileName.endsWith('.jpg') && !fileName.endsWith('.bmp')) {
+    showToast('⚠️ Apenas .jpeg, .jpg ou .bmp.');
+    e.target.value = ''; return;
+  }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    document.getElementById('edit-aviso-image-data').value = ev.target.result;
+    document.getElementById('edit-aviso-image-preview-img').src = ev.target.result;
+    document.getElementById('edit-aviso-image-preview').classList.remove('hidden');
+  };
+  reader.readAsDataURL(file);
+});
+document.getElementById('aviso-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('edit-aviso-id').value;
+  const data = {
+    title: document.getElementById('edit-aviso-title').value.trim(),
+    text: document.getElementById('edit-aviso-text').value.trim(),
+    image: document.getElementById('edit-aviso-image-data').value,
+    category: document.getElementById('edit-aviso-category').value,
+    pinned: document.getElementById('edit-aviso-pinned').checked,
+  };
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      if (id) await sb.from('avisos').update(data).eq('id', parseInt(id, 10));
+      else await sb.from('avisos').insert([data]);
+    } catch (err) { console.warn('Supabase save aviso failed:', err); }
+  }
+  if (id) {
+    const idx = avisos.findIndex(a => a.id === parseInt(id, 10));
+    if (idx >= 0) avisos[idx] = { ...avisos[idx], ...data };
+  } else {
+    const newId = avisos.length ? Math.max(...avisos.map(a => a.id)) + 1 : 1;
+    avisos.push({ id: newId, ...data, created_at: new Date().toISOString() });
+  }
+  saveState(STORAGE_KEYS.avisosLocal, avisos);
+  await loadAvisos();
+  renderAvisos();
+  renderAdminAvisos();
+  closeAvisoModal();
+  showToast(id ? '✓ Aviso atualizado!' : '✓ Aviso criado!');
+});
+
+/* ----------------------------------------------------------------
+  17) ADMIN — FRETE
+   ---------------------------------------------------------------- */
+function loadAdminFrete() {
+  document.getElementById('frete-base').value = frete.base;
+  document.getElementById('frete-gratis-prefixos').value = (frete.gratisPrefixos || []).join(', ');
+  document.getElementById('frete-norte').value = frete.adicional.norte;
+  document.getElementById('frete-nordeste').value = frete.adicional.nordeste;
+  document.getElementById('frete-sul').value = frete.adicional.sul;
+  document.getElementById('frete-centro-oeste').value = frete.adicional.centroOeste;
+}
+document.getElementById('save-frete').addEventListener('click', () => {
+  frete = {
+    base: parseFloat(document.getElementById('frete-base').value) || 0,
+    gratisPrefixos: document.getElementById('frete-gratis-prefixos').value.split(',').map(s => s.trim()).filter(Boolean),
+    adicional: {
+      norte: parseFloat(document.getElementById('frete-norte').value) || 0,
+      nordeste: parseFloat(document.getElementById('frete-nordeste').value) || 0,
+      sul: parseFloat(document.getElementById('frete-sul').value) || 0,
+      centroOeste: parseFloat(document.getElementById('frete-centro-oeste').value) || 0,
+    }
+  };
+  saveState(STORAGE_KEYS.frete, frete);
+  const msg = document.getElementById('frete-saved-msg');
+  msg.classList.remove('hidden');
+  setTimeout(() => msg.classList.add('hidden'), 2500);
+  showToast('✓ Regras de frete salvas!');
+});
+
+/* ----------------------------------------------------------------
+  18) ADMIN — CONFIGURAÇÕES
+  (Aba removida do painel — funções mantidas protegidas por guarda
+   caso a UI volte a existir no futuro. config default funciona normal.)
+   ---------------------------------------------------------------- */
+function loadAdminConfig() {
+  const ids = ['cfg-whatsapp','cfg-instagram','cfg-email','cfg-mp-public','cfg-mp-token','cfg-sb-url','cfg-sb-key'];
+  const vals = [config.whatsapp, config.instagram, config.email, config.mpPublicKey, config.mpAccessToken, config.sbUrl, config.sbKey];
+  ids.forEach((id, i) => { const el = document.getElementById(id); if (el) el.value = vals[i] || ''; });
+}
+const _saveCfgBtn = document.getElementById('save-config');
+if (_saveCfgBtn) {
+  _saveCfgBtn.addEventListener('click', async () => {
+    const get = id => (document.getElementById(id)?.value || '').trim();
+    config = {
+      whatsapp: get('cfg-whatsapp'),
+      instagram: get('cfg-instagram'),
+      email: get('cfg-email'),
+      mpPublicKey: get('cfg-mp-public'),
+      mpAccessToken: get('cfg-mp-token'),
+      sbUrl: get('cfg-sb-url'),
+      sbKey: get('cfg-sb-key'),
+    };
+    saveState(STORAGE_KEYS.config, config);
+    sbClient = null;
+    updateSupabaseStatus();
+    updateContactLinks();
+    const msg = document.getElementById('config-saved-msg');
+    if (msg) { msg.classList.remove('hidden'); setTimeout(() => msg.classList.add('hidden'), 2500); }
+    showToast('✓ Configurações salvas!');
+    if (config.sbUrl && config.sbKey) {
+      await loadProducts(); renderFilters(); renderProducts(); renderAdminProducts();
+      await loadFazenda();  renderFazenda(); renderAdminFazenda();
+      await loadAvisos();   renderAvisos(); renderAdminAvisos();
+      updateSupabaseStatus();
+    }
+  });
+}
+
+/* ----------------------------------------------------------------
+  19) TOAST
+   ---------------------------------------------------------------- */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.remove('hidden');
+  setTimeout(() => t.classList.remove('translate-x-96'), 50);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    t.classList.add('translate-x-96');
+    setTimeout(() => t.classList.add('hidden'), 400);
+  }, 2500);
+}
+
+/* ----------------------------------------------------------------
+  20) INICIALIZAÇÃO
+   ---------------------------------------------------------------- */
+document.getElementById('year').textContent = new Date().getFullYear();
+
+(async function init() {
+  updateSupabaseStatus();
+  await Promise.all([loadProducts(), loadTopoSlides(), loadFazenda(), loadAvisos()]);
+  renderFilters();
+  renderProducts();
+  renderTopoBar();
+  startTopoAuto();
+  renderFazenda();
+  renderAvisos();
+  renderPoliciesAccordion();
+  updateCartCount();
+  renderCart();
+  updateContactLinks();
+  startFazendaAuto();
+  // Esconder loader
+  const loader = document.getElementById('global-loader');
+  loader.style.opacity = '0';
+  setTimeout(() => loader.classList.add('hidden'), 400);
+})();
+
+/* Sincronização entre abas */
+window.addEventListener('storage', (e) => {
+  if (e.key === STORAGE_KEYS.config) {
+    config = Object.assign({}, DEFAULT_CONFIG, JSON.parse(e.newValue || '{}'));
+    updateContactLinks();
+    sbClient = null;
+    updateSupabaseStatus();
+  }
+  if (e.key === STORAGE_KEYS.frete) {
+    frete = Object.assign({}, DEFAULT_FRETE, JSON.parse(e.newValue || '{}'));
+  }
+});
+
+console.log('%c🍫 LSK Chocolates Finos v2.0', 'color:#D4AF37;font-size:24px;font-weight:bold;font-family:serif;');
+console.log('%cAtalho secreto: Ctrl + Shift + A', 'color:#8b5a2b;font-size:12px;');
+console.log('%cUsuário: admin | Senha: admin123', 'color:#8b5a2b;font-size:12px;');
+console.log('%cConfigure o Supabase no painel admin para persistência online', 'color:#D4AF37;font-size:11px;');
+</script>
+
+</body>
+</html>
