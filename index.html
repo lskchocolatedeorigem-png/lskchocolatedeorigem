@@ -1436,29 +1436,79 @@ function toggleAccordion(key) {
 async function syncToSupabase() {
   if (!supabaseClient) return;
   try {
+    // ===== PRODUCTS =====
     for (const p of appData.products) {
       await supabaseClient.from('products').upsert({
-        id: p.id, title: p.title || '', description: p.description || '', price: p.price || '', price_num: p.priceNum || 0,
-        whatsapp_link: p.whatsappLink || '', mp_link: p.mpLink || '', image: p.image || '', origin: p.origin || '', badge: p.badge || ''
-      });
+        id: p.id,
+        title: p.title || '',
+        description: p.description || '',
+        price: p.priceNum || 0,
+        original_price: p.originalPrice || null,
+        image_url: p.image || '',
+        category: p.category || '',
+        origin: p.origin || '',
+        badge: p.badge || '',
+        stock: p.stock || 0,
+        mp_link: p.mpLink || '',
+        whatsapp_link: p.whatsappLink || '',
+        is_active: p.isActive !== undefined ? p.isActive : true,
+        display_order: p.displayOrder || 0
+      }, { onConflict: 'id' });
     }
+
+    // ===== NEWS =====
     for (const n of appData.news) {
       await supabaseClient.from('news').upsert({
-        id: n.id, title: n.title || '', content: n.content || '', image_url: n.imageUrl || '',
-        read_url: n.readUrl || '', source: n.source || 'Mercado', date: n.date || new Date().toISOString().split('T')[0]
-      });
+        id: n.id,
+        title: n.title || '',
+        content: n.content || '',
+        image_url: n.imageUrl || '',
+        excerpt: n.excerpt || '',
+        author: n.author || '',
+        is_published: n.isPublished !== undefined ? n.isPublished : true,
+        published_at: n.publishedAt || n.date || new Date().toISOString()
+      }, { onConflict: 'id' });
     }
+
+    // ===== SITE SETTINGS =====
+    const { data: existingSettings } = await supabaseClient.from('site_settings').select('id, key');
+    const settingsMap = {};
+    if (existingSettings) {
+      for (const s of existingSettings) {
+        settingsMap[s.key] = s.id;
+      }
+    }
+    
     for (const [key, value] of Object.entries(appData.settings)) {
-      await supabaseClient.from('site_settings').upsert({ key: key, value: value || '' });
+      const existingId = settingsMap[key];
+      const record = {
+        key: key,
+        value: value || '',
+        category: 'general',
+        description: ''
+      };
+      if (existingId) {
+        record.id = existingId;
+      }
+      await supabaseClient.from('site_settings').upsert(record, { onConflict: 'id' });
     }
-    // Sync policies
+
+    // ===== POLICIES =====
     for (const [key, policy] of Object.entries(appData.policies || {})) {
       await supabaseClient.from('policies').upsert({
-        id: key, title: policy.title || '', badge_class: policy.badgeClass || '', icon: policy.icon || '',
-        items_json: JSON.stringify(policy.items || [])
-      });
+        id: key,
+        key: key,
+        title: policy.title || '',
+        content: JSON.stringify(policy.items || []),
+        badge_type: policy.badgeClass || '',
+        is_active: true
+      }, { onConflict: 'id' });
     }
-  } catch(e) { console.log('Sync error:', e); }
+
+  } catch(e) { 
+    console.error('Sync error:', e); 
+    showToast('Erro ao sincronizar com o servidor', 'error');
+  }
 }
 
 // ==================== RENDER ORBS 3D ====================
