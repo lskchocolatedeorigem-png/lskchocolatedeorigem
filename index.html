@@ -2146,24 +2146,71 @@ async function handleProductImageUpload(input, index) {
 }
 
 async function handleLogoFileUpload(input) {
-  const file = input.files[0]; if (!file) return;
+  const file = input.files[0];
+  if (!file) return;
+  
   const validTypes = ['image/jpeg', 'image/bmp', 'image/png'];
   const validExts = ['.jpeg', '.jpg', '.bmp', '.png'];
   const fileName = file.name.toLowerCase();
   const isValid = validTypes.includes(file.type) || validExts.some(ext => fileName.endsWith(ext));
-  if (!isValid) { showToast('Formato invalido. Use .jpeg, .bmp ou .png', 'error'); input.value = ''; return; }
+  
+  if (!isValid) {
+    showToast('Formato invalido. Use .jpeg, .bmp ou .png', 'error');
+    input.value = '';
+    return;
+  }
 
-  const reader = new FileReader();
-  reader.onload = async function(e) {
-    try {
-      appData.settings.logoUrl = e.target.result;
-      await saveData();
-      updateContactLinks(); // ATUALIZA A UI IMEDIATAMENTE
-      showToast('Logo carregado e aplicado!', 'success');
-    } catch (err) { showToast('Erro ao salvar logo: ' + err.message, 'error'); }
-  };
-  reader.onerror = function() { showToast('Erro ao ler arquivo', 'error'); };
-  reader.readAsDataURL(file);
+  try {
+    // Mostra preview local imediatamente
+    const previewUrl = URL.createObjectURL(file);
+    const previewArea = document.getElementById('logo-preview-area');
+    if (previewArea) {
+      previewArea.innerHTML = `<img src="${previewUrl}" class="w-full h-full object-contain p-4" alt="Preview do logo">`;
+    }
+
+    // Faz upload para o Supabase Storage
+    const fileExt = file.name.split('.').pop();
+    const filePath = `logos/logo_${Date.now()}.${fileExt}`;
+    
+    const { data: uploadData, error: uploadError } = await supabaseClient
+      .storage
+      .from('LSK-IMAGES')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: true
+      });
+
+    if (uploadError) {
+      console.error('Erro upload:', uploadError);
+      showToast('Erro ao enviar imagem: ' + uploadError.message, 'error');
+      return;
+    }
+
+    // Pega a URL pública
+    const { data: publicUrlData } = supabaseClient
+      .storage
+      .from('LSK-IMAGES')
+      .getPublicUrl(filePath);
+
+    const publicUrl = publicUrlData.publicUrl;
+    
+    // Salva a URL no appData
+    appData.settings.logoUrl = publicUrl;
+    
+    // Atualiza o campo de texto
+    const urlField = document.getElementById('setting-logo-URL');
+    if (urlField) urlField.value = publicUrl;
+    
+    // Salva no banco
+    await saveData();
+    updateContactLinks();
+    
+    showToast('Logo enviado com sucesso!', 'success');
+    
+  } catch (err) {
+    console.error('Erro:', err);
+    showToast('Erro ao processar logo: ' + err.message, 'error');
+  }
 }
 
 // ==================== UTILS ====================
