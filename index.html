@@ -1900,7 +1900,7 @@ function comprarWhatsApp() {
   if (!currentModalProduct) return;
   const total = (currentModalProduct.priceNum * modalQty).toFixed(2).replace('.', ',');
   const message = `Ola! Quero comprar ${modalQty}x ${currentModalProduct.title} - Total: R$ ${total}`;
-  const waLink = `https://wa.me/${appData.settings.whatsapp || '5551999999999'}?text=${encodeURIComponent(message)}`;
+  const waLink = `https://wa.me/${appData.settings.whatsapp || '5551998045542'}?text=${encodeURIComponent(message)}`;
   window.open(waLink, '_blank');
 }
 
