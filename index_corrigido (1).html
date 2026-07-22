@@ -1,0 +1,2484 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LSK Chocolate de Origem | Chocolates Premium Artesanais</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
+        display: ['Space Grotesk', 'sans-serif'],
+      },
+      colors: {
+        gold: { 50: '#fdf8f0', 100: '#faebd7', 200: '#f5d5a8', 300: '#e8b87d', 400: '#d4a05a', 500: '#c4933f', 600: '#a67c2e', 700: '#8a6522', 800: '#6e4f1a', 900: '#523a12', 950: '#2a1e08' },
+        wine: { 50: '#fdf2f2', 100: '#fce7e7', 200: '#f9c5c5', 300: '#f29b9b', 400: '#e86868', 500: '#d64545', 600: '#b83030', 700: '#9a2525', 800: '#7e2020', 900: '#5c1818', 950: '#2e0a0a' },
+        dark: { 50: '#fafafa', 100: '#f5f5f5', 200: '#e5e5e5', 300: '#d4d4d4', 400: '#a3a3a3', 500: '#737373', 600: '#525252', 700: '#404040', 800: '#262626', 900: '#171717', 950: '#0a0a0a' },
+      }
+    }
+  }
+}
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+  /* ===== HERO CINEMÁTICO ===== */
+  .hero-cinematic {
+    background: linear-gradient(135deg, rgba(10,10,10,0.98) 0%, rgba(42,30,8,0.95) 30%, rgba(92,24,24,0.92) 70%, rgba(10,10,10,0.98) 100%);
+    position: relative;
+  }
+  .hero-cinematic::before {
+    content: ''; position: absolute; inset: 0;
+    background: url('https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=1920&q=80') center/cover no-repeat;
+    opacity: 0.15; mix-blend-mode: overlay;
+  }
+  .hero-cinematic::after {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(212,160,90,0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(154,37,37,0.08) 0%, transparent 50%);
+  }
+
+  /* ===== GLASS MORPHISM ===== */
+  .glass-premium {
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(212,160,90,0.12);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .glass-nav {
+    background: rgba(10,10,10,0.7);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid rgba(212,160,90,0.08);
+  }
+
+  /* ===== CARDS 3D CIRCULARES ===== */
+  .product-orb {
+    position: relative;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+  .product-orb:hover {
+    transform: scale(1.08) rotateY(5deg) rotateX(-3deg);
+    box-shadow: 0 30px 60px rgba(212,160,90,0.25), 0 0 80px rgba(212,160,90,0.1);
+  }
+  .product-orb-inner {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid rgba(212,160,90,0.3);
+    transition: border-color 0.4s ease;
+  }
+  .product-orb:hover .product-orb-inner {
+    border-color: rgba(212,160,90,0.7);
+  }
+  .product-orb img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .product-orb:hover img { transform: scale(1.15); }
+  .product-orb-glow {
+    position: absolute; inset: -10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,160,90,0.2) 0%, transparent 70%);
+    opacity: 0; transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+  .product-orb:hover .product-orb-glow { opacity: 1; }
+  .product-orb-ring {
+    position: absolute; inset: -15px;
+    border-radius: 50%;
+    border: 1px solid rgba(212,160,90,0.1);
+    animation: orbRingPulse 3s ease-in-out infinite;
+  }
+  @keyframes orbRingPulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.05); opacity: 0.6; }
+  }
+  .product-orb-label {
+    position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%);
+    text-align: center; white-space: nowrap;
+    opacity: 0; transform: translateX(-50%) translateY(10px);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .product-orb:hover .product-orb-label {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .product-orb-badge {
+    position: absolute; top: 10px; right: 10px;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, #9a2525, #d64545);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.7rem; font-weight: 700;
+    box-shadow: 0 4px 15px rgba(154,37,37,0.4);
+    animation: badgeFloat 2s ease-in-out infinite;
+  }
+  @keyframes badgeFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  /* ===== MODAL DE PRODUTO ===== */
+  .product-modal {
+    display: none; position: fixed; inset: 0; z-index: 9997;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
+    align-items: center; justify-content: center;
+    padding: 20px; opacity: 0; transition: opacity 0.4s ease;
+  }
+  .product-modal.active { display: flex; opacity: 1; }
+  .product-modal-content {
+    background: linear-gradient(145deg, #171717, #0a0a0a);
+    border-radius: 32px; border: 1px solid rgba(212,160,90,0.15);
+    max-width: 1000px; width: 100%; max-height: 90vh;
+    overflow: hidden; position: relative;
+    box-shadow: 0 50px 100px rgba(0,0,0,0.5), 0 0 60px rgba(212,160,90,0.1);
+    transform: scale(0.9) translateY(20px); transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .product-modal.active .product-modal-content {
+    transform: scale(1) translateY(0);
+  }
+  .product-modal-image {
+    position: relative; overflow: hidden;
+    min-height: 400px;
+  }
+  .product-modal-image::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(23,23,23,1) 0%, transparent 50%);
+  }
+  .product-modal-image img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .floating-price {
+    position: absolute; bottom: 30px; left: 30px; z-index: 10;
+    background: linear-gradient(135deg, rgba(212,160,90,0.9), rgba(196,147,63,0.9));
+    padding: 12px 24px; border-radius: 16px;
+    color: white; font-weight: 700; font-size: 1.5rem;
+    box-shadow: 0 10px 30px rgba(212,160,90,0.3);
+    animation: priceFloat 3s ease-in-out infinite;
+  }
+  @keyframes priceFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* ===== CARRINHO & FRETE ===== */
+  .frete-input-group {
+    display: flex; gap: 8px; align-items: stretch;
+  }
+  .frete-input {
+    flex: 1; background: rgba(38,38,38,0.8);
+    border: 1px solid rgba(212,160,90,0.2); color: white;
+    padding: 12px 16px; border-radius: 12px;
+    font-size: 1rem; letter-spacing: 2px;
+    transition: all 0.3s ease;
+  }
+  .frete-input:focus {
+    outline: none; border-color: #d4a05a;
+    box-shadow: 0 0 0 3px rgba(212,160,90,0.2);
+  }
+  .frete-btn {
+    background: linear-gradient(135deg, #c4933f, #d4a05a);
+    color: white; border: none; padding: 12px 24px;
+    border-radius: 12px; font-weight: 600; cursor: pointer;
+    transition: all 0.3s ease; white-space: nowrap;
+  }
+  .frete-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(212,160,90,0.3);
+  }
+  .frete-result {
+    margin-top: 12px; padding: 16px;
+    background: rgba(212,160,90,0.08);
+    border: 1px solid rgba(212,160,90,0.2);
+    border-radius: 12px; display: none;
+  }
+  .frete-result.show { display: block; animation: fadeInUp 0.4s ease; }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .quantity-selector {
+    display: inline-flex; align-items: center; gap: 0;
+    background: rgba(38,38,38,0.8);
+    border: 1px solid rgba(212,160,90,0.2);
+    border-radius: 12px; overflow: hidden;
+  }
+  .qty-btn {
+    width: 44px; height: 44px; border: none;
+    background: transparent; color: #d4a05a;
+    font-size: 1.2rem; cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .qty-btn:hover { background: rgba(212,160,90,0.1); }
+  .qty-value {
+    width: 50px; text-align: center;
+    color: white; font-weight: 600; font-size: 1.1rem;
+  }
+  .btn-comprar-mp {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, #00b4d8, #0077b6);
+    color: white; padding: 16px 32px; border-radius: 16px;
+    font-weight: 700; font-size: 1.1rem; border: none;
+    cursor: pointer; transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0,180,216,0.3);
+  }
+  .btn-comprar-mp:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(0,180,216,0.4);
+  }
+  .btn-whatsapp-buy {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    color: white; padding: 16px 32px; border-radius: 16px;
+    font-weight: 700; font-size: 1.1rem; border: none;
+    cursor: pointer; transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(37,211,102,0.3);
+  }
+  .btn-whatsapp-buy:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(37,211,102,0.4);
+  }
+
+  /* ===== ANIMAÇÕES ===== */
+  .fade-up { opacity: 0; transform: translateY(60px); }
+  .fade-up.visible { opacity: 1; transform: translateY(0); transition: all 1s cubic-bezier(0.23, 1, 0.32, 1); }
+  .scale-in { opacity: 0; transform: scale(0.8); }
+  .scale-in.visible { opacity: 1; transform: scale(1); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); }
+  .stagger-1 { transition-delay: 0.1s; }
+  .stagger-2 { transition-delay: 0.2s; }
+  .stagger-3 { transition-delay: 0.3s; }
+  .stagger-4 { transition-delay: 0.4s; }
+  .stagger-5 { transition-delay: 0.5s; }
+
+  .gradient-text-gold {
+    background: linear-gradient(135deg, #d4a05a, #f5d5a8, #e8b87d);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .gradient-text-wine {
+    background: linear-gradient(135deg, #9a2525, #d64545, #e86868);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .shimmer-gold {
+    position: relative; overflow: hidden;
+  }
+  .shimmer-gold::after {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212,160,90,0.08), transparent);
+    animation: shimmerMove 4s infinite;
+  }
+  @keyframes shimmerMove { 0%{ left: -100%; } 100%{ left: 200%; } }
+
+  .float-slow { animation: floatSlow 6s ease-in-out infinite; }
+  @keyframes floatSlow { 0%,100%{ transform: translateY(0) rotate(0deg); } 50%{ transform: translateY(-20px) rotate(2deg); } }
+
+  .pulse-glow-gold { animation: pulseGlowGold 3s ease-in-out infinite; }
+  @keyframes pulseGlowGold { 0%,100%{ box-shadow: 0 0 0 0 rgba(212,160,90,0.3); } 50%{ box-shadow: 0 0 30px 10px rgba(212,160,90,0.15); } }
+
+  /* ===== SCROLLBAR ===== */
+  .custom-scroll::-webkit-scrollbar { width: 6px; }
+  .custom-scroll::-webkit-scrollbar-track { background: #0a0a0a; }
+  .custom-scroll::-webkit-scrollbar-thumb { background: #404040; border-radius: 3px; }
+  .custom-scroll::-webkit-scrollbar-thumb:hover { background: #525252; }
+
+  /* ===== TOAST ===== */
+  .toast-anim {
+    position: fixed; bottom: 30px; right: 30px; z-index: 10000;
+    padding: 16px 28px; border-radius: 16px; color: white; font-weight: 500;
+    transform: translateY(120px) scale(0.9); opacity: 0;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+  .toast-anim.show { transform: translateY(0) scale(1); opacity: 1; }
+  .toast-anim.success { background: linear-gradient(135deg, #16a34a, #15803d); }
+  .toast-anim.error { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+  .toast-anim.info { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+
+  /* ===== ADMIN ===== */
+  .admin-overlay { display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(10,10,10,0.97); backdrop-filter: blur(30px); }
+  .admin-overlay.active { display: flex; }
+  .tab-active { background: linear-gradient(135deg, #9a2525, #7e2020) !important; color: white !important; }
+  .input-dark { background: rgba(38,38,38,0.8); border: 1px solid rgba(64,64,64,0.5); color: white;
+    padding: 12px 16px; border-radius: 12px; width: 100%; transition: all 0.3s; }
+  .input-dark:focus { outline: none; border-color: #d4a05a; box-shadow: 0 0 0 3px rgba(212,160,90,0.2); }
+  .input-dark::placeholder { color: #525252; }
+
+  /* ===== MODAL LOGIN ===== */
+  .login-modal { display: none; position: fixed; inset: 0; z-index: 9998;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
+    align-items: center; justify-content: center; }
+  .login-modal.active { display: flex; }
+
+  /* ===== PARTICLES ===== */
+  .particle { position: absolute; border-radius: 50%; pointer-events: none; }
+
+  /* ===== MARQUEE ===== */
+  .marquee-container { overflow: hidden; white-space: nowrap; }
+  .marquee-content { display: inline-block; animation: marquee 30s linear infinite; }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  /* ===== SECTION DIVIDER ===== */
+  .divider-gold { height: 1px; background: linear-gradient(90deg, transparent, rgba(212,160,90,0.4), transparent); }
+
+  /* ===== 3D FLOATING ICONS ===== */
+  .icon-3d {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 80px; height: 80px; border-radius: 24px;
+    background: linear-gradient(135deg, rgba(212,160,90,0.15), rgba(154,37,37,0.1));
+    border: 1px solid rgba(212,160,90,0.2);
+    font-size: 2rem; color: #d4a05a;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-style: preserve-3d;
+  }
+  .icon-3d:hover {
+    transform: translateY(-8px) rotateX(10deg) rotateY(-5deg);
+    box-shadow: 0 20px 40px rgba(212,160,90,0.2);
+    border-color: rgba(212,160,90,0.5);
+  }
+
+  /* ===== CURSOR CUSTOM ===== */
+  .cursor-dot { width: 8px; height: 8px; background: #d4a05a; border-radius: 50%;
+    position: fixed; pointer-events: none; z-index: 99999; mix-blend-mode: difference;
+    transition: transform 0.1s ease; }
+  .cursor-ring { width: 40px; height: 40px; border: 1px solid rgba(212,160,90,0.5); border-radius: 50%;
+    position: fixed; pointer-events: none; z-index: 99998;
+    transition: all 0.15s ease-out; }
+
+  /* ===== ACCORDION POLÍTICAS ===== */
+  .accordion-item {
+    border: 1px solid rgba(212,160,90,0.15);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(12px);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .accordion-item:hover {
+    border-color: rgba(212,160,90,0.3);
+    box-shadow: 0 8px 32px rgba(212,160,90,0.08);
+  }
+  .accordion-header {
+    width: 100%;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+  }
+  .accordion-header:hover {
+    background: rgba(212,160,90,0.05);
+  }
+  .accordion-header.active {
+    background: rgba(212,160,90,0.08);
+  }
+  .accordion-header i {
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    color: #d4a05a;
+    font-size: 0.9rem;
+  }
+  .accordion-header.active i {
+    transform: rotate(180deg);
+  }
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s cubic-bezier(0.23, 1, 0.32, 1), padding 0.4s ease;
+    padding: 0 28px;
+  }
+  .accordion-body.open {
+    max-height: 2000px;
+    padding: 0 28px 28px 28px;
+  }
+  .accordion-content-block {
+    background: rgba(10,10,10,0.4);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .accordion-content-block:last-child {
+    margin-bottom: 0;
+  }
+  .accordion-content-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #d4a05a;
+    margin-bottom: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .accordion-content-text {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.7;
+  }
+  .accordion-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 12px;
+  }
+  .accordion-badge-termos { background: rgba(212,160,90,0.15); color: #d4a05a; }
+  .accordion-badge-privacidade { background: rgba(37,99,235,0.15); color: #60a5fa; }
+  .accordion-badge-devolucao { background: rgba(220,38,38,0.15); color: #f87171; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .product-orb { width: 200px; height: 200px; }
+    .product-modal-content { max-width: 100%; border-radius: 20px; }
+    .product-modal-image { min-height: 250px; }
+    .accordion-header { padding: 18px 20px; font-size: 1rem; }
+    .accordion-body.open { padding: 0 20px 20px 20px; }
+    .accordion-content-block { padding: 18px; }
+  }
+</style>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body class="bg-dark-950 text-white antialiased">
+
+
+
+<!-- ===== PARTICLES BACKGROUND ===== -->
+<div id="particles-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+
+
+<!-- ===== NAVEGAÇÃO ===== -->
+<nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-700">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-500 to-wine-700 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform">
+          L
+        </div>
+        <div class="flex flex-col">
+          <span class="text-xl font-bold tracking-tight font-serif">LSK <span class="text-gold-400">Chocolate</span></span>
+          <span class="text-[10px] text-gold-300/60 tracking-[0.3em] uppercase">De Origem</span>
+        </div>
+      </a>
+
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#home" class="text-sm text-white/60 hover:text-gold-400 transition-colors relative group">
+          Início
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gold-400 transition-all group-hover:w-full"></span>
+        </a>
+        <a href="#sobre" class="text-sm text-white/60 hover:text-gold-400 transition-colors relative group">
+          Sobre
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gold-400 transition-all group-hover:w-full"></span>
+        </a>
+        <a href="#produtos" class="text-sm text-white/60 hover:text-gold-400 transition-colors relative group">
+          Produtos
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gold-400 transition-all group-hover:w-full"></span>
+        </a>
+        <a href="#noticias" class="text-sm text-white/60 hover:text-gold-400 transition-colors relative group">
+          Notícias
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gold-400 transition-all group-hover:w-full"></span>
+        </a>
+        <a href="#contato" class="text-sm text-white/60 hover:text-gold-400 transition-colors relative group">
+          Contato
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gold-400 transition-all group-hover:w-full"></span>
+        </a>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="https://wa.me/5551998045542" target="_blank" class="hidden md:inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-gold-600 to-gold-500 text-white text-sm font-semibold rounded-full hover:shadow-lg hover:shadow-gold-500/30 transition-all hover:-translate-y-0.5">
+          <i class="fab fa-whatsapp"></i>
+          <span>Comprar</span>
+        </a>
+        <button onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-xl glass-premium flex items-center justify-center text-white">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden glass-nav border-t border-white/5">
+    <div class="px-6 py-6 space-y-1">
+      <a href="#home" onclick="toggleMobileMenu()" class="block px-4 py-3 text-white/70 hover:text-gold-400 hover:bg-white/5 rounded-xl transition">Início</a>
+      <a href="#sobre" onclick="toggleMobileMenu()" class="block px-4 py-3 text-white/70 hover:text-gold-400 hover:bg-white/5 rounded-xl transition">Sobre</a>
+      <a href="#produtos" onclick="toggleMobileMenu()" class="block px-4 py-3 text-white/70 hover:text-gold-400 hover:bg-white/5 rounded-xl transition">Produtos</a>
+      <a href="#noticias" onclick="toggleMobileMenu()" class="block px-4 py-3 text-white/70 hover:text-gold-400 hover:bg-white/5 rounded-xl transition">Notícias</a>
+      <a href="#contato" onclick="toggleMobileMenu()" class="block px-4 py-3 text-white/70 hover:text-gold-400 hover:bg-white/5 rounded-xl transition">Contato</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO CINEMÁTICO ===== -->
+<section id="home" class="hero-cinematic min-h-screen flex items-center relative overflow-hidden">
+  <div class="absolute inset-0 z-0">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-gold-500/10 rounded-full blur-3xl float-slow"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-wine-500/10 rounded-full blur-3xl float-slow" style="animation-delay: -3s;"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-32 w-full">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <div class="fade-up">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-premium text-gold-300 text-sm font-medium mb-8">
+          <span class="w-2 h-2 rounded-full bg-gold-400 animate-pulse"></span>
+          <span>Chocolates Premium Artesanais</span>
+        </div>
+
+        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] mb-8 font-serif">
+          Do <span class="gradient-text-gold">Cacau</span><br>
+          à <span class="gradient-text-wine">Perfeição</span>
+        </h1>
+
+        <p class="text-lg text-white/50 mb-10 max-w-lg leading-relaxed font-light">
+          Especialistas na produção de chocolates premium finos. Cada barra é uma experiência 
+          de <span class="text-gold-400">exclusividade</span>, <span class="text-gold-400">rastreabilidade</span> e 
+          <span class="text-gold-400">qualidade</span> incomparável.
+        </p>
+
+        <div class="flex flex-wrap gap-4">
+          <a href="#produtos" class="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-gold-600 to-gold-500 text-white font-semibold rounded-2xl hover:shadow-xl hover:shadow-gold-500/30 transition-all hover:-translate-y-1 text-lg">
+            <i class="fas fa-shopping-bag"></i>
+            <span>Explorar Produtos</span>
+          </a>
+          <a href="https://wa.me/5551999999999" target="_blank" class="inline-flex items-center gap-3 px-8 py-4 glass-premium text-white font-semibold rounded-2xl hover:bg-white/10 transition-all hover:-translate-y-1 text-lg">
+            <i class="fab fa-whatsapp text-green-400"></i>
+            <span>Falar no WhatsApp</span>
+          </a>
+        </div>
+
+        
+      </div>
+
+      <div class="fade-up stagger-2 relative hidden lg:block">
+        <div class="relative w-full aspect-square max-w-lg mx-auto">
+          <div class="absolute inset-0 bg-gradient-to-br from-gold-500/20 to-wine-500/20 rounded-full blur-3xl"></div>
+          <div class="relative rounded-3xl overflow-hidden border border-gold-500/20 shadow-2xl">
+            <div id="hero-video-container" class="w-[320px] h-[320px] md:w-[380px] md:h-[380px] lg:w-[420px] lg:h-[420px] mx-auto rounded-full bg-white flex items-center justify-center relative overflow-hidden shadow-2xl border-4 border-gold-400/30">
+              <iframe id="hero-video" class="w-full h-full absolute inset-0 rounded-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&autoplay=0" title="Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              <video id="hero-video-local" class="w-full h-full absolute inset-0 hidden object-cover rounded-full" controls></video>
+              <img id="hero-logo-display" class="w-[80%] h-[80%] object-contain hidden" alt="Logo da LSK Chocolate de Origem">
+            </div>
+          </div>
+          <!-- Floating badges -->
+          <div class="absolute -top-4 -right-4 glass-premium px-4 py-2 rounded-xl text-sm font-medium text-gold-300 float-slow">
+            <i class="fas fa-award mr-2"></i>Premium
+          </div>
+          <div class="absolute -bottom-4 -left-4 glass-premium px-4 py-2 rounded-xl text-sm font-medium text-wine-300 float-slow" style="animation-delay: -2s;">
+            <i class="fas fa-seedling mr-2"></i>Bean-to-Bar
+          </div>
+          <div class="absolute -bottom-16 -right-4 glass-premium px-4 py-2 rounded-xl text-sm font-medium text-gold-300 float-slow" style="animation-delay: -4s;">
+            <i class="fas fa-route mr-2"></i>Rastreabilidade
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+</section>
+
+<!-- ===== MARQUEE ===== -->
+<div class="py-6 bg-dark-900 border-y border-white/5 overflow-hidden">
+  <div class="marquee-container">
+    <div class="marquee-content text-white/20 text-sm font-display tracking-widest uppercase">
+      <span class="mx-8">Rastreabilidade Total</span>✦<span class="mx-8">Processo Artesanal</span>✦<span class="mx-8">Cacau de Origem</span>✦<span class="mx-8">Edições Limitadas</span>✦<span class="mx-8">Bem-Estar Animal</span>✦<span class="mx-8">Sustentabilidade</span>✦<span class="mx-8">Experiência Sensorial</span>✦<span class="mx-8">Qualidade Premium</span>✦
+      <span class="mx-8">Rastreabilidade Total</span>✦<span class="mx-8">Processo Artesanal</span>✦<span class="mx-8">Cacau de Origem</span>✦<span class="mx-8">Edições Limitadas</span>✦<span class="mx-8">Bem-Estar Animal</span>✦<span class="mx-8">Sustentabilidade</span>✦<span class="mx-8">Experiência Sensorial</span>✦<span class="mx-8">Qualidade Premium</span>✦
+    </div>
+  </div>
+</div>
+
+<!-- ===== SOBRE COM ÍCONES 3D ===== -->
+<section id="sobre" class="py-32 relative overflow-hidden">
+  <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+    <div class="text-center mb-20 fade-up">
+      <span class="inline-block px-4 py-2 rounded-full glass-premium text-gold-400 text-sm font-medium mb-6 tracking-wide">Quem Somos</span>
+      <h2 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 font-serif">
+        Especialistas em <span class="gradient-text-gold">Chocolate</span><br>de <span class="gradient-text-wine">Origem</span>
+      </h2>
+      <p class="text-white/40 text-lg max-w-2xl mx-auto leading-relaxed">
+        A LSK Chocolate de Origem é referência na produção de chocolates premium finos. 
+        Do cacau à barra, cada etapa é uma obra de arte.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+      <!-- Badge 1: Amêndoa à Barra -->
+      <div class="fade-up stagger-1 text-center group">
+        <div class="relative mx-auto mb-6 w-32 h-32">
+          <div class="absolute inset-0 rounded-full bg-gradient-to-br from-gold-500/20 to-gold-700/20 blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+          <div class="relative w-full h-full rounded-full overflow-hidden border-2 border-gold-500/30 group-hover:border-gold-400/60 transition-all duration-500 shadow-2xl">
+            <img src="{admin-img-bean-to-bar}" alt="Amêndoa à Barra" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-dark-900/20 to-transparent"></div>
+            <div class="absolute bottom-2 left-0 right-0 text-center">
+              <i class="fas fa-seedling text-gold-400 text-sm drop-shadow-lg"></i>
+            </div>
+          </div>
+          <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gold-600 text-white text-[10px] font-bold tracking-wider uppercase whitespace-nowrap shadow-lg">
+            Bean-to-Bar
+          </div>
+        </div>
+        <h3 class="text-xl font-bold mb-2 font-serif">Amêndoa à Barra</h3>
+        <p class="text-white/40 text-sm leading-relaxed">Processo artesanal completo com rastreabilidade de cada etapa.</p>
+      </div>
+
+      <!-- Badge 2: Qualidade Premium -->
+      <div class="fade-up stagger-2 text-center group">
+        <div class="relative mx-auto mb-6 w-32 h-32">
+          <div class="absolute inset-0 rounded-full bg-gradient-to-br from-wine-500/20 to-wine-700/20 blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+          <div class="relative w-full h-full rounded-full overflow-hidden border-2 border-wine-500/30 group-hover:border-wine-400/60 transition-all duration-500 shadow-2xl">
+            <img src="{admin-img-qualidade-premium}" alt="Qualidade Premium" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-dark-900/20 to-transparent"></div>
+            <div class="absolute bottom-2 left-0 right-0 text-center">
+              <i class="fas fa-award text-gold-400 text-sm drop-shadow-lg"></i>
+            </div>
+          </div>
+          <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-wine-600 text-white text-[10px] font-bold tracking-wider uppercase whitespace-nowrap shadow-lg">
+            Premium
+          </div>
+        </div>
+        <h3 class="text-xl font-bold mb-2 font-serif">Qualidade Premium</h3>
+        <p class="text-white/40 text-sm leading-relaxed">Ingredientes selecionados e processo refinado de excelência.</p>
+      </div>
+
+      <!-- Badge 3: Sustentabilidade -->
+      <div class="fade-up stagger-3 text-center group">
+        <div class="relative mx-auto mb-6 w-32 h-32">
+          <div class="absolute inset-0 rounded-full bg-gradient-to-br from-green-500/20 to-emerald-700/20 blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+          <div class="relative w-full h-full rounded-full overflow-hidden border-2 border-green-500/30 group-hover:border-green-400/60 transition-all duration-500 shadow-2xl">
+            <img src="{admin-img-sustentabilidade}" alt="Sustentabilidade" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-dark-900/20 to-transparent"></div>
+            <div class="absolute bottom-2 left-0 right-0 text-center">
+              <i class="fas fa-leaf text-green-400 text-sm drop-shadow-lg"></i>
+            </div>
+          </div>
+          <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-green-600 text-white text-[10px] font-bold tracking-wider uppercase whitespace-nowrap shadow-lg">
+            Sustentável
+          </div>
+        </div>
+        <h3 class="text-xl font-bold mb-2 font-serif">Sustentabilidade</h3>
+        <p class="text-white/40 text-sm leading-relaxed">Cacau de origem sustentável e comércio justo com produtores.</p>
+      </div>
+
+      <!-- Badge 4: Exclusividade -->
+      <div class="fade-up stagger-4 text-center group">
+        <div class="relative mx-auto mb-6 w-32 h-32">
+          <div class="absolute inset-0 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-700/20 blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+          <div class="relative w-full h-full rounded-full overflow-hidden border-2 border-purple-500/30 group-hover:border-purple-400/60 transition-all duration-500 shadow-2xl">
+            <img src="{admin-img-exclusividade}" alt="Exclusividade" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-dark-900/20 to-transparent"></div>
+            <div class="absolute bottom-2 left-0 right-0 text-center">
+              <i class="fas fa-gem text-purple-400 text-sm drop-shadow-lg"></i>
+            </div>
+          </div>
+          <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-purple-600 text-white text-[10px] font-bold tracking-wider uppercase whitespace-nowrap shadow-lg">
+            Exclusivo
+          </div>
+        </div>
+        <h3 class="text-xl font-bold mb-2 font-serif">Exclusividade</h3>
+        <p class="text-white/40 text-sm leading-relaxed">Edições limitadas e produtos únicos para experiências memoráveis.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-gold"></div>
+
+<!-- ===== PRODUTOS - ORBS 3D CIRCULARES ===== -->
+<section id="produtos" class="py-32 relative overflow-hidden">
+  <div class="absolute inset-0 bg-[url('{admin-bg-produtos}')] opacity-30"></div>
+  <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-wine-500/5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4"></div>
+
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+    <div class="text-center mb-20 fade-up">
+      <span class="inline-block px-4 py-2 rounded-full glass-premium text-gold-400 text-sm font-medium mb-6 tracking-wide">Nossos Produtos</span>
+      <h2 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 font-serif">
+        Experiências <span class="gradient-text-gold">Únicas</span>
+      </h2>
+      <p class="text-white/40 text-lg max-w-xl mx-auto">
+        Toque nos chocolates para descobrir sabores, histórias e levar para casa.
+      </p>
+    </div>
+
+    <!-- Grid de Orbs -->
+    <div id="products-orbs-container" class="flex flex-wrap justify-center gap-12 lg:gap-16 py-10">
+      <!-- Orbs serão renderizados via JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ===== MODAL DE PRODUTO (DETALHES + CARRINHO + FRETE) ===== -->
+<div id="product-modal" class="product-modal" onclick="closeProductModal(event)">
+  <div class="product-modal-content custom-scroll overflow-y-auto" onclick="event.stopPropagation()">
+    <!-- Close button -->
+    <button onclick="closeProductModal()" class="absolute top-6 right-6 z-20 w-12 h-12 rounded-full glass-premium flex items-center justify-center text-white hover:bg-white/10 transition">
+      <i class="fas fa-times text-lg"></i>
+    </button>
+
+    <div class="grid md:grid-cols-2">
+      <!-- Imagem do produto -->
+      <div class="product-modal-image relative">
+        <img id="modal-product-img" src="" alt="" class="w-full h-full object-cover">
+        <div class="floating-price" id="modal-product-price">R$ 0,00</div>
+        <div class="absolute top-6 left-6 z-10">
+          <span id="modal-product-badge" class="px-4 py-2 rounded-full bg-wine-600/90 text-white text-xs font-bold tracking-wider uppercase backdrop-blur-sm">
+            Premium
+          </span>
+        </div>
+      </div>
+
+      <!-- Detalhes e compra -->
+      <div class="p-8 lg:p-10">
+        <div class="mb-2">
+          <span id="modal-product-origin" class="text-gold-400 text-sm font-medium tracking-wider uppercase">Origem Bahia</span>
+        </div>
+        <h2 id="modal-product-title" class="text-3xl lg:text-4xl font-bold mb-4 font-serif">Título do Produto</h2>
+        <div class="flex items-center gap-2 mb-6">
+          <div class="flex text-gold-400 text-sm">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <span class="text-white/30 text-sm">(127 avaliações)</span>
+        </div>
+
+        <p id="modal-product-desc" class="text-white/50 leading-relaxed mb-8 text-sm lg:text-base">
+          Descrição do produto...
+        </p>
+
+        <!-- Features -->
+        <div class="grid grid-cols-2 gap-3 mb-8">
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
+            <i class="fas fa-check-circle text-gold-400"></i>
+            <span class="text-white/60 text-sm">Rastreável</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
+            <i class="fas fa-check-circle text-gold-400"></i>
+            <span class="text-white/60 text-sm">Artesanal</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
+            <i class="fas fa-check-circle text-gold-400"></i>
+            <span class="text-white/60 text-sm">Sem Conservantes</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
+            <i class="fas fa-check-circle text-gold-400"></i>
+            <span class="text-white/60 text-sm">Embalagem Premium</span>
+          </div>
+        </div>
+
+        <!-- Quantidade -->
+        <div class="mb-6">
+          <label class="block text-white/40 text-sm mb-3">Quantidade</label>
+          <div class="quantity-selector">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <span class="qty-value" id="modal-qty">1</span>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+        </div>
+
+        <!-- Cálculo de Frete -->
+        <div class="mb-8">
+          <label class="block text-white/40 text-sm mb-3">
+            <i class="fas fa-truck mr-2 text-gold-400"></i>Calcular Frete
+          </label>
+          <div class="frete-input-group">
+            <input type="text" id="frete-cep" class="frete-input" placeholder="00000-000" maxlength="9" oninput="formatCEP(this)">
+            <button onclick="calcularFrete()" class="frete-btn">
+              <i class="fas fa-search mr-2"></i>Calcular
+            </button>
+          </div>
+          <div id="frete-result" class="frete-result">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-white/60 text-sm">PAC (5-10 dias)</span>
+              <span class="text-gold-400 font-bold" id="frete-pac">R$ 15,90</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-white/60 text-sm">SEDEX (1-3 dias)</span>
+              <span class="text-gold-400 font-bold" id="frete-sedex">R$ 28,90</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total -->
+        <div class="flex items-center justify-between mb-6 p-4 rounded-xl bg-gradient-to-r from-gold-500/10 to-wine-500/10 border border-gold-500/20">
+          <span class="text-white/60">Total</span>
+          <span class="text-2xl font-bold text-gold-400 font-display" id="modal-total">R$ 0,00</span>
+        </div>
+
+        <!-- Botões de compra -->
+        <div class="flex flex-col gap-3">
+          <button onclick="comprarMercadoPago()" class="btn-comprar-mp w-full justify-center">
+            <i class="fas fa-credit-card"></i>
+            <span>Comprar com Mercado Pago</span>
+          </button>
+          <button onclick="comprarWhatsApp()" class="btn-whatsapp-buy w-full justify-center">
+            <i class="fab fa-whatsapp"></i>
+            <span>Comprar pelo WhatsApp</span>
+          </button>
+        </div>
+
+        <p class="text-white/20 text-xs text-center mt-4">
+          <i class="fas fa-shield-alt mr-1"></i> Pagamento seguro · Entrega garantida
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider-gold"></div>
+
+<!-- ===== NOTÍCIAS ===== -->
+<section id="noticias" class="py-32 relative">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="text-center mb-20 fade-up">
+      <span class="inline-block px-4 py-2 rounded-full glass-premium text-wine-400 text-sm font-medium mb-6 tracking-wide">Notícias & Tendências</span>
+      <h2 class="text-4xl sm:text-5xl font-bold mb-6 font-serif">
+        Tendências do <span class="gradient-text-gold">Mercado</span>
+      </h2>
+      <p class="text-white/40 text-lg max-w-xl mx-auto">
+        Fique por dentro das novidades sobre chocolates premium e bem-estar.
+      </p>
+    </div>
+    <div id="news-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  </div>
+</section>
+
+<div class="divider-gold"></div>
+
+<!-- ===== CONTATO ===== -->
+<section id="contato" class="py-32 relative overflow-hidden">
+  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-gold-500/5 rounded-full blur-3xl -translate-y-1/2"></div>
+
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+    <div class="text-center mb-20 fade-up">
+      <span class="inline-block px-4 py-2 rounded-full glass-premium text-gold-400 text-sm font-medium mb-6 tracking-wide">Fale Conosco</span>
+      <h2 class="text-4xl sm:text-5xl font-bold mb-6 font-serif">
+        Entre em <span class="gradient-text-gold">Contato</span>
+      </h2>
+      <p class="text-white/40 text-lg max-w-xl mx-auto">
+        Estamos prontos para levar o melhor chocolate até você.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <a href="https://wa.me/5551998045542" target="_blank" class="group glass-premium rounded-3xl p-8 text-center hover:bg-white/5 transition-all duration-500 hover:-translate-y-2 fade-up stagger-1">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white text-2xl mx-auto mb-5 shadow-lg group-hover:scale-110 transition-transform">
+          <i class="fab fa-whatsapp"></i>
+        </div>
+        <h3 class="text-lg font-bold mb-2 font-serif">WhatsApp</h3>
+        <p class="text-white/40 text-sm mb-4">Atendimento rápido</p>
+        <span class="text-gold-400 text-sm font-medium group-hover:gap-3 transition-all">Iniciar Conversa →</span>
+      </a>
+
+      <a href="mailto:lsk@lskchocolatedeorigem.com.br" class="group glass-premium rounded-3xl p-8 text-center hover:bg-white/5 transition-all duration-500 hover:-translate-y-2 fade-up stagger-2">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-500 to-gold-700 flex items-center justify-center text-white text-2xl mx-auto mb-5 shadow-lg group-hover:scale-110 transition-transform">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <h3 class="text-lg font-bold mb-2 font-serif">E-mail</h3>
+        <p class="text-white/40 text-sm mb-1">Envie sua demanda</p>
+        <p class="text-gold-400 text-xs font-medium">lsk@lskchocolatedeorigem.com.br</p>
+      </a>
+
+      <a href="https://instagram.com/lskchocolatedeorigem" target="_blank" class="group glass-premium rounded-3xl p-8 text-center hover:bg-white/5 transition-all duration-500 hover:-translate-y-2 fade-up stagger-3">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500 flex items-center justify-center text-white text-2xl mx-auto mb-5 shadow-lg group-hover:scale-110 transition-transform">
+          <i class="fab fa-instagram"></i>
+        </div>
+        <h3 class="text-lg font-bold mb-2 font-serif">Instagram</h3>
+        <p class="text-white/40 text-sm mb-4">Siga nosso conteúdo</p>
+        <span class="text-pink-400 text-sm font-medium">@lskchocolatedeorigem →</span>
+      </a>
+
+      <a href="https://linkedin.com/company/lskchocolates" target="_blank" class="group glass-premium rounded-3xl p-8 text-center hover:bg-white/5 transition-all duration-500 hover:-translate-y-2 fade-up stagger-4">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-500 to-wine-700 flex items-center justify-center text-white text-2xl mx-auto mb-5 shadow-lg group-hover:scale-110 transition-transform">
+          <i class="fab fa-linkedin-in"></i>
+        </div>
+        <h3 class="text-lg font-bold mb-2 font-serif">LinkedIn</h3>
+        <p class="text-white/40 text-sm mb-4">Conecte-se</p>
+        <span class="text-gold-400 text-sm font-medium">Ver Página →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA FINAL ===== -->
+<section class="py-32 relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-br from-wine-900 via-dark-900 to-dark-950"></div>
+  <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=1920&q=80')] bg-cover bg-center opacity-5"></div>
+
+  <div class="max-w-4xl mx-auto px-6 lg:px-8 relative z-10 text-center fade-up">
+    <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass-premium text-gold-300 text-sm font-medium mb-8">
+      <i class="fas fa-gem text-gold-400"></i>
+      <span>Experiência Premium</span>
+    </div>
+    <h2 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8 leading-tight font-serif">
+      Descubra o Verdadeiro<br>Sabor do <span class="gradient-text-gold">Chocolate Artesanal</span>
+    </h2>
+    <p class="text-white/40 text-lg mb-12 max-w-2xl mx-auto">
+      Garanta sua experiência exclusiva com chocolates de origem, rastreáveis e feitos com paixão.
+    </p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="https://wa.me/5551998045542" target="_blank" class="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold rounded-2xl hover:shadow-xl hover:shadow-green-500/30 transition-all hover:-translate-y-1 text-lg pulse-glow-gold">
+        <i class="fab fa-whatsapp text-2xl"></i>
+        <span>Falar no WhatsApp</span>
+      </a>
+      <a href="mailto:lsk@lskchocolatedeorigem.com.br" class="inline-flex items-center gap-3 px-8 py-4 glass-premium text-white font-semibold rounded-2xl hover:bg-white/10 transition-all hover:-translate-y-1 text-lg">
+        <i class="fas fa-envelope text-xl"></i>
+        <span>Enviar E-mail</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SEÇÃO POLÍTICAS - ACCORDION ===== -->
+<section id="politicas" class="py-24 relative overflow-hidden">
+  <div class="absolute inset-0 bg-[url('{admin-bg-politicas}')] opacity-30"></div>
+  <div class="max-w-4xl mx-auto px-6 lg:px-8 relative z-10">
+    <div class="text-center mb-16 fade-up">
+      <span class="inline-block px-4 py-2 rounded-full glass-premium text-gold-400 text-sm font-medium mb-6 tracking-wide">Políticas da Loja</span>
+      <h2 class="text-4xl sm:text-5xl font-bold mb-6 font-serif">
+        Nossas <span class="gradient-text-gold">Políticas</span>
+      </h2>
+      <p class="text-white/40 text-lg max-w-xl mx-auto">
+        Transparência em cada etapa. Conheça nossos termos, privacidade e política de devolução.
+      </p>
+    </div>
+
+    <div id="accordion-container">
+      <!-- Accordion items serão renderizados via JS -->
+    </div>
+  </div>
+</section>
+
+<div class="divider-gold"></div>
+
+<!-- ===== RODAPÉ ===== -->
+<footer class="py-20 bg-dark-950 border-t border-white/5">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+      <div class="lg:col-span-1">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-500 to-wine-700 flex items-center justify-center text-white font-bold shadow-lg">L</div>
+          <div>
+            <span class="text-xl font-bold font-serif">LSK <span class="text-gold-400">Chocolate</span></span>
+            <p class="text-[10px] text-gold-300/60 tracking-[0.3em] uppercase">De Origem</p>
+          </div>
+        </div>
+        <p class="text-white/30 text-sm leading-relaxed mb-6">
+          Chocolates premium artesanais. Do cacau à perfeição, com rastreabilidade e paixão.
+        </p>
+        <div class="flex items-center gap-3">
+          <a href="https://instagram.com/lskchocolatedeorigem" target="_blank" class="w-10 h-10 rounded-xl glass-premium flex items-center justify-center text-white/60 hover:text-pink-400 hover:bg-pink-500/10 transition-all">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://linkedin.com/company/lskchocolates" target="_blank" class="w-10 h-10 rounded-xl glass-premium flex items-center justify-center text-white/60 hover:text-gold-400 hover:bg-gold-500/10 transition-all">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+          <a href="https://wa.me/5551999999999" target="_blank" class="w-10 h-10 rounded-xl glass-premium flex items-center justify-center text-white/60 hover:text-green-400 hover:bg-green-500/10 transition-all">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+
+      
+
+      <div>
+        <h4 class="font-bold text-lg mb-6 font-serif text-white/80">Links</h4>
+        <ul class="space-y-3">
+          <li><a href="#home" class="text-white/30 hover:text-gold-400 transition text-sm">Início</a></li>
+          <li><a href="#sobre" class="text-white/30 hover:text-gold-400 transition text-sm">Sobre</a></li>
+          <li><a href="#produtos" class="text-white/30 hover:text-gold-400 transition text-sm">Produtos</a></li>
+          <li><a href="#noticias" class="text-white/30 hover:text-gold-400 transition text-sm">Notícias</a></li>
+          <li><a href="#contato" class="text-white/30 hover:text-gold-400 transition text-sm">Contato</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-bold text-lg mb-6 font-serif text-white/80">Contato</h4>
+        <ul class="space-y-4">
+          <li class="flex items-center gap-3">
+            <i class="fab fa-whatsapp text-green-400/60 w-5"></i>
+            <a href="https://wa.me/5551998045542" target="_blank" class="text-white/40 hover:text-gold-400 transition text-sm">+55 51998045542</a>
+          </li>
+          <li class="flex items-center gap-3">
+            <i class="fas fa-envelope text-gold-400/60 w-5"></i>
+            <a href="mailto:lsk@lskchocolatedeorigem.com.br" class="text-white/40 hover:text-gold-400 transition text-sm">lsk@lskchocolatedeorigem.com.br</a>
+          </li>
+          <li class="flex items-center gap-3">
+            <i class="fab fa-instagram text-pink-400/60 w-5"></i>
+            <a href="https://instagram.com/lskchocolatedeorigem" target="_blank" class="text-white/40 hover:text-pink-400 transition text-sm">@lskchocolatedeorigem</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider-gold mb-8"></div>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-white/20 text-sm">
+      <p>&copy; 2026 LSK Chocolate de Origem. Todos os direitos reservados.</p>
+      <p>Do Cacau à Perfeição · Chocolates Premium Artesanais</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== BOTÃO WHATSAPP FLUTUANTE ===== -->
+<a href="https://wa.me/5551999999999" target="_blank" class="fixed bottom-6 right-6 z-40 w-16 h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center text-white text-2xl shadow-2xl hover:scale-110 transition-all pulse-glow-gold">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+<!-- ===== PAINEL ADMINISTRATIVO ===== -->
+<div id="admin-panel" class="admin-overlay">
+  <div class="w-full max-w-6xl mx-auto h-screen flex flex-col">
+    <div class="flex items-center justify-between px-6 py-4 bg-dark-900/90 border-b border-white/10">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-600 to-wine-700 flex items-center justify-center text-white">
+          <i class="fas fa-cog"></i>
+        </div>
+        <div>
+          <h2 class="text-white font-bold">Painel Administrativo</h2>
+          <p class="text-white/30 text-xs">LSK Chocolate de Origem</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="changePassword()" class="px-4 py-2 bg-gold-600/20 text-gold-400 rounded-xl text-sm font-medium hover:bg-gold-600/30 transition">
+          <i class="fas fa-key mr-2"></i>Alterar Senha
+        </button>
+        <button onclick="logoutAdmin()" class="px-4 py-2 bg-red-600/20 text-red-400 rounded-xl text-sm font-medium hover:bg-red-600/30 transition">
+          <i class="fas fa-sign-out-alt mr-2"></i>Sair
+        </button>
+        <button onclick="closeAdminPanel()" class="w-10 h-10 rounded-xl glass-premium flex items-center justify-center text-white hover:bg-white/10 transition">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-1 px-6 py-3 bg-dark-900/70 border-b border-white/10 overflow-x-auto">
+      <button onclick="switchTab('products')" id="tab-products" class="tab-btn tab-active px-4 py-2 rounded-xl text-sm font-medium text-white/60 hover:text-white transition whitespace-nowrap">
+        <i class="fas fa-gem mr-2"></i>Produtos
+      </button>
+      <button onclick="switchTab('news')" id="tab-news" class="tab-btn px-4 py-2 rounded-xl text-sm font-medium text-white/60 hover:text-white transition whitespace-nowrap">
+        <i class="fas fa-newspaper mr-2"></i>Notícias
+      </button>
+      <button onclick="switchTab('policies')" id="tab-policies" class="tab-btn px-4 py-2 rounded-xl text-sm font-medium text-white/60 hover:text-white transition whitespace-nowrap">
+        <i class="fas fa-shield-alt mr-2"></i>Políticas
+      </button>
+      <button onclick="switchTab('settings')" id="tab-settings" class="tab-btn px-4 py-2 rounded-xl text-sm font-medium text-white/60 hover:text-white transition whitespace-nowrap">
+        <i class="fas fa-sliders-h mr-2"></i>Configurações
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto custom-scroll p-6">
+      <!-- Produtos -->
+      <div id="content-products" class="tab-content">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-white">Gerenciar Produtos</h3>
+          <button onclick="addProduct()" class="px-4 py-2 bg-gold-600 text-white rounded-xl text-sm font-medium hover:bg-gold-700 transition">
+            <i class="fas fa-plus mr-2"></i>Adicionar Produto
+          </button>
+        </div>
+        <div id="products-admin-list" class="space-y-4"></div>
+      </div>
+
+      <!-- Notícias -->
+      <div id="content-news" class="tab-content hidden">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-white">Gerenciar Notícias</h3>
+          <button onclick="addNews()" class="px-4 py-2 bg-gold-600 text-white rounded-xl text-sm font-medium hover:bg-gold-700 transition">
+            <i class="fas fa-plus mr-2"></i>Nova Publicação
+          </button>
+        </div>
+        <div id="news-admin-list" class="space-y-4"></div>
+      </div>
+
+      <!-- Políticas -->
+      <div id="content-policies" class="tab-content hidden">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-white">Gerenciar Políticas</h3>
+          <button onclick="addPolicy()" class="px-4 py-2 bg-gold-600 text-white rounded-xl text-sm font-medium hover:bg-gold-700 transition">
+            <i class="fas fa-plus mr-2"></i>Nova Política
+          </button>
+        </div>
+        <div id="policies-admin-list" class="space-y-4"></div>
+      </div>
+
+      <!-- Configurações -->
+      <div id="content-settings" class="tab-content hidden">
+        <h3 class="text-xl font-bold text-white mb-6">Configurações do Site</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="glass-premium rounded-2xl p-6 md:col-span-2">
+            <h4 class="font-semibold text-white mb-4"><i class="fas fa-video mr-2 text-gold-400"></i>Vídeo Institucional</h4>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-white/40 text-sm mb-2">URL do Vídeo (YouTube)</label>
+                <input type="text" id="setting-video-URL" class="input-dark mb-4" placeholder="https://www.youtube.com/embed/...">
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="h-px flex-1 bg-white/10"></div>
+                  <span class="text-white/30 text-xs uppercase tracking-wider">ou</span>
+                  <div class="h-px flex-1 bg-white/10"></div>
+                </div>
+                <label class="block text-white/40 text-sm mb-2">Enviar arquivo</label>
+                <input type="file" id="setting-video-file" accept="video/*" class="input-dark mb-2 text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-gold-600 file:text-white file:text-sm file:font-medium hover:file:bg-gold-700 cursor-pointer" onchange="handleVideoFileUpload(this)">
+                <p class="text-white/30 text-xs">Formatos: .mp4, .mov, .avi</p>
+                <button onclick="saveSetting('videoUrl')" class="mt-4 px-6 py-2.5 bg-gold-600 text-white rounded-xl text-sm hover:bg-gold-700 transition">Salvar Vídeo</button>
+              </div>
+              <div id="video-preview-area" class="rounded-2xl overflow-hidden bg-dark-900 border border-white/10 min-h-[200px] flex items-center justify-center">
+                <p class="text-white/30 text-sm">Preview do vídeo</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-premium rounded-2xl p-6 md:col-span-2">
+            <h4 class="font-semibold text-white mb-4"><i class="fas fa-image mr-2 text-gold-400"></i>Logotipo</h4>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-white/40 text-sm mb-2">URL da Imagem</label>
+                <input type="text" id="setting-logo-URL" class="input-dark mb-4" placeholder="https://...">
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="h-px flex-1 bg-white/10"></div>
+                  <span class="text-white/30 text-xs uppercase tracking-wider">ou</span>
+                  <div class="h-px flex-1 bg-white/10"></div>
+                </div>
+                <label class="block text-white/40 text-sm mb-2">Enviar arquivo</label>
+                <input type="file" id="setting-logo-file" accept="image/*" class="input-dark mb-2 text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-gold-600 file:text-white file:text-sm file:font-medium hover:file:bg-gold-700 cursor-pointer" onchange="handleLogoFileUpload(this)">
+                <p class="text-white/30 text-xs">Formatos: .jpeg, .bmp, .png</p>
+                <button onclick="saveSetting('logoUrl')" class="mt-4 px-6 py-2.5 bg-gold-600 text-white rounded-xl text-sm hover:bg-gold-700 transition">Salvar Logo</button>
+              </div>
+              <div id="logo-preview-area" class="rounded-2xl overflow-hidden bg-dark-900 border border-white/10 min-h-[200px] flex items-center justify-center">
+                <p class="text-white/30 text-sm">Preview do logo</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-premium rounded-2xl p-6">
+            <h4 class="font-semibold text-white mb-4"><i class="fab fa-whatsapp mr-2 text-green-400"></i>WhatsApp</h4>
+            <input type="text" id="setting-whatsapp" class="input-dark mb-4" placeholder="5551999999999">
+            <button onclick="saveSetting('whatsapp')" class="px-4 py-2 bg-gold-600 text-white rounded-xl text-sm hover:bg-gold-700 transition">Salvar</button>
+          </div>
+          <div class="glass-premium rounded-2xl p-6">
+            <h4 class="font-semibold text-white mb-4"><i class="fab fa-instagram mr-2 text-pink-400"></i>Instagram</h4>
+            <input type="text" id="setting-instagram" class="input-dark mb-4" placeholder="https://instagram.com/...">
+            <button onclick="saveSetting('instagram')" class="px-4 py-2 bg-gold-600 text-white rounded-xl text-sm hover:bg-gold-700 transition">Salvar</button>
+          </div>
+          <div class="glass-premium rounded-2xl p-6">
+            <h4 class="font-semibold text-white mb-4"><i class="fab fa-linkedin mr-2 text-gold-400"></i>LinkedIn</h4>
+            <input type="text" id="setting-linkedin" class="input-dark mb-4" placeholder="https://linkedin.com/...">
+            <button onclick="saveSetting('linkedin')" class="px-4 py-2 bg-gold-600 text-white rounded-xl text-sm hover:bg-gold-700 transition">Salvar</button>
+          </div>
+          <div class="glass-premium rounded-2xl p-6">
+            <h4 class="font-semibold text-white mb-4"><i class="fas fa-envelope mr-2 text-gold-400"></i>E-mail</h4>
+            <input type="text" id="setting-email" class="input-dark mb-4" placeholder="lsk@lskchocolatedeorigem.com.br">
+            <button onclick="saveSetting('email')" class="px-4 py-2 bg-gold-600 text-white rounded-xl text-sm hover:bg-gold-700 transition">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL LOGIN ===== -->
+<div id="login-modal" class="login-modal">
+  <div class="bg-dark-900 rounded-3xl p-8 w-full max-w-md mx-4 border border-white/10 shadow-2xl relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-32 h-32 bg-gold-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-24 h-24 bg-wine-500/10 rounded-full blur-2xl"></div>
+
+    <div class="text-center mb-8 relative z-10">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-600 to-wine-700 flex items-center justify-center text-white text-2xl mx-auto mb-4 shadow-lg">
+        <i class="fas fa-lock"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white font-serif">Acesso Restrito</h3>
+      <p class="text-white/30 text-sm mt-2">Painel Administrativo</p>
+    </div>
+    <div class="space-y-4 relative z-10">
+      <div>
+        <label class="block text-white/40 text-sm mb-2">Usuário</label>
+        <input type="text" id="login-user" class="input-dark" placeholder="Digite o usuário">
+      </div>
+      <div>
+        <label class="block text-white/40 text-sm mb-2">Senha</label>
+        <input type="password" id="login-pass" class="input-dark" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button onclick="doLogin()" class="w-full py-3.5 bg-gradient-to-r from-gold-600 to-wine-700 text-white font-semibold rounded-xl hover:shadow-lg transition">
+        <i class="fas fa-sign-in-alt mr-2"></i>Entrar
+      </button>
+    </div>
+    <p class="text-center text-white/20 text-xs mt-6 relative z-10">Pressione Ctrl+Shift+A para abrir</p>
+  </div>
+</div>
+
+<!-- ===== MODAL ALTERAR SENHA ===== -->
+<div id="password-modal" class="login-modal">
+  <div class="bg-dark-900 rounded-3xl p-8 w-full max-w-md mx-4 border border-white/10 shadow-2xl">
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-600 to-wine-700 flex items-center justify-center text-white text-2xl mx-auto mb-4 shadow-lg">
+        <i class="fas fa-key"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white font-serif">Alterar Senha</h3>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-white/40 text-sm mb-2">Senha Atual</label>
+        <input type="password" id="current-pass" class="input-dark" placeholder="Senha atual">
+      </div>
+      <div>
+        <label class="block text-white/40 text-sm mb-2">Nova Senha</label>
+        <input type="password" id="new-pass" class="input-dark" placeholder="Nova senha">
+      </div>
+      <div>
+        <label class="block text-white/40 text-sm mb-2">Confirmar</label>
+        <input type="password" id="confirm-pass" class="input-dark" placeholder="Confirme" onkeydown="if(event.key==='Enter')saveNewPassword()">
+      </div>
+      <button onclick="saveNewPassword()" class="w-full py-3.5 bg-gradient-to-r from-gold-600 to-wine-700 text-white font-semibold rounded-xl hover:shadow-lg transition">
+        <i class="fas fa-save mr-2"></i>Salvar Nova Senha
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div id="toast" class="toast-anim"></div>
+
+<script>
+// ==================== SUPABASE CONFIG ====================
+const SUPABASE_URL = 'https://rvqfmwmlcovblueoyhnx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2cWZtd21sY292Ymx1ZW95aG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NzAyNzIsImV4cCI6MjA5ODI0NjI3Mn0.-W4a_MgaI9-OmwsZ3N5sV7WDNV9Y2h8-UidLIA_ANMY';
+let supabaseClient = null;
+if (SUPABASE_URL && SUPABASE_KEY && typeof supabase !== 'undefined') {
+  try { supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) {}
+}
+
+// ==================== SENHA OCULTA ====================
+function hashPassword(pass) {
+  let hash = 0;
+  for (let i = 0; i < pass.length; i++) { hash = ((hash << 5) - hash) + pass.charCodeAt(i); hash = hash & hash; }
+  return hash.toString();
+}
+function getStoredPassword() { return localStorage.getItem('lsk_admin_password_hash') || hashPassword('admin123'); }
+function setStoredPassword(pass) { localStorage.setItem('lsk_admin_password_hash', hashPassword(pass)); }
+
+// ==================== DADOS PADRÃO ====================
+const defaultProducts = [
+  { id: 1, title: 'Tablete 70% Cacau - Origem Bahia', description: 'Chocolate amargo premium com 70% de cacau de origem da Bahia. Notas de frutas vermelhas, castanha e um final levemente amargo. Rastreabilidade completa da fazenda à barra.', price: 'R$ 28,90', priceNum: 28.90, whatsappLink: 'https://wa.me/5551999999999?text=Ola! Quero comprar o Tablete 70% Cacau Origem Bahia.', mpLink: '', image: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=600&q=80', origin: 'Bahia', badge: 'Mais Vendido', dimensions: '2x8x16,80', weight: 80 },
+  { id: 2, title: 'Bombons Artesanais - Caixa 12un', description: 'Seleção de 12 bombons artesanais com recheios variados: ganache de caramelo salgado, trufa de cacau 80%, praliné de avelã e creme de maracujá. Embalagem premium.', price: 'R$ 59,90', priceNum: 59.90, whatsappLink: 'https://wa.me/5551999999999?text=Ola! Quero comprar a Caixa de Bombons Artesanais 12un.', mpLink: '', image: 'https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=600&q=80', origin: 'Blend', badge: 'Premium', dimensions: '5x15x20,250', weight: 250 },
+  { id: 3, title: 'Chocolate Branco com Flor de Sal', description: 'Chocolate branco artesanal com cristais de flor de sal e baunilha de Madagascar. Cremoso, delicado e com o equilíbrio perfeito entre doce e salgado.', price: 'R$ 32,90', priceNum: 32.90, whatsappLink: 'https://wa.me/5551999999999?text=Ola! Quero comprar o Chocolate Branco com Flor de Sal.', mpLink: '', image: 'https://images.unsplash.com/photo-1548907040-4baa42d10919?w=600&q=80', origin: 'Rio de Janeiro', badge: 'Clássico', dimensions: '2x8x16,80', weight: 80 },
+  { id: 4, title: 'Kit Degustação - 4 Barras', description: 'Kit exclusivo com 4 barras de 50g cada: 70% cacau, 85% cacau, branco com matcha e ao leite com avelã. Experiência sensorial completa para apreciadores.', price: 'R$ 89,90', priceNum: 89.90, whatsappLink: 'https://wa.me/5551999999999?text=Ola! Quero comprar o Kit Degustacao 4 Barras.', mpLink: '', image: 'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=600&q=80', origin: 'Coleção', badge: 'Edição Limitada', dimensions: '6x18x22,200', weight: 200 },
+  { id: 5, title: 'Trufas de Cacau 80% - Caixa 6un', description: 'Caixa com 6 trufas de chocolate 80% cacau com recheio de ganache de cacau. Intenso, cremoso e com o sabor autêntico do cacau de origem.', price: 'R$ 45,90', priceNum: 45.90, whatsappLink: 'https://wa.me/5551999999999?text=Ola! Quero comprar as Trufas de Cacau 80%.', mpLink: '', image: 'https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=600&q=80', origin: 'Pará', badge: 'Intenso', dimensions: '5x12x16,120', weight: 120 },
+  { id: 6, title: 'Chocolate Ruby com Frutas Vermelhas', description: 'O exclusivo chocolate Ruby, naturalmente cor-de-rosa, combinado com pedaços de frutas vermelhas liofilizadas. Sabor frutado, levemente ácido e visualmente deslumbrante.', price: 'R$ 39,90', priceNum: 39.90, whatsappLink: 'https://wa.me/5551999999999?text=Ola! Quero comprar o Chocolate Ruby com Frutas Vermelhas.', mpLink: '', image: 'https://images.unsplash.com/photo-1621267860478-fcdb676c5f68?w=600&q=80', origin: 'Especial', badge: 'Exclusivo', dimensions: '2x8x16,80', weight: 80 }
+];
+
+const defaultPolicies = {
+  termos: {
+    id: 'termos',
+    title: 'Termos de Uso',
+    badgeClass: 'accordion-badge-termos',
+    icon: 'fa-file-contract',
+    items: [
+      { id: 1, title: 'Aceitação dos Termos', text: 'Ao acessar e utilizar o site da LSK Chocolate de Origem, você concorda em cumprir e estar vinculado a estes Termos de Uso. Se não concordar com qualquer parte destes termos, solicitamos que não utilize nossos serviços.' },
+      { id: 2, title: 'Cadastro e Conta', text: 'Para realizar compras, você pode precisar fornecer informações pessoais verdadeiras, precisas e atualizadas. Você é responsável por manter a confidencialidade de sua conta e senha.' },
+      { id: 3, title: 'Propriedade Intelectual', text: 'Todo o conteúdo do site, incluindo textos, imagens, logotipos e design, é de propriedade exclusiva da LSK Chocolate de Origem e está protegido por leis de direitos autorais.' },
+      { id: 4, title: 'Limitação de Responsabilidade', text: 'A LSK Chocolate de Origem não se responsabiliza por danos indiretos, incidentais ou consequenciais resultantes do uso ou incapacidade de uso dos nossos produtos ou serviços.' }
+    ]
+  },
+  privacidade: {
+    id: 'privacidade',
+    title: 'Política de Privacidade',
+    badgeClass: 'accordion-badge-privacidade',
+    icon: 'fa-user-shield',
+    items: [
+      { id: 1, title: 'Coleta de Dados', text: 'Coletamos informações pessoais como nome, e-mail, telefone e endereço apenas quando necessário para processar pedidos e melhorar sua experiência de compra.' },
+      { id: 2, title: 'Uso das Informações', text: 'Seus dados são utilizados exclusivamente para processar pedidos, enviar atualizações sobre compras e, com seu consentimento, enviar newsletters sobre novidades e promoções.' },
+      { id: 3, title: 'Proteção de Dados', text: 'Utilizamos criptografia SSL e outras medidas de segurança para proteger suas informações pessoais contra acesso não autorizado, alteração ou divulgação.' },
+      { id: 4, title: 'Compartilhamento', text: 'Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros, exceto quando necessário para processamento de pagamentos e entregas.' },
+      { id: 5, title: 'Seus Direitos', text: 'Você tem o direito de acessar, corrigir ou solicitar a exclusão de seus dados pessoais a qualquer momento, entrando em contato conosco.' }
+    ]
+  },
+  devolucao: {
+    id: 'devolucao',
+    title: 'Política de Devolução',
+    badgeClass: 'accordion-badge-devolucao',
+    icon: 'fa-undo-alt',
+    items: [
+      { id: 1, title: 'Prazo para Devolução', text: 'Você tem até 7 dias corridos após o recebimento do produto para solicitar a devolução, conforme previsto no Código de Defesa do Consumidor.' },
+      { id: 2, title: 'Condições do Produto', text: 'O produto deve estar na embalagem original, sem sinais de uso, com todos os acessórios e acompanhado da nota fiscal.' },
+      { id: 3, title: 'Produtos Perecíveis', text: 'Devido à natureza perecível dos chocolates, aceitamos devoluções apenas em caso de produtos com defeito de fabricação ou danos causados durante o transporte.' },
+      { id: 4, title: 'Processo de Reembolso', text: 'Após aprovação da devolução, o reembolso será processado em até 10 dias úteis, creditado na mesma forma de pagamento utilizada na compra.' },
+      { id: 5, title: 'Como Solicitar', text: 'Para solicitar uma devolução, entre em contato pelo WhatsApp ou e-mail informando o número do pedido e o motivo da devolução.' }
+    ]
+  }
+};
+
+const defaultNews = [
+  { id: 1, title: 'Tendências 2026: Chocolates de Origem em Alta', content: 'O mercado de chocolates premium continua crescendo no Brasil. Consumidores estão cada vez mais interessados em rastreabilidade, sustentabilidade e experiências sensoriais únicas.', imageUrl: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=600&q=80', readUrl: 'https://www.google.com/search?q=tendencias+chocolate+origem+2026', source: 'Mercado', date: '2026-01-15' },
+  { id: 2, title: 'Cacau Brasileiro Conquista Prêmio Internacional', content: 'Cacau de origem do Pará recebeu o prêmio de melhor cacau do mundo em competição internacional, reconhecendo a qualidade e o potencial do Brasil.', imageUrl: 'https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=600&q=80', readUrl: 'https://www.google.com/search?q=cacau+brasileiro+premio+internacional', source: 'Indústria', date: '2026-02-20' },
+  { id: 3, title: 'Bem-Estar e Chocolate: A Ciência do Prazer', content: 'Estudos recentes mostram que o consumo moderado de chocolate amargo de alta qualidade pode trazer benefícios para o bem-estar mental e físico.', imageUrl: 'https://images.unsplash.com/photo-1511381939415-e44015466834?w=600&q=80', readUrl: 'https://www.google.com/search?q=beneficios+chocolate+amargo+saude', source: 'Saúde', date: '2026-03-10' }
+];
+
+const defaultSettings = {
+  videoUrl: '',
+  logoUrl: '',
+  whatsapp: '5551998045542',
+  instagram: 'https://instagram.com/lskchocolatedeorigem',
+  linkedin: 'https://linkedin.com/company/lskchocolates',
+  email: 'lsk@lskchocolatedeorigem.com.br',
+  // CONFIGURAÇÃO MERCADO PAGO - PREENCHA AQUI:
+  mpAccessToken: '', // Cole aqui seu Access Token (TEST-xxx para sandbox, APP_USR-xxx para produção)
+  mpPublicKey: '',   // Cole aqui sua Public Key
+  mpSandbox: true,   // true = ambiente de teste | false = produção (recebe pagamentos reais)
+  mpNotificationUrl: 'https://seudominio.com/webhook/mp', // URL do webhook para notificações
+  mpBackUrlSuccess: 'https://seudominio.com/sucesso',
+  mpBackUrlFailure: 'https://seudominio.com/erro',
+  mpBackUrlPending: 'https://seudominio.com/pendente'
+};
+
+// ==================== ESTADO ====================
+let appData = { products: [], news: [], policies: {}, settings: {} };
+let currentModalProduct = null;
+let modalQty = 1;
+let isAdminLogged = false;
+
+// ==================== INIT ====================
+function initData() {
+  const saved = localStorage.getItem('lsk_chocolate_v2_data');
+  if (saved) { try { appData = JSON.parse(saved); } catch(e) { appData = getDefaultData(); } }
+  else { appData = getDefaultData(); }
+  if (!appData.products || appData.products.length === 0) appData.products = [...defaultProducts];
+  if (!appData.news || appData.news.length === 0) appData.news = [...defaultNews];
+  if (!appData.policies || Object.keys(appData.policies).length === 0) appData.policies = JSON.parse(JSON.stringify(defaultPolicies));
+  if (!appData.settings) appData.settings = { ...defaultSettings };
+  renderAll();
+}
+function getDefaultData() { return { products: [...defaultProducts], news: [...defaultNews], policies: JSON.parse(JSON.stringify(defaultPolicies)), settings: { ...defaultSettings } }; }
+
+async function saveData() {
+  try { localStorage.setItem('lsk_chocolate_v2_data', JSON.stringify(appData)); } catch(e) { showToast('Erro ao salvar', 'error'); throw e; }
+  await syncToSupabase();
+}
+
+function renderPolicies() {
+  const container = document.getElementById('accordion-container');
+  if (!container) return;
+
+  const policies = appData.policies || defaultPolicies;
+  const keys = Object.keys(policies);
+
+  if (keys.length === 0) {
+    container.innerHTML = '<p class="text-white/30 text-center">Nenhuma política configurada.</p>';
+    return;
+  }
+
+  container.innerHTML = keys.map((key, idx) => {
+    const policy = policies[key];
+    return `
+      <div class="accordion-item fade-up stagger-${idx + 1}">
+        <button class="accordion-header" onclick="toggleAccordion('${key}')" id="accordion-header-${key}">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-600/20 to-wine-700/20 flex items-center justify-center text-gold-400">
+              <i class="fas ${policy.icon || 'fa-file-alt'}"></i>
+            </div>
+            <span>${policy.title}</span>
+            <span class="accordion-badge ${policy.badgeClass || 'accordion-badge-termos'}">${key}</span>
+          </div>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="accordion-body" id="accordion-body-${key}">
+          ${(policy.items || []).map(item => `
+            <div class="accordion-content-block">
+              <div class="accordion-content-title">${item.title}</div>
+              <div class="accordion-content-text">${item.text}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleAccordion(key) {
+  const body = document.getElementById('accordion-body-' + key);
+  const header = document.getElementById('accordion-header-' + key);
+  if (!body || !header) return;
+
+  const isOpen = body.classList.contains('open');
+
+  // Fechar todos os outros
+  document.querySelectorAll('.accordion-body').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.accordion-header').forEach(el => el.classList.remove('active'));
+
+  // Se não estava aberto, abrir este
+  if (!isOpen) {
+    body.classList.add('open');
+    header.classList.add('active');
+  }
+}
+
+async function syncToSupabase() {
+  if (!supabaseClient) return;
+  try {
+    // ===== PRODUCTS =====
+    for (const p of appData.products) {
+      await supabaseClient.from('products').upsert({
+        id: p.id,
+        title: p.title || '',
+        description: p.description || '',
+        price: p.priceNum || 0,
+        original_price: p.originalPrice || null,
+        image_url: p.image || '',
+        category: p.category || '',
+        origin: p.origin || '',
+        badge: p.badge || '',
+        stock: p.stock || 0,
+        mp_link: p.mpLink || '',
+        whatsapp_link: p.whatsappLink || '',
+        is_active: p.isActive !== undefined ? p.isActive : true,
+        display_order: p.displayOrder || 0
+      }, { onConflict: 'id' });
+    }
+
+    // ===== NEWS =====
+    for (const n of appData.news) {
+      await supabaseClient.from('news').upsert({
+        id: n.id,
+        title: n.title || '',
+        content: n.content || '',
+        image_url: n.imageUrl || '',
+        excerpt: n.excerpt || '',
+        author: n.author || '',
+        is_published: n.isPublished !== undefined ? n.isPublished : true,
+        published_at: n.publishedAt || n.date || new Date().toISOString()
+      }, { onConflict: 'id' });
+    }
+
+    // ===== SITE SETTINGS =====
+    const { data: existingSettings } = await supabaseClient.from('site_settings').select('id, key');
+    const settingsMap = {};
+    if (existingSettings) {
+      for (const s of existingSettings) {
+        settingsMap[s.key] = s.id;
+      }
+    }
+    
+    for (const [key, value] of Object.entries(appData.settings)) {
+      const existingId = settingsMap[key];
+      const record = {
+        key: key,
+        value: value || '',
+        category: 'general',
+        description: ''
+      };
+      if (existingId) {
+        record.id = existingId;
+      }
+      await supabaseClient.from('site_settings').upsert(record, { onConflict: 'id' });
+    }
+
+    // ===== POLICIES =====
+    for (const [key, policy] of Object.entries(appData.policies || {})) {
+      await supabaseClient.from('policies').upsert({
+        id: key,
+        key: key,
+        title: policy.title || '',
+        content: JSON.stringify(policy.items || []),
+        badge_type: policy.badgeClass || '',
+        is_active: true
+      }, { onConflict: 'id' });
+    }
+
+  } catch(e) { 
+    console.error('Sync error:', e); 
+    showToast('Erro ao sincronizar com o servidor', 'error');
+  }
+}
+
+// ==================== RENDER ORBS 3D ====================
+function renderAll() {
+  renderOrbs();
+  renderNews();
+  renderPolicies();
+  updateSettingsUI();
+  updateContactLinks();
+}
+
+function renderOrbs() {
+  const container = document.getElementById('products-orbs-container');
+  if (!container) return;
+
+  container.innerHTML = appData.products.map((product, index) => `
+    <div class="fade-up stagger-${(index % 5) + 1}" style="transition-delay: ${index * 0.15}s;">
+      <div class="product-orb group" onclick="openProductModal(${product.id})" role="button" tabindex="0">
+        <div class="product-orb-ring"></div>
+        <div class="product-orb-glow"></div>
+        <div class="product-orb-inner">
+          <img src="${product.image}" alt="${product.title}" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-transparent to-transparent"></div>
+          <div class="absolute bottom-4 left-0 right-0 text-center px-4">
+            <p class="text-white/80 text-xs font-medium truncate">${product.title}</p>
+            <p class="text-gold-400 text-sm font-bold">${product.price}</p>
+          </div>
+        </div>
+        ${product.category ? `<div class="product-orb-badge">${product.category}</div>` : ''}
+        <div class="product-orb-label">
+          <span class="text-gold-400 text-sm font-medium">Clique para ver detalhes</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  setTimeout(() => observeElements(), 100);
+}
+
+function renderNews() {
+  const grid = document.getElementById('news-grid');
+  if (!grid) return;
+  grid.innerHTML = appData.news.map((news, index) => `
+    <div class="glass-premium rounded-3xl overflow-hidden card-hover fade-up stagger-${(index % 5) + 1} group" style="transition-delay: ${index * 0.1}s;">
+      <div class="relative h-52 overflow-hidden">
+        <img src="${news.imageUrl}" alt="${news.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+        <div class="absolute inset-0 bg-gradient-to-t from-dark-900/60 to-transparent"></div>
+        <div class="absolute top-4 left-4">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold ${news.source === 'Mercado' ? 'bg-gold-600/90' : 'bg-wine-600/90'} text-white backdrop-blur-sm">${news.source}</span>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="text-xs text-white/30 mb-2">${news.date || 'Recente'}</div>
+        <h3 class="text-lg font-bold text-white mb-3 font-serif line-clamp-2 group-hover:text-gold-400 transition">${news.title}</h3>
+        <p class="text-white/40 text-sm leading-relaxed mb-4 line-clamp-3">${news.content}</p>
+        ${news.readUrl ? `<a href="${news.readUrl}" target="_blank" class="inline-flex items-center gap-2 text-gold-400 text-sm font-medium hover:text-gold-300 transition">Ler mais <i class="fas fa-arrow-right text-xs"></i></a>` : ''}
+      </div>
+    </div>
+  `).join('');
+  setTimeout(() => observeElements(), 100);
+}
+
+// ==================== MODAL DE PRODUTO ====================
+function openProductModal(productId) {
+  const product = appData.products.find(p => p.id === productId);
+  if (!product) return;
+  currentModalProduct = product;
+  modalQty = 1;
+
+  document.getElementById('modal-product-img').src = product.image;
+  document.getElementById('modal-product-img').alt = product.title;
+  document.getElementById('modal-product-price').textContent = product.price;
+  document.getElementById('modal-product-title').textContent = product.title;
+  document.getElementById('modal-product-desc').textContent = product.description;
+  document.getElementById('modal-product-origin').textContent = 'Origem ' + (product.origin || 'Especial');
+  document.getElementById('modal-product-badge').textContent = product.badge || 'Premium';
+  document.getElementById('modal-qty').textContent = '1';
+  updateModalTotal();
+
+  document.getElementById('frete-result').classList.remove('show');
+  document.getElementById('frete-cep').value = '';
+
+  const modal = document.getElementById('product-modal');
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProductModal(e) {
+  if (e && e.target !== e.currentTarget && e.type === 'click') return;
+  document.getElementById('product-modal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function changeQty(delta) {
+  modalQty = Math.max(1, modalQty + delta);
+  document.getElementById('modal-qty').textContent = modalQty;
+  updateModalTotal();
+}
+
+function updateModalTotal() {
+  if (!currentModalProduct) return;
+  const total = (currentModalProduct.priceNum * modalQty).toFixed(2).replace('.', ',');
+  document.getElementById('modal-total').textContent = 'R$ ' + total;
+}
+
+function formatCEP(input) {
+  let value = input.value.replace(/\D/g, '');
+  if (value.length > 5) value = value.slice(0, 5) + '-' + value.slice(5, 8);
+  input.value = value;
+}
+
+function calcularFrete() {
+  const cep = document.getElementById('frete-cep').value.replace(/\D/g, '');
+  if (cep.length !== 8) { showToast('Digite um CEP válido (8 dígitos)', 'error'); return; }
+
+  // Simulação de cálculo de frete (em produção, integrar com API dos Correios ou Melhor Envio)
+  const baseValue = parseInt(cep.slice(-2)) || 10;
+  const pac = (12.90 + (baseValue * 0.15)).toFixed(2);
+  const sedex = (22.90 + (baseValue * 0.25)).toFixed(2);
+
+  document.getElementById('frete-pac').textContent = 'R$ ' + pac.replace('.', ',');
+  document.getElementById('frete-sedex').textContent = 'R$ ' + sedex.replace('.', ',');
+  document.getElementById('frete-result').classList.add('show');
+  showToast('Frete calculado com sucesso!', 'success');
+}
+
+function comprarMercadoPago() {
+  if (!currentModalProduct) return;
+  // Se houver mpLink manual configurado, usa ele (modo legacy)
+  if (currentModalProduct.mpLink) {
+    window.open(currentModalProduct.mpLink, '_blank');
+    return;
+  }
+  // Senão, cria a preference dinamicamente com frete
+  criarPreferenceMP();
+}
+
+/**
+ * Cria a Preference no Mercado Pago via API
+ * Envia o JSON com shipments.mode = "not_specified" para forçar
+ * o checkout a solicitar o endereço de entrega do comprador
+ */
+async function criarPreferenceMP() {
+  if (!currentModalProduct) return;
+  const settings = appData.settings;
+  // Verificar se o Access Token está configurado
+  if (!settings.mpAccessToken) {
+    showToast('Configure o Access Token do Mercado Pago no painel administrativo.', 'error');
+    return;
+  }
+  const qty = modalQty || 1;
+  // Montar o objeto Preference com shipments para forçar endereço
+  const preference = {
+    items: [
+      {
+        id: String(currentModalProduct.id),
+        title: currentModalProduct.title,
+        description: (currentModalProduct.description || 'Produto LSK Chocolate').substring(0, 250),
+        picture_url: currentModalProduct.image,
+        category_id: 'food',
+        quantity: qty,
+        currency_id: 'BRL',
+        unit_price: currentModalProduct.priceNum
+      }
+    ],
+    payer: {
+      name: '',
+      email: '',
+      phone: { area_code: '', number: '' }
+    },
+    shipments: {
+      mode: 'not_specified',        // ← FORÇA o checkout a pedir endereço de entrega
+      local_pickup: false,          // Desativa retirada em loja
+      dimensions: currentModalProduct.dimensions || '10x10x10,500', // Dimensões do produto
+      receiver_address: {           // Deixe vazio para o cliente preencher
+        zip_code: '',
+        street_name: '',
+        street_number: null,
+        floor: '',
+        apartment: '',
+        city_name: '',
+        state_name: '',
+        country_name: ''
+      }
+    },
+    back_urls: {
+      success: settings.mpBackUrlSuccess || window.location.origin + '/sucesso',
+      failure: settings.mpBackUrlFailure || window.location.origin + '/erro',
+      pending: settings.mpBackUrlPending || window.location.origin + '/pendente'
+    },
+    auto_return: 'approved',
+    notification_url: settings.mpNotificationUrl || '',
+    external_reference: 'LSK-' + Date.now() + '-' + currentModalProduct.id
+  };
+  try {
+    showToast('Redirecionando para o Mercado Pago...', 'info');
+    // Endpoint da API do Mercado Pago
+    const endpoint = 'https://api.mercadopago.com/checkout/preferences';
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + settings.mpAccessToken
+      },
+      body: JSON.stringify(preference)
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Erro ao criar preferência de pagamento (HTTP ' + response.status + ')');
+    }
+    const data = await response.json();
+    // Redirecionar para o checkout do Mercado Pago
+    if (data.init_point) {
+      window.location.href = data.init_point; // Checkout web (produção)
+    } else if (data.sandbox_init_point && settings.mpSandbox) {
+      window.location.href = data.sandbox_init_point; // Sandbox
+    } else {
+      throw new Error('Link de checkout não gerado pela API');
+    }
+  } catch (error) {
+    console.error('Erro Mercado Pago:', error);
+    showToast('Erro ao iniciar pagamento: ' + error.message, 'error');
+  }
+}
+
+function comprarWhatsApp() {
+  if (!currentModalProduct) return;
+  const total = (currentModalProduct.priceNum * modalQty).toFixed(2).replace('.', ',');
+  const message = `Ola! Quero comprar ${modalQty}x ${currentModalProduct.title} - Total: R$ ${total}`;
+  const waLink = `https://wa.me/${appData.settings.whatsapp || '5551999999999'}?text=${encodeURIComponent(message)}`;
+  window.open(waLink, '_blank');
+}
+
+// ==================== ADMIN ====================
+function openAdminPanel() { document.getElementById('login-modal').classList.add('active'); }
+function closeLoginModal() { document.getElementById('login-modal').classList.remove('active'); }
+function closePasswordModal() { document.getElementById('password-modal').classList.remove('active'); }
+
+function doLogin() {
+  const user = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value.trim();
+  if (user === 'admin' && hashPassword(pass) === getStoredPassword()) {
+    isAdminLogged = true;
+    closeLoginModal();
+    document.getElementById('admin-panel').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    showToast('Bem-vindo ao painel!', 'success');
+    renderAdminProducts();
+    renderAdminNews();
+    updateSettingsUI();
+  } else { showToast('Usuário ou senha incorretos!', 'error'); }
+}
+
+function changePassword() { document.getElementById('password-modal').classList.add('active'); }
+
+function saveNewPassword() {
+  const current = document.getElementById('current-pass').value;
+  const newPass = document.getElementById('new-pass').value;
+  const confirm = document.getElementById('confirm-pass').value;
+  if (hashPassword(current) !== getStoredPassword()) { showToast('Senha atual incorreta!', 'error'); return; }
+  if (newPass.length < 4) { showToast('Mínimo 4 caracteres', 'error'); return; }
+  if (newPass !== confirm) { showToast('Senhas não coincidem!', 'error'); return; }
+  setStoredPassword(newPass);
+  closePasswordModal();
+  showToast('Senha alterada!', 'success');
+  document.getElementById('current-pass').value = '';
+  document.getElementById('new-pass').value = '';
+  document.getElementById('confirm-pass').value = '';
+}
+
+function logoutAdmin() { isAdminLogged = false; closeAdminPanel(); showToast('Até logo!', 'info'); }
+function closeAdminPanel() { document.getElementById('admin-panel').classList.remove('active'); document.body.style.overflow = ''; }
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+  document.getElementById('tab-' + tab).classList.add('tab-active');
+  document.getElementById('content-' + tab).classList.remove('hidden');
+  if (tab === 'products') renderAdminProducts();
+  if (tab === 'news') renderAdminNews();
+  if (tab === 'policies') renderAdminPolicies();
+  if (tab === 'settings') updateSettingsUI();
+}
+
+function getAllCategories() {
+  const cats = new Set();
+  appData.products.forEach(p => { if (p.category) cats.add(p.category); });
+  return Array.from(cats);
+}
+
+function renderAdminProducts() {
+  const list = document.getElementById('products-admin-list');
+  if (!list) return;
+
+  const categories = getAllCategories();
+  const catOptions = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+
+  list.innerHTML = appData.products.map((p, i) => `
+    <div class="glass-premium rounded-2xl p-5" id="product-card-${i}">
+      <!-- Header com imagem e ações -->
+      <div class="flex items-start justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <img src="${p.image}" class="w-14 h-14 rounded-xl object-cover border border-white/10" id="product-thumb-${i}">
+            <div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full ${p.stock > 0 ? 'bg-green-500' : 'bg-red-500'} border-2 border-dark-900"></div>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white text-sm">${p.title}</h4>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-gold-400 text-xs font-bold">${p.price}</span>
+              <span class="text-white/20">|</span>
+              <span class="text-white/40 text-xs">Estoque: ${p.stock || 0}</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="toggleEditProduct(${i})" class="w-8 h-8 rounded-lg bg-gold-600/20 text-gold-400 flex items-center justify-center hover:bg-gold-600/30 transition" title="Editar">
+            <i class="fas fa-edit text-xs"></i>
+          </button>
+          <button onclick="deleteProduct(${i})" class="w-8 h-8 rounded-lg bg-red-600/20 text-red-400 flex items-center justify-center hover:bg-red-600/30 transition" title="Excluir">
+            <i class="fas fa-trash text-xs"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Badge de categoria -->
+      <div class="mb-3">
+        <span class="inline-block px-3 py-1 rounded-full bg-gold-600/20 text-gold-400 text-xs font-medium border border-gold-500/20">
+          <i class="fas fa-tag mr-1"></i>${p.category || 'Sem categoria'}
+        </span>
+      </div>
+
+      <!-- Form de edição (inicialmente oculto) -->
+      <div id="product-form-${i}" class="hidden space-y-3 text-sm border-t border-white/5 pt-4 mt-3">
+
+        <div>
+          <label class="block text-white/40 text-xs mb-1">Título do Produto</label>
+          <input type="text" value="${p.title}" id="prod-title-${i}" class="input-dark" placeholder="Ex: Tablete 70% Cacau">
+        </div>
+
+        <div>
+          <label class="block text-white/40 text-xs mb-1">Categoria <span class="text-gold-400">(aparece como badge no site)</span></label>
+          <div class="flex gap-2">
+            <input type="text" value="${p.category || ''}" id="prod-category-${i}" class="input-dark flex-1" placeholder="Ex: Tabletes, Bombons, Kits..." list="category-list-${i}">
+            <datalist id="category-list-${i}">${catOptions}</datalist>
+          </div>
+          <p class="text-white/20 text-xs mt-1">Digite uma categoria existente ou crie uma nova</p>
+        </div>
+
+        <div>
+          <label class="block text-white/40 text-xs mb-1">Descrição Detalhada</label>
+          <textarea id="prod-desc-${i}" class="input-dark" rows="4" placeholder="Descreva o produto em detalhes...">${p.description}</textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-white/40 text-xs mb-1">Preço em R$</label>
+            <input type="text" value="${p.price}" id="prod-price-${i}" class="input-dark" placeholder="R$ 0,00">
+          </div>
+          <div>
+            <label class="block text-white/40 text-xs mb-1">Estoque</label>
+            <input type="number" value="${p.stock || 0}" id="prod-stock-${i}" class="input-dark" placeholder="0" min="0">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-white/40 text-xs mb-1">Link do Mercado Pago <span class="text-white/20">(opcional)</span></label>
+          <input type="text" value="${p.mpLink || ''}" id="prod-mp-${i}" class="input-dark" placeholder="https://mpago.la/...">
+        </div>
+
+        <div>
+          <label class="block text-white/40 text-xs mb-1">Imagem do Produto</label>
+          <div class="grid grid-cols-2 gap-3">
+            <input type="text" value="${p.image}" id="prod-image-url-${i}" class="input-dark" placeholder="URL da imagem">
+            <div class="relative">
+              <input type="file" accept=".jpeg,.jpg,.bmp,.png,image/jpeg,image/bmp,image/png" class="input-dark text-xs file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-gold-600 file:text-white file:text-xs file:font-medium hover:file:bg-gold-700 cursor-pointer" onchange="handleProductImageUpload(this, ${i})">
+            </div>
+          </div>
+          <p class="text-white/20 text-xs mt-1">Formatos: .jpeg, .jpg, .bmp, .png</p>
+          <div id="prod-image-preview-${i}" class="mt-2 ${p.image ? '' : 'hidden'}">
+            <img src="${p.image}" class="w-20 h-20 rounded-xl object-cover border border-white/10" id="prod-preview-img-${i}">
+          </div>
+        </div>
+
+        <!-- Botões Salvar / Cancelar -->
+        <div class="flex gap-3 pt-3 border-t border-white/5">
+          <button onclick="saveProduct(${i})" class="flex-1 py-2.5 bg-gradient-to-r from-gold-600 to-gold-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-gold-500/20 transition-all text-sm">
+            <i class="fas fa-save mr-2"></i>Salvar Produto
+          </button>
+          <button onclick="cancelEditProduct(${i})" class="px-5 py-2.5 bg-white/5 text-white/60 font-medium rounded-xl hover:bg-white/10 transition-all text-sm border border-white/10">
+            <i class="fas fa-times mr-2"></i>Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function addProduct() {
+  const newId = Math.max(...appData.products.map(p => p.id), 0) + 1;
+  appData.products.push({ 
+    id: newId, 
+    title: 'Novo Produto', 
+    category: 'Geral',
+    description: 'Descrição do novo produto...', 
+    price: 'R$ 0,00', 
+    priceNum: 0, 
+    stock: 0, 
+    mpLink: '', 
+    image: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=600&q=80'
+  });
+  await saveData(); renderAdminProducts(); renderOrbs(); showToast('Produto adicionado! Clique em editar para preencher.', 'success');
+}
+function toggleEditProduct(index) {
+  const form = document.getElementById('product-form-' + index);
+  if (form) form.classList.toggle('hidden');
+}
+
+function cancelEditProduct(index) {
+  const form = document.getElementById('product-form-' + index);
+  if (form) form.classList.add('hidden');
+}
+
+async function saveProduct(index) {
+  const p = appData.products[index];
+
+  const title = document.getElementById('prod-title-' + index)?.value?.trim();
+  const category = document.getElementById('prod-category-' + index)?.value?.trim();
+  const description = document.getElementById('prod-desc-' + index)?.value?.trim();
+  const price = document.getElementById('prod-price-' + index)?.value?.trim();
+  const stock = parseInt(document.getElementById('prod-stock-' + index)?.value) || 0;
+  const mpLink = document.getElementById('prod-mp-' + index)?.value?.trim();
+  const imageUrl = document.getElementById('prod-image-url-' + index)?.value?.trim();
+
+  if (!title) { showToast('O título é obrigatório!', 'error'); return; }
+
+  let priceNum = 0;
+  const priceMatch = price.replace(',', '.').match(/[\d.]+/);
+  if (priceMatch) priceNum = parseFloat(priceMatch[0]);
+
+  p.title = title;
+  p.category = category || 'Geral';
+  p.description = description || '';
+  p.price = price || 'R$ 0,00';
+  p.priceNum = priceNum;
+  p.stock = stock;
+  p.mpLink = mpLink || '';
+  if (imageUrl) p.image = imageUrl;
+
+  await saveData();
+  renderAdminProducts();
+  renderOrbs();
+  showToast('Produto salvo com sucesso!', 'success');
+}
+
+async function deleteProduct(index) { if (confirm('Excluir este produto?')) { appData.products.splice(index, 1); await saveData(); renderAdminProducts(); renderOrbs(); showToast('Removido!', 'success'); } }
+async function updateProductField(index, field, value) { appData.products[index][field] = value; await saveData(); renderOrbs(); }
+
+function renderAdminNews() {
+  const list = document.getElementById('news-admin-list');
+  if (!list) return;
+  list.innerHTML = appData.news.map((n, i) => `
+    <div class="glass-premium rounded-2xl p-5">
+      <div class="flex items-start justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gold-600 flex items-center justify-center text-white"><i class="fas fa-newspaper"></i></div>
+          <div><h4 class="font-semibold text-white text-sm">${n.title}</h4><p class="text-white/30 text-xs">${n.source}</p></div>
+        </div>
+        <button onclick="deleteNews(${i})" class="w-8 h-8 rounded-lg bg-red-600/20 text-red-400 flex items-center justify-center hover:bg-red-600/30 transition"><i class="fas fa-trash text-xs"></i></button>
+      </div>
+      <div class="space-y-2 text-sm">
+        <input type="text" value="${n.title}" onchange="updateNewsField(${i}, 'title', this.value)" class="input-dark" placeholder="Titulo">
+        <textarea onchange="updateNewsField(${i}, 'content', this.value)" class="input-dark" rows="2" placeholder="Conteudo">${n.content}</textarea>
+        <input type="text" value="${n.imageUrl}" onchange="updateNewsField(${i}, 'imageUrl', this.value)" class="input-dark" placeholder="URL Imagem">
+        <input type="text" value="${n.readUrl}" onchange="updateNewsField(${i}, 'readUrl', this.value)" class="input-dark" placeholder="URL Leia mais">
+        <input type="text" value="${n.source}" onchange="updateNewsField(${i}, 'source', this.value)" class="input-dark" placeholder="Fonte">
+        <input type="text" value="${n.date}" onchange="updateNewsField(${i}, 'date', this.value)" class="input-dark" placeholder="Data">
+      </div>
+    </div>
+  `).join('');
+}
+
+async function addNews() {
+  const newId = Math.max(...appData.news.map(n => n.id), 0) + 1;
+  appData.news.push({ id: newId, title: 'Nova Noticia', content: 'Conteudo...', imageUrl: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=600&q=80', readUrl: '', source: 'Mercado', date: new Date().toISOString().split('T')[0] });
+  await saveData(); renderAdminNews(); renderNews(); showToast('Noticia adicionada!', 'success');
+}
+async function deleteNews(index) { if (confirm('Excluir esta noticia?')) { appData.news.splice(index, 1); await saveData(); renderAdminNews(); renderNews(); showToast('Removida!', 'success'); } }
+async function updateNewsField(index, field, value) { appData.news[index][field] = value; await saveData(); renderNews(); }
+
+async function saveSetting(key) {
+  const map = { 'videoUrl': 'setting-video-URL', 'logoUrl': 'setting-logo-URL', 'whatsapp': 'setting-whatsapp', 'instagram': 'setting-instagram', 'linkedin': 'setting-linkedin', 'email': 'setting-email' };
+  const el = document.getElementById(map[key]);
+  if (el) { 
+    const val = el.value;
+    if (val === '(video carregado - arquivo local)' || val === '(logo carregado - arquivo local)') {
+      showToast('Configuracao salva!', 'success');
+      return;
+    }
+    appData.settings[key] = val; 
+    await saveData(); 
+    updateContactLinks(); // ATUALIZA A UI
+    showToast('Salvo!', 'success'); 
+  }
+}
+
+function updateSettingsUI() {
+  const s = appData.settings;
+  const fields = { 'setting-video-URL': s.videoUrl, 'setting-logo-URL': s.logoUrl, 'setting-whatsapp': s.whatsapp, 'setting-instagram': s.instagram, 'setting-linkedin': s.linkedin, 'setting-email': s.email };
+  for (const [id, val] of Object.entries(fields)) { const el = document.getElementById(id); if (el) el.value = val || ''; }
+}
+
+function getYouTubeEmbedUrl(url) {
+  if (!url) return '';
+  if (url.includes('/embed/')) return url;
+  let videoId = '';
+  const watchMatch = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (watchMatch) videoId = watchMatch[1];
+  if (!videoId) {
+    const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+    if (shortMatch) videoId = shortMatch[1];
+  }
+  if (!videoId) {
+    const vMatch = url.match(/youtube\.com\/v\/([a-zA-Z0-9_-]{11})/);
+    if (vMatch) videoId = vMatch[1];
+  }
+  if (!videoId) {
+    const shortsMatch = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
+    if (shortsMatch) videoId = shortsMatch[1];
+  }
+  if (videoId) return `https://www.youtube.com/embed/${videoId}?rel=0`;
+  return url;
+}
+
+function updateContactLinks() {
+  const s = appData.settings;
+  const wa = s.whatsapp ? `https://wa.me/${s.whatsapp}` : '#';
+  document.querySelectorAll('a[href*="wa.me"]').forEach(el => { if (!el.id.includes('modal') && !el.onclick) el.href = wa; });
+
+  // === LÓGICA DO VÍDEO/LOGO NO CÍRCULO BRANCO ===
+  const video = document.getElementById('hero-video');
+  const videoLocal = document.getElementById('hero-video-local');
+  const heroLogo = document.getElementById('hero-logo-display');
+  const container = document.getElementById('hero-video-container');
+
+  if (!container) return;
+
+  // SEMPRE garantir fundo branco e borda dourada
+  container.style.backgroundColor = '#ffffff';
+  container.style.background = '#ffffff';
+  container.style.border = '4px solid rgba(212,160,90,0.3)';
+
+  const hasVideo = s.videoUrl && s.videoUrl.trim() !== '' && s.videoUrl !== '(video carregado - arquivo local)';
+  const hasLogo = s.logoUrl && s.logoUrl.trim() !== '' && s.logoUrl !== '(logo carregado - arquivo local)';
+
+  if (hasVideo) {
+    // MOSTRA VÍDEO
+    if (heroLogo) heroLogo.classList.add('hidden');
+    if (video) {
+      if (s.videoUrl.includes('youtube.com') || s.videoUrl.includes('youtu.be')) {
+        video.src = getYouTubeEmbedUrl(s.videoUrl);
+        video.classList.remove('hidden');
+        if (videoLocal) videoLocal.classList.add('hidden');
+      } else {
+        video.classList.add('hidden');
+        if (videoLocal) { videoLocal.src = s.videoUrl; videoLocal.classList.remove('hidden'); }
+      }
+    }
+  } else if (hasLogo) {
+    // MOSTRA LOGO (sem vídeo)
+    if (video) video.classList.add('hidden');
+    if (videoLocal) videoLocal.classList.add('hidden');
+    if (heroLogo) {
+      heroLogo.src = s.logoUrl;
+      heroLogo.classList.remove('hidden');
+    }
+  } else {
+    // NEM VÍDEO NEM LOGO: mostra fallback
+    if (video) video.classList.add('hidden');
+    if (videoLocal) videoLocal.classList.add('hidden');
+    if (heroLogo) heroLogo.classList.add('hidden');
+    // Verifica se já não tem o fallback
+    if (!container.querySelector('.hero-fallback')) {
+      container.innerHTML += '<div class="hero-fallback text-center absolute inset-0 flex flex-col items-center justify-center"><p class="text-gold-600 font-serif font-bold text-lg">LSK Chocolate</p><p class="text-gold-400 text-xs tracking-widest uppercase">De Origem</p></div>';
+    }
+  }
+}
+
+// ==================== UPLOADS ====================
+async function handleVideoFileUpload(input) {
+  const file = input.files[0]; if (!file) return;
+  const validTypes = ['video/mp4', 'video/quicktime', 'video/x-msvideo'];
+  const validExts = ['.mp4', '.mov', '.avi'];
+  const fileName = file.name.toLowerCase();
+  const isValid = validTypes.includes(file.type) || validExts.some(ext => fileName.endsWith(ext));
+  if (!isValid) { showToast('Formato invalido. Use .mp4, .mov ou .avi', 'error'); input.value = ''; return; }
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    appData.settings.videoUrl = e.target.result;
+    await saveData();
+    updateContactLinks(); // ATUALIZA A UI IMEDIATAMENTE
+    showToast('Video carregado e aplicado!', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+async function handleProductImageUpload(input, index) {
+  const file = input.files[0];
+  if (!file) return;
+  const validTypes = ['image/jpeg', 'image/bmp', 'image/png'];
+  const validExts = ['.jpeg', '.jpg', '.bmp', '.png'];
+  const fileName = file.name.toLowerCase();
+  const isValid = validTypes.includes(file.type) || validExts.some(ext => fileName.endsWith(ext));
+  if (!isValid) { showToast('Formato invalido. Use .jpeg, .jpg, .bmp ou .png', 'error'); input.value = ''; return; }
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    try {
+      const base64 = e.target.result;
+      appData.products[index].image = base64;
+      // Atualizar preview
+      const previewDiv = document.getElementById('prod-image-preview-' + index);
+      const previewImg = document.getElementById('prod-preview-img-' + index);
+      const urlField = document.getElementById('prod-image-url-' + index);
+      if (previewImg) previewImg.src = base64;
+      if (previewDiv) previewDiv.classList.remove('hidden');
+      if (urlField) urlField.value = base64;
+      await saveData();
+      renderOrbs();
+      showToast('Imagem do produto carregada!', 'success');
+    } catch (err) { showToast('Erro ao salvar imagem: ' + err.message, 'error'); }
+  };
+  reader.onerror = function() { showToast('Erro ao ler arquivo', 'error'); };
+  reader.readAsDataURL(file);
+}
+
+async function handleLogoFileUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const validTypes = ['image/jpeg', 'image/bmp', 'image/png'];
+  const validExts = ['.jpeg', '.jpg', '.bmp', '.png'];
+  const fileName = file.name.toLowerCase();
+  const isValid = validTypes.includes(file.type) || validExts.some(ext => fileName.endsWith(ext));
+  
+  if (!isValid) {
+    showToast('Formato invalido. Use .jpeg, .bmp ou .png', 'error');
+    input.value = '';
+    return;
+  }
+
+  try {
+    // Mostra preview local imediatamente
+    const previewUrl = URL.createObjectURL(file);
+    const previewArea = document.getElementById('logo-preview-area');
+    if (previewArea) {
+      previewArea.innerHTML = `<img src="${previewUrl}" class="w-full h-full object-contain p-4" alt="Preview do logo">`;
+    }
+
+    // Faz upload para o Supabase Storage
+    const fileExt = file.name.split('.').pop();
+    const filePath = `logos/logo_${Date.now()}.${fileExt}`;
+    
+    const { data: uploadData, error: uploadError } = await supabaseClient
+      .storage
+      .from('LSK-IMAGES')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: true
+      });
+
+    if (uploadError) {
+      console.error('Erro upload:', uploadError);
+      showToast('Erro ao enviar imagem: ' + uploadError.message, 'error');
+      return;
+    }
+
+    // Pega a URL pública
+    const { data: publicUrlData } = supabaseClient
+      .storage
+      .from('LSK-IMAGES')
+      .getPublicUrl(filePath);
+
+    const publicUrl = publicUrlData.publicUrl;
+    
+    // Salva a URL no appData
+    appData.settings.logoUrl = publicUrl;
+    
+    // Atualiza o campo de texto
+    const urlField = document.getElementById('setting-logo-URL');
+    if (urlField) urlField.value = publicUrl;
+    
+    // Salva no banco
+    await saveData();
+    updateContactLinks();
+    
+    showToast('Logo enviado com sucesso!', 'success');
+    
+  } catch (err) {
+    console.error('Erro:', err);
+    showToast('Erro ao processar logo: ' + err.message, 'error');
+  }
+}
+
+// ==================== UTILS ====================
+function showToast(message, type = 'info') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = 'toast-anim ' + type;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
+
+function observeElements() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up, .scale-in').forEach(el => observer.observe(el));
+}
+
+
+
+// ==================== PARTICLES ====================
+function initParticles() {
+  const container = document.getElementById('particles-container');
+  if (!container) return;
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 1;
+    p.style.width = size + 'px'; p.style.height = size + 'px';
+    p.style.background = `rgba(212,160,90,${Math.random() * 0.3})`;
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    p.style.animation = `floatSlow ${Math.random() * 10 + 10}s ease-in-out infinite`;
+    p.style.animationDelay = `-${Math.random() * 10}s`;
+    container.appendChild(p);
+  }
+}
+
+// ==================== NAV SCROLL ====================
+function handleNavScroll() {
+  const nav = document.getElementById('main-nav');
+  if (window.scrollY > 50) { nav.classList.add('glass-nav'); } else { nav.classList.remove('glass-nav'); }
+}
+
+// ==================== KEYBOARD ====================
+document.addEventListener('keydown', function(e) {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') { e.preventDefault(); openAdminPanel(); }
+  if (e.key === 'Escape') { closeProductModal(); closeAdminPanel(); closeLoginModal(); closePasswordModal(); }
+});
+
+// ==================== INIT DOM ====================
+document.addEventListener('DOMContentLoaded', function() {
+  initData();
+  updateContactLinks(); // APLICA VÍDEO/LOGO AO CARREGAR
+  initParticles();
+  observeElements();
+  window.addEventListener('scroll', handleNavScroll);
+  handleNavScroll();
+
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href.length > 1) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const mobileMenu = document.getElementById('mobile-menu');
+          if (mobileMenu && !mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden');
+        }
+      }
+    });
+  });
+});
+
+
+function renderAdminPolicies() {
+  const list = document.getElementById('policies-admin-list');
+  if (!list) return;
+
+  const policies = appData.policies || defaultPolicies;
+  const keys = Object.keys(policies);
+
+  if (keys.length === 0) {
+    list.innerHTML = '<p class="text-white/30 text-center py-8">Nenhuma política configurada.</p>';
+    return;
+  }
+
+  list.innerHTML = keys.map(key => {
+    const policy = policies[key];
+    return `
+      <div class="glass-premium rounded-2xl p-6" id="admin-policy-${key}">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-600/20 to-wine-700/20 flex items-center justify-center text-gold-400">
+              <i class="fas ${policy.icon || 'fa-file-alt'}"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-white">${policy.title}</h4>
+              <span class="text-xs text-white/40 uppercase">${key}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="editPolicy('${key}')" class="w-9 h-9 rounded-xl bg-gold-600/20 text-gold-400 hover:bg-gold-600/30 transition flex items-center justify-center" title="Editar">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button onclick="deletePolicy('${key}')" class="w-9 h-9 rounded-xl bg-red-500/20 text-red-400 hover:bg-red-500/30 transition flex items-center justify-center" title="Excluir">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+        <div class="space-y-2">
+          ${(policy.items || []).map(item => `
+            <div class="pl-4 border-l-2 border-gold-500/30 py-1">
+              <p class="text-white/80 text-sm font-medium">${item.title}</p>
+              <p class="text-white/40 text-xs">${item.text}</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function addPolicy() {
+  const key = prompt('Digite o ID da política (ex: termos, privacidade, devolucao):');
+  if (!key || !key.trim()) return;
+  const cleanKey = key.trim().toLowerCase().replace(/\s+/g, '-');
+  if (appData.policies[cleanKey]) {
+    showToast('Já existe uma política com este ID!', 'error');
+    return;
+  }
+  const title = prompt('Digite o título da política:');
+  if (!title || !title.trim()) return;
+
+  appData.policies[cleanKey] = {
+    id: cleanKey,
+    title: title.trim(),
+    badgeClass: 'accordion-badge-' + cleanKey,
+    icon: 'fa-file-alt',
+    items: [
+      { id: 1, title: 'Novo Item', text: 'Digite o conteúdo aqui...' }
+    ]
+  };
+  saveData();
+  renderAdminPolicies();
+  renderPolicies();
+  showToast('Política adicionada com sucesso!', 'success');
+}
+
+function editPolicy(key) {
+  const policy = appData.policies[key];
+  if (!policy) return;
+
+  const newTitle = prompt('Editar título da política:', policy.title);
+  if (newTitle === null) return;
+  policy.title = newTitle.trim() || policy.title;
+
+  // Editar items
+  const itemsHtml = policy.items.map((item, idx) => `
+    <div class="mb-4 p-4 bg-dark-900/50 rounded-xl">
+      <label class="block text-white/40 text-xs mb-1">Item ${idx + 1} - Título</label>
+      <input type="text" id="edit-item-title-${idx}" class="input-dark mb-2" value="${item.title}">
+      <label class="block text-white/40 text-xs mb-1">Texto</label>
+      <textarea id="edit-item-text-${idx}" class="input-dark w-full resize-none" rows="2">${item.text}</textarea>
+    </div>
+  `).join('');
+
+  // Criar modal de edição
+  const modal = document.createElement('div');
+  modal.id = 'edit-policy-modal';
+  modal.className = 'fixed inset-0 z-[200] flex items-center justify-center p-4';
+  modal.innerHTML = `
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeEditPolicyModal()"></div>
+    <div class="relative w-full max-w-2xl max-h-[80vh] overflow-y-auto glass-premium rounded-3xl p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold text-white font-serif">Editar: ${policy.title}</h3>
+        <button onclick="closeEditPolicyModal()" class="w-10 h-10 rounded-xl glass-premium flex items-center justify-center text-white hover:bg-white/10 transition">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="mb-4">
+        <label class="block text-white/40 text-sm mb-2">Título da Política</label>
+        <input type="text" id="edit-policy-title" class="input-dark w-full" value="${policy.title}">
+      </div>
+      <div class="mb-4">
+        <label class="block text-white/40 text-sm mb-2">Ícone (classe FontAwesome)</label>
+        <input type="text" id="edit-policy-icon" class="input-dark w-full" value="${policy.icon || 'fa-file-alt'}">
+      </div>
+      <div class="mb-6">
+        <label class="block text-white/40 text-sm mb-2">Itens da Política</label>
+        <div id="edit-policy-items">${itemsHtml}</div>
+        <button onclick="addEditPolicyItem('${key}')" class="mt-3 w-full py-2 rounded-xl border border-dashed border-gold-400/30 text-gold-400 hover:bg-gold-400/10 transition text-sm">
+          <i class="fas fa-plus mr-2"></i>Adicionar Item
+        </button>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="savePolicyEdit('${key}')" class="flex-1 py-3 bg-gold-600 text-white rounded-xl font-medium hover:bg-gold-700 transition">
+          <i class="fas fa-save mr-2"></i>Salvar Alterações
+        </button>
+        <button onclick="closeEditPolicyModal()" class="px-6 py-3 glass-premium text-white rounded-xl hover:bg-white/10 transition">Cancelar</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  document.body.style.overflow = 'hidden';
+}
+
+function addEditPolicyItem(key) {
+  const container = document.getElementById('edit-policy-items');
+  const idx = container.children.length;
+  const div = document.createElement('div');
+  div.className = 'mb-4 p-4 bg-dark-900/50 rounded-xl';
+  div.innerHTML = `
+    <label class="block text-white/40 text-xs mb-1">Item ${idx + 1} - Título</label>
+    <input type="text" id="edit-item-title-${idx}" class="input-dark mb-2" value="Novo Item">
+    <label class="block text-white/40 text-xs mb-1">Texto</label>
+    <textarea id="edit-item-text-${idx}" class="input-dark w-full resize-none" rows="2">Digite o texto aqui...</textarea>
+  `;
+  container.appendChild(div);
+}
+
+function savePolicyEdit(key) {
+  const policy = appData.policies[key];
+  if (!policy) return;
+
+  const newTitle = document.getElementById('edit-policy-title').value.trim();
+  const newIcon = document.getElementById('edit-policy-icon').value.trim();
+  if (newTitle) policy.title = newTitle;
+  if (newIcon) policy.icon = newIcon;
+
+  const items = [];
+  const container = document.getElementById('edit-policy-items');
+  for (let i = 0; i < container.children.length; i++) {
+    const titleEl = document.getElementById(`edit-item-title-${i}`);
+    const textEl = document.getElementById(`edit-item-text-${i}`);
+    if (titleEl && textEl) {
+      const t = titleEl.value.trim();
+      const txt = textEl.value.trim();
+      if (t && txt) items.push({ id: i + 1, title: t, text: txt });
+    }
+  }
+  if (items.length > 0) policy.items = items;
+
+  saveData();
+  closeEditPolicyModal();
+  renderAdminPolicies();
+  renderPolicies();
+  showToast('Política atualizada com sucesso!', 'success');
+}
+
+function closeEditPolicyModal() {
+  const modal = document.getElementById('edit-policy-modal');
+  if (modal) modal.remove();
+  document.body.style.overflow = '';
+}
+
+function deletePolicy(key) {
+  if (!confirm('Tem certeza que deseja excluir esta política? Esta ação não pode ser desfeita.')) return;
+  delete appData.policies[key];
+  saveData();
+  renderAdminPolicies();
+  renderPolicies();
+  showToast('Política excluída com sucesso!', 'success');
+}
+
+</script>
+</body>
+</html>
