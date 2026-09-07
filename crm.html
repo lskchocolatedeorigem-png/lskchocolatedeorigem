@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM — Painel Administrativo | Financeiro Consulta</title>
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        /* ============================================
+           CRM — PAINEL ADMINISTRATIVO (arquivo novo)
+           Visual limpo, responsivo, vanilla CSS
+           ============================================ */
+        :root {
+            --azul-profundo: #0B2A4A;
+            --azul-medio: #12457A;
+            --azul-claro: #1A5FA0;
+            --verde-principal: #1E9E6A;
+            --verde-escuro: #16A34A;
+            --verde-claro: #D1FAE5;
+            --cinza-fundo: #F5F7FA;
+            --cinza-medio: #94A3B8;
+            --cinza-escuro: #334155;
+            --vermelho-alerta: #DC2626;
+            --vermelho-suave: #FEE2E2;
+            --amarelo-aviso: #F59E0B;
+            --amarelo-suave: #FEF3C7;
+            --branco: #FFFFFF;
+            --sombra-suave: 0 4px 20px rgba(11, 42, 74, 0.08);
+            --sombra-media: 0 8px 30px rgba(11, 42, 74, 0.12);
+            --sombra-forte: 0 12px 40px rgba(11, 42, 74, 0.18);
+            --raio-card: 16px;
+            --raio-botao: 10px;
+            --transicao: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--cinza-escuro);
+            background: var(--cinza-fundo);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        button { font-family: inherit; cursor: pointer; border: none; outline: none; }
+        input, select { font-family: inherit; }
+
+        /* ============================================
+           TELA DE LOGIN
+           ============================================ */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px;
+            background: linear-gradient(135deg, var(--azul-profundo) 0%, var(--azul-medio) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-screen::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(30, 158, 106, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .login-screen::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .login-card {
+            background: var(--branco);
+            border-radius: var(--raio-card);
+            padding: 48px 40px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: var(--sombra-forte);
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--azul-profundo), var(--azul-medio));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.8rem;
+            color: var(--branco);
+        }
+
+        .login-logo h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--azul-profundo);
+            margin-bottom: 4px;
+        }
+
+        .login-logo p {
+            font-size: 0.9rem;
+            color: var(--cinza-medio);
+        }
+
+        .login-form-group {
+            margin-bottom: 20px;
+        }
+
+        .login-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--azul-profundo);
+            margin-bottom: 8px;
+        }
+
+        .login-input-wrapper {
+            position: relative;
+        }
+
+        .login-input-wrapper .icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cinza-medio);
+            font-size: 1rem;
+            pointer-events: none;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid rgba(11, 42, 74, 0.1);
+            border-radius: var(--raio-botao);
+            font-size: 1rem;
+            transition: var(--transicao);
+            background: var(--cinza-fundo);
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: var(--azul-medio);
+            background: var(--branco);
+        }
+
+        .login-input::placeholder {
+            color: var(--cinza-medio);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--azul-profundo), var(--azul-medio));
+            color: var(--branco);
+            border-radius: var(--raio-botao);
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transicao);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(11, 42, 74, 0.3);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .login-erro {
+            display: none;
+            padding: 14px 18px;
+            border-radius: var(--raio-botao);
+            background: var(--vermelho-suave);
+            color: var(--vermelho-alerta);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 16px;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .login-erro.visible {
+            display: flex;
+        }
+
+        .login-info {
+            display: none;
+            padding: 14px 18px;
+            border-radius: var(--raio-botao);
+            background: var(--amarelo-suave);
+            color: #92400E;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 16px;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .login-info.visible {
+            display: flex;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.8rem;
+            color: var(--cinza-medio);
+        }
+
+        /* ============================================
+           PAINEL CRM
+           ============================================ */
+        .painel-screen {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .painel-screen.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Header do painel */
+        .painel-header {
+            background: var(--branco);
+            border-bottom: 1px solid rgba(11, 42, 74, 0.08);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--sombra-suave);
+        }
+
+        .painel-header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .painel-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .painel-header-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--azul-profundo), var(--azul-medio));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--branco);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .painel-header-titulo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--azul-profundo);
+        }
+
+        .painel-header-subtitulo {
+            font-size: 0.85rem;
+            color: var(--cinza-medio);
+        }
+
+        .painel-header-acoes {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-header {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: var(--raio-botao);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: var(--transicao);
+        }
+
+        .btn-atualizar {
+            background: var(--verde-principal);
+            color: var(--branco);
+        }
+
+        .btn-atualizar:hover {
+            background: var(--verde-escuro);
+            transform: translateY(-1px);
+        }
+
+        .btn-atualizar:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-sair {
+            background: var(--vermelho-suave);
+            color: var(--vermelho-alerta);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+        }
+
+        .btn-sair:hover {
+            background: var(--vermelho-alerta);
+            color: var(--branco);
+        }
+
+        /* Conteúdo principal */
+        .painel-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Cartões de resumo */
+        .resumo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .resumo-card {
+            background: var(--branco);
+            border-radius: var(--raio-card);
+            padding: 24px;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid rgba(11, 42, 74, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: var(--transicao);
+        }
+
+        .resumo-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .resumo-card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--branco);
+            flex-shrink: 0;
+        }
+
+        .resumo-card-icon.quente {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+        }
+
+        .resumo-card-icon.morno {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+        }
+
+        .resumo-card-icon.frio {
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+        }
+
+        .resumo-card-icon.novo {
+            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+        }
+
+        .resumo-card-info {
+            flex: 1;
+        }
+
+        .resumo-card-valor {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--azul-profundo);
+            line-height: 1;
+        }
+
+        .resumo-card-label {
+            font-size: 0.85rem;
+            color: var(--cinza-medio);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* Filtros */
+        .filtros-bar {
+            background: var(--branco);
+            border-radius: var(--raio-card);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid rgba(11, 42, 74, 0.06);
+        }
+
+        .filtros-titulo {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--azul-profundo);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filtros-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .filtro-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filtro-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--cinza-escuro);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filtro-input,
+        .filtro-select {
+            padding: 12px 14px;
+            border: 2px solid rgba(11, 42, 74, 0.1);
+            border-radius: var(--raio-botao);
+            font-size: 0.95rem;
+            transition: var(--transicao);
+            background: var(--cinza-fundo);
+            width: 100%;
+        }
+
+        .filtro-input:focus,
+        .filtro-select:focus {
+            outline: none;
+            border-color: var(--azul-medio);
+            background: var(--branco);
+        }
+
+        .filtro-input::placeholder {
+            color: var(--cinza-medio);
+        }
+
+        .filtros-acoes {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .btn-filtrar {
+            flex: 1;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--azul-profundo), var(--azul-medio));
+            color: var(--branco);
+            border-radius: var(--raio-botao);
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: var(--transicao);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-filtrar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(11, 42, 74, 0.25);
+        }
+
+        .btn-limpar {
+            padding: 12px 20px;
+            background: var(--cinza-fundo);
+            color: var(--cinza-escuro);
+            border: 2px solid rgba(11, 42, 74, 0.1);
+            border-radius: var(--raio-botao);
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: var(--transicao);
+        }
+
+        .btn-limpar:hover {
+            background: rgba(11, 42, 74, 0.08);
+        }
+
+        /* Tabela de leads */
+        .tabela-container {
+            background: var(--branco);
+            border-radius: var(--raio-card);
+            box-shadow: var(--sombra-suave);
+            border: 1px solid rgba(11, 42, 74, 0.06);
+            overflow: hidden;
+        }
+
+        .tabela-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(11, 42, 74, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tabela-titulo {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--azul-profundo);
+        }
+
+        .tabela-total {
+            font-size: 0.9rem;
+            color: var(--cinza-medio);
+            font-weight: 500;
+        }
+
+        .tabela-scroll {
+            overflow-x: auto;
+        }
+
+        .tabela-leads {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        .tabela-leads thead {
+            background: var(--cinza-fundo);
+        }
+
+        .tabela-leads th {
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--cinza-escuro);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(11, 42, 74, 0.08);
+            white-space: nowrap;
+        }
+
+        .tabela-leads td {
+            padding: 14px 16px;
+            font-size: 0.9rem;
+            color: var(--cinza-escuro);
+            border-bottom: 1px solid rgba(11, 42, 74, 0.04);
+            vertical-align: top;
+        }
+
+        .tabela-leads tbody tr {
+            transition: var(--transicao);
+        }
+
+        .tabela-leads tbody tr:hover {
+            background: rgba(18, 69, 122, 0.02);
+        }
+
+        .tabela-leads tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .lead-nome {
+            font-weight: 600;
+            color: var(--azul-profundo);
+        }
+
+        .lead-email {
+            color: var(--azul-medio);
+            font-size: 0.85rem;
+        }
+
+        .lead-empresa {
+            font-size: 0.85rem;
+            color: var(--cinza-medio);
+        }
+
+        .lead-telefone {
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .lead-desafio {
+            font-size: 0.85rem;
+            color: var(--cinza-medio);
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .lead-servico {
+            font-size: 0.85rem;
+            color: var(--verde-escuro);
+            font-weight: 500;
+        }
+
+        .lead-data {
+            font-size: 0.8rem;
+            color: var(--cinza-medio);
+            white-space: nowrap;
+        }
+
+        /* Badges de classificação */
+        .badge-classificacao {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-quente {
+            background: var(--vermelho-suave);
+            color: var(--vermelho-alerta);
+        }
+
+        .badge-morno {
+            background: var(--amarelo-suave);
+            color: #92400E;
+        }
+
+        .badge-frio {
+            background: #DBEAFE;
+            color: #1D4ED8;
+        }
+
+        .badge-outro {
+            background: var(--cinza-fundo);
+            color: var(--cinza-medio);
+        }
+
+        /* Badge de status */
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+            background: var(--verde-claro);
+            color: var(--verde-escuro);
+        }
+
+        /* Estados de carregamento e erro */
+        .estado-container {
+            padding: 60px 24px;
+            text-align: center;
+        }
+
+        .estado-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(11, 42, 74, 0.1);
+            border-top-color: var(--azul-medio);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .estado-texto {
+            font-size: 1rem;
+            color: var(--cinza-medio);
+        }
+
+        .estado-erro {
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .estado-erro-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--vermelho-suave);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.5rem;
+            color: var(--vermelho-alerta);
+        }
+
+        .estado-erro-titulo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--azul-profundo);
+            margin-bottom: 8px;
+        }
+
+        .estado-erro-texto {
+            font-size: 0.95rem;
+            color: var(--cinza-medio);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .estado-vazio {
+            padding: 60px 24px;
+            text-align: center;
+        }
+
+        .estado-vazio-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--cinza-fundo);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.5rem;
+            color: var(--cinza-medio);
+        }
+
+        .estado-vazio-titulo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--azul-profundo);
+            margin-bottom: 8px;
+        }
+
+        .estado-vazio-texto {
+            font-size: 0.95rem;
+            color: var(--cinza-medio);
+        }
+
+        /* Notificação toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: var(--raio-botao);
+            font-size: 0.95rem;
+            font-weight: 500;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--sombra-forte);
+            animation: slideUp 0.4s ease;
+            max-width: 400px;
+        }
+
+        .toast.visible {
+            display: flex;
+        }
+
+        .toast.sucesso {
+            background: var(--verde-principal);
+            color: var(--branco);
+        }
+
+        .toast.erro {
+            background: var(--vermelho-alerta);
+            color: var(--branco);
+        }
+
+        .toast.info {
+            background: var(--azul-medio);
+            color: var(--branco);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================
+           RESPONSIVO
+           ============================================ */
+        @media (min-width: 640px) {
+            .resumo-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .filtros-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .filtros-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .filtros-acoes {
+                grid-column: span 4;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .filtros-grid {
+                grid-template-columns: 1fr 1fr 1fr 1fr auto;
+                align-items: end;
+            }
+
+            .filtros-acoes {
+                grid-column: auto;
+                margin-top: 0;
+            }
+        }
+
+        @media (max-width: 639px) {
+            .painel-header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .painel-header-acoes {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .resumo-card {
+                padding: 16px;
+            }
+
+            .resumo-card-valor {
+                font-size: 1.6rem;
+            }
+
+            .login-card {
+                padding: 36px 24px;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--cinza-fundo); }
+        ::-webkit-scrollbar-thumb { background: var(--azul-medio); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--azul-profundo); }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+         TELA DE LOGIN
+         ============================================ -->
+    <div class="login-screen" id="telaLogin">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="login-logo-icon">🔐</div>
+                <h1>Painel CRM</h1>
+                <p>Financeiro Consulta — Área Administrativa</p>
+            </div>
+
+            <form id="formLogin" autocomplete="off">
+                <div class="login-form-group">
+                    <label class="login-label" for="inputChave">Chave de administrador</label>
+                    <div class="login-input-wrapper">
+                        <span class="icon">🔑</span>
+                        <input
+                            type="password"
+                            id="inputChave"
+                            class="login-input"
+                            placeholder="Digite a chave de acesso"
+                            required
+                            autocomplete="off"
+                            spellcheck="false"
+                        >
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login" id="btnEntrar">
+                    <span>Entrar</span>
+                    <span>→</span>
+                </button>
+            </form>
+
+            <div class="login-erro" id="loginErro">
+                <span>⚠️</span>
+                <span id="loginErroTexto">Chave inválida. Tente novamente.</span>
+            </div>
+
+            <div class="login-info" id="loginInfo">
+                <span>ℹ️</span>
+                <span id="loginInfoTexto">Verificando acesso...</span>
+            </div>
+
+            <p class="login-footer">
+                A chave é solicitada a cada sessão e não fica salva no navegador.
+            </p>
+        </div>
+    </div>
+
+    <!-- ============================================
+         PAINEL CRM
+         ============================================ -->
+    <div class="painel-screen" id="telaPainel">
+
+        <!-- Header -->
+        <header class="painel-header">
+            <div class="painel-header-inner">
+                <div class="painel-header-left">
+                    <div class="painel-header-icon">📊</div>
+                    <div>
+                        <div class="painel-header-titulo">Painel CRM</div>
+                        <div class="painel-header-subtitulo">Financeiro Consulta — Leads do Funil</div>
+                    </div>
+                </div>
+                <div class="painel-header-acoes">
+                    <button type="button" class="btn-header btn-atualizar" id="btnAtualizarHeader" onclick="carregarLeads()">
+                        ⟳ Atualizar
+                    </button>
+                    <button type="button" class="btn-header btn-sair" id="btnSair" onclick="fazerLogout()">
+                        ⏻ Sair
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Conteúdo -->
+        <main class="painel-content">
+
+            <!-- Cartões de resumo -->
+            <div class="resumo-grid" id="resumoGrid">
+                <div class="resumo-card">
+                    <div class="resumo-card-icon quente">🔥</div>
+                    <div class="resumo-card-info">
+                        <div class="resumo-card-valor" id="resumoQuentes">0</div>
+                        <div class="resumo-card-label">Leads Quentes</div>
+                    </div>
+                </div>
+                <div class="resumo-card">
+                    <div class="resumo-card-icon morno">♨️</div>
+                    <div class="resumo-card-info">
+                        <div class="resumo-card-valor" id="resumoMornos">0</div>
+                        <div class="resumo-card-label">Leads Mornos</div>
+                    </div>
+                </div>
+                <div class="resumo-card">
+                    <div class="resumo-card-icon frio">❄️</div>
+                    <div class="resumo-card-info">
+                        <div class="resumo-card-valor" id="resumoFrios">0</div>
+                        <div class="resumo-card-label">Leads Frios</div>
+                    </div>
+                </div>
+                <div class="resumo-card">
+                    <div class="resumo-card-icon novo">✨</div>
+                    <div class="resumo-card-info">
+                        <div class="resumo-card-valor" id="resumoNovos">0</div>
+                        <div class="resumo-card-label">Leads Novos</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filtros-bar">
+                <div class="filtros-titulo">
+                    🔍 Filtros
+                </div>
+                <div class="filtros-grid">
+                    <div class="filtro-group">
+                        <label class="filtro-label" for="filtroClassificacao">Classificação</label>
+                        <select class="filtro-select" id="filtroClassificacao">
+                            <option value="">Todas</option>
+                            <option value="quente">Quente</option>
+                            <option value="morno">Morno</option>
+                            <option value="frio">Frio</option>
+                        </select>
+                    </div>
+                    <div class="filtro-group">
+                        <label class="filtro-label" for="filtroStatus">Status</label>
+                        <input
+                            type="text"
+                            class="filtro-input"
+                            id="filtroStatus"
+                            placeholder="Ex: novo, contatado..."
+                        >
+                    </div>
+                    <div class="filtro-group">
+                        <label class="filtro-label" for="filtroBusca">Buscar</label>
+                        <input
+                            type="text"
+                            class="filtro-input"
+                            id="filtroBusca"
+                            placeholder="Nome ou e-mail..."
+                        >
+                    </div>
+                    <div class="filtro-group">
+                        <label class="filtro-label">&nbsp;</label>
+                        <div class="filtros-acoes">
+                            <button type="button" class="btn-filtrar" id="btnFiltrar" onclick="aplicarFiltros()">
+                                Filtrar
+                            </button>
+                            <button type="button" class="btn-limpar" id="btnLimpar" onclick="limparFiltros()">
+                                Limpar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela de leads -->
+            <div class="tabela-container">
+                <div class="tabela-header">
+                    <span class="tabela-titulo">Leads captados</span>
+                    <span class="tabela-total" id="tabelaTotal">0 leads</span>
+                </div>
+
+                <!-- Estado: carregando -->
+                <div class="estado-container" id="estadoCarregando" style="display:none;">
+                    <div class="estado-spinner"></div>
+                    <p class="estado-texto">Carregando leads...</p>
+                </div>
+
+                <!-- Estado: erro -->
+                <div class="estado-erro" id="estadoErro" style="display:none;">
+                    <div class="estado-erro-icon">⚠️</div>
+                    <div class="estado-erro-titulo">Erro ao carregar</div>
+                    <p class="estado-erro-texto" id="estadoErroTexto">
+                        Não foi possível carregar os dados. Verifique sua conexão e tente novamente.
+                    </p>
+                </div>
+
+                <!-- Estado: vazio -->
+                <div class="estado-vazio" id="estadoVazio" style="display:none;">
+                    <div class="estado-vazio-icon">📭</div>
+                    <div class="estado-vazio-titulo">Nenhum lead encontrado</div>
+                    <p class="estado-vazio-texto">Não há leads que correspondam aos filtros aplicados.</p>
+                </div>
+
+                <!-- Tabela -->
+                <div class="tabela-scroll" id="tabelaScroll" style="display:none;">
+                    <table class="tabela-leads">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Empresa</th>
+                                <th>Telefone</th>
+                                <th>Desafio</th>
+                                <th>Classificação</th>
+                                <th>Status</th>
+                                <th>Serviço Recomendado</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaBody">
+                            <!-- Linhas preenchidas via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Toast de notificação -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ============================================
+         JAVASCRIPT — CRM Painel Administrativo
+         ============================================ -->
+    <script>
+        /* ============================================
+           CONFIGURAÇÃO
+           ============================================ */
+        const API_CRM_LISTAR = "https://legisalimentos.app.n8n.cloud/webhook/fc-crm-listar";
+        const SESSION_KEY = "fc_crm_chave";
+
+        /* ============================================
+           REFERÊNCIAS DOM
+           ============================================ */
+        const telaLogin = document.getElementById("telaLogin");
+        const telaPainel = document.getElementById("telaPainel");
+        const formLogin = document.getElementById("formLogin");
+        const inputChave = document.getElementById("inputChave");
+        const btnEntrar = document.getElementById("btnEntrar");
+        const loginErro = document.getElementById("loginErro");
+        const loginErroTexto = document.getElementById("loginErroTexto");
+        const loginInfo = document.getElementById("loginInfo");
+        const loginInfoTexto = document.getElementById("loginInfoTexto");
+
+        const resumoQuentes = document.getElementById("resumoQuentes");
+        const resumoMornos = document.getElementById("resumoMornos");
+        const resumoFrios = document.getElementById("resumoFrios");
+        const resumoNovos = document.getElementById("resumoNovos");
+
+        const filtroClassificacao = document.getElementById("filtroClassificacao");
+        const filtroStatus = document.getElementById("filtroStatus");
+        const filtroBusca = document.getElementById("filtroBusca");
+
+        const estadoCarregando = document.getElementById("estadoCarregando");
+        const estadoErro = document.getElementById("estadoErro");
+        const estadoErroTexto = document.getElementById("estadoErroTexto");
+        const estadoVazio = document.getElementById("estadoVazio");
+        const tabelaScroll = document.getElementById("tabelaScroll");
+        const tabelaBody = document.getElementById("tabelaBody");
+        const tabelaTotal = document.getElementById("tabelaTotal");
+        const btnAtualizarHeader = document.getElementById("btnAtualizarHeader");
+
+        const toast = document.getElementById("toast");
+
+        /* ============================================
+           UTILITÁRIOS
+           ============================================ */
+        function mostrarToast(mensagem, tipo) {
+            toast.textContent = mensagem;
+            toast.className = "toast visible " + tipo;
+            setTimeout(() => {
+                toast.classList.remove("visible");
+            }, 4000);
+        }
+
+        function mostrarErroLogin(mensagem) {
+            loginErroTexto.textContent = mensagem;
+            loginErro.classList.add("visible");
+            loginInfo.classList.remove("visible");
+        }
+
+        function mostrarInfoLogin(mensagem) {
+            loginInfoTexto.textContent = mensagem;
+            loginInfo.classList.add("visible");
+            loginErro.classList.remove("visible");
+        }
+
+        function esconderMensagensLogin() {
+            loginErro.classList.remove("visible");
+            loginInfo.classList.remove("visible");
+        }
+
+        function getChave() {
+            return sessionStorage.getItem(SESSION_KEY) || "";
+        }
+
+        function setChave(chave) {
+            sessionStorage.setItem(SESSION_KEY, chave);
+        }
+
+        function limparChave() {
+            sessionStorage.removeItem(SESSION_KEY);
+        }
+
+        /* ============================================
+           NAVEGAÇÃO ENTRE TELAS
+           ============================================ */
+        function mostrarTelaLogin() {
+            telaLogin.style.display = "flex";
+            telaPainel.classList.remove("visible");
+            inputChave.value = "";
+            inputChave.focus();
+        }
+
+        function mostrarTelaPainel() {
+            telaLogin.style.display = "none";
+            telaPainel.classList.add("visible");
+        }
+
+        /* ============================================
+           LOGIN — VERIFICAR CHAVE
+           ============================================ */
+        formLogin.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const chave = inputChave.value.trim();
+
+            if (!chave) {
+                mostrarErroLogin("Digite a chave de administrador.");
+                return;
+            }
+
+            esconderMensagensLogin();
+            btnEntrar.disabled = true;
+            const textoOriginal = btnEntrar.innerHTML;
+            btnEntrar.innerHTML = "<span>Verificando...</span>";
+
+            mostrarInfoLogin("Verificando acesso...");
+
+            try {
+                const body = { chave: chave };
+                const response = await fetch(API_CRM_LISTAR, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await response.json();
+
+                // Verificar se a resposta indica sucesso
+                if (data && data.success === true) {
+                    // Chave válida — salvar em sessionStorage e mostrar painel
+                    setChave(chave);
+                    esconderMensagensLogin();
+                    mostrarTelaPainel();
+                    mostrarToast("Acesso liberado. Bem-vindo!", "sucesso");
+                    // Carregar dados iniciais
+                    await carregarLeads();
+                } else {
+                    // Chave inválida ou acesso negado
+                    const msg = (data && data.mensagem)
+                        ? data.mensagem
+                        : "Chave inválida. Verifique e tente novamente.";
+                    mostrarErroLogin(msg);
+                    limparChave();
+                }
+            } catch (error) {
+                console.error("Erro ao verificar chave:", error);
+                mostrarErroLogin("Erro de conexão. Verifique sua internet e tente novamente.");
+            } finally {
+                btnEntrar.disabled = false;
+                btnEntrar.innerHTML = textoOriginal;
+            }
+        });
+
+        /* ============================================
+           CARREGAR LEADS
+           ============================================ */
+        async function carregarLeads() {
+            const chave = getChave();
+            if (!chave) {
+                mostrarTelaLogin();
+                return;
+            }
+
+            // Mostrar estado de carregamento
+            mostrarEstado("carregando");
+            btnAtualizarHeader.disabled = true;
+            const textoOriginal = btnAtualizarHeader.innerHTML;
+            btnAtualizarHeader.innerHTML = "⟳ Carregando...";
+
+            try {
+                // Montar body com filtros
+                const body = { chave: chave };
+
+                const classificacao = filtroClassificacao.value.trim();
+                const status = filtroStatus.value.trim();
+                const busca = filtroBusca.value.trim();
+
+                if (classificacao) body.classificacao = classificacao;
+                if (status) body.status = status;
+                if (busca) body.busca = busca;
+
+                const response = await fetch(API_CRM_LISTAR, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await response.json();
+
+                if (data && data.success === true) {
+                    // Atualizar resumo
+                    atualizarResumo(data.resumo || {});
+                    // Atualizar tabela
+                    atualizarTabela(data.leads || [], data.total || 0);
+                } else {
+                    // Verificar se é erro de autenticação
+                    if (data && (data.success === false || data.acesso === "negado" || data.erro === "chave_invalida")) {
+                        mostrarToast("Sessão expirada. Faça login novamente.", "erro");
+                        fazerLogout();
+                        return;
+                    }
+                    mostrarEstado("erro", (data && data.mensagem) || "Erro ao carregar os dados.");
+                }
+            } catch (error) {
+                console.error("Erro ao carregar leads:", error);
+                mostrarEstado("erro", "Erro de conexão. Verifique sua internet e tente novamente.");
+            } finally {
+                btnAtualizarHeader.disabled = false;
+                btnAtualizarHeader.innerHTML = textoOriginal;
+            }
+        }
+
+        /* ============================================
+           ATUALIZAR RESUMO
+           ============================================ */
+        function atualizarResumo(resumo) {
+            resumoQuentes.textContent = resumo.quentes || 0;
+            resumoMornos.textContent = resumo.mornos || 0;
+            resumoFrios.textContent = resumo.frios || 0;
+            resumoNovos.textContent = resumo.novos || 0;
+        }
+
+        /* ============================================
+           ATUALIZAR TABELA
+           ============================================ */
+        function atualizarTabela(leads, total) {
+            tabelaTotal.textContent = total + (total === 1 ? " lead" : " leads");
+
+            if (!leads || leads.length === 0) {
+                mostrarEstado("vazio");
+                return;
+            }
+
+            // Limpar tbody
+            tabelaBody.innerHTML = "";
+
+            leads.forEach((lead) => {
+                const tr = document.createElement("tr");
+
+                // Nome
+                const tdNome = document.createElement("td");
+                tdNome.innerHTML = '<span class="lead-nome">' + escaparHTML(lead.nome || "—") + '</span>';
+                tr.appendChild(tdNome);
+
+                // E-mail
+                const tdEmail = document.createElement("td");
+                tdEmail.innerHTML = '<span class="lead-email">' + escaparHTML(lead.email || "—") + '</span>';
+                tr.appendChild(tdEmail);
+
+                // Empresa
+                const tdEmpresa = document.createElement("td");
+                tdEmpresa.innerHTML = '<span class="lead-empresa">' + escaparHTML(lead.empresa || "—") + '</span>';
+                tr.appendChild(tdEmpresa);
+
+                // Telefone
+                const tdTelefone = document.createElement("td");
+                tdTelefone.innerHTML = '<span class="lead-telefone">' + escaparHTML(lead.telefone || "—") + '</span>';
+                tr.appendChild(tdTelefone);
+
+                // Desafio
+                const tdDesafio = document.createElement("td");
+                tdDesafio.innerHTML = '<span class="lead-desafio" title="' + escaparHTML(lead.desafio || "") + '">' + escaparHTML(lead.desafio || "—") + '</span>';
+                tr.appendChild(tdDesafio);
+
+                // Classificação
+                const tdClassificacao = document.createElement("td");
+                const classificacao = (lead.classificacao || "").toLowerCase();
+                let badgeClass = "badge-outro";
+                let badgeIcono = "•";
+                if (classificacao === "quente") {
+                    badgeClass = "badge-quente";
+                    badgeIcono = "🔥";
+                } else if (classificacao === "morno") {
+                    badgeClass = "badge-morno";
+                    badgeIcono = "♨️";
+                } else if (classificacao === "frio") {
+                    badgeClass = "badge-frio";
+                    badgeIcono = "❄️";
+                }
+                const classificacaoTexto = lead.classificacao
+                    ? lead.classificacao.charAt(0).toUpperCase() + lead.classificacao.slice(1)
+                    : "—";
+                tdClassificacao.innerHTML = '<span class="badge-classificacao ' + badgeClass + '">' + badgeIcono + ' ' + escaparHTML(classificacaoTexto) + '</span>';
+                tr.appendChild(tdClassificacao);
+
+                // Status
+                const tdStatus = document.createElement("td");
+                const statusTexto = lead.status
+                    ? lead.status.charAt(0).toUpperCase() + lead.status.slice(1)
+                    : "—";
+                tdStatus.innerHTML = '<span class="badge-status">' + escaparHTML(statusTexto) + '</span>';
+                tr.appendChild(tdStatus);
+
+                // Serviço recomendado
+                const tdServico = document.createElement("td");
+                tdServico.innerHTML = '<span class="lead-servico">' + escaparHTML(lead.servico_recomendado || "—") + '</span>';
+                tr.appendChild(tdServico);
+
+                // Data
+                const tdData = document.createElement("td");
+                tdData.innerHTML = '<span class="lead-data">' + formatarData(lead.criado_em) + '</span>';
+                tr.appendChild(tdData);
+
+                tabelaBody.appendChild(tr);
+            });
+
+            mostrarEstado("tabela");
+        }
+
+        /* ============================================
+           CONTROLAR ESTADOS DA TABELA
+           ============================================ */
+        function mostrarEstado(estado, mensagemErro) {
+            estadoCarregando.style.display = "none";
+            estadoErro.style.display = "none";
+            estadoVazio.style.display = "none";
+            tabelaScroll.style.display = "none";
+
+            if (estado === "carregando") {
+                estadoCarregando.style.display = "block";
+            } else if (estado === "erro") {
+                estadoErroTexto.textContent = mensagemErro || "Erro ao carregar os dados.";
+                estadoErro.style.display = "block";
+            } else if (estado === "vazio") {
+                estadoVazio.style.display = "block";
+            } else if (estado === "tabela") {
+                tabelaScroll.style.display = "block";
+            }
+        }
+
+        /* ============================================
+           FILTROS
+           ============================================ */
+        function aplicarFiltros() {
+            carregarLeads();
+        }
+
+        function limparFiltros() {
+            filtroClassificacao.value = "";
+            filtroStatus.value = "";
+            filtroBusca.value = "";
+            carregarLeads();
+        }
+
+        /* ============================================
+           LOGOUT
+           ============================================ */
+        function fazerLogout() {
+            sessionStorage.clear();
+            mostrarTelaLogin();
+            mostrarToast("Sessão encerrada com segurança.", "info");
+        }
+
+        /* ============================================
+           UTILITÁRIOS DE FORMATAÇÃO
+           ============================================ */
+        function escaparHTML(texto) {
+            if (!texto) return "";
+            const div = document.createElement("div");
+            div.textContent = texto;
+            return div.innerHTML;
+        }
+
+        function formatarData(dataString) {
+            if (!dataString) return "—";
+            try {
+                const data = new Date(dataString);
+                if (isNaN(data.getTime())) return dataString;
+                return data.toLocaleDateString("pt-BR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
+            } catch (e) {
+                return dataString;
+            }
+        }
+
+        /* ============================================
+           INICIALIZAÇÃO
+           ============================================ */
+        document.addEventListener("DOMContentLoaded", () => {
+            // Verificar se já existe chave na sessão
+            const chave = getChave();
+            if (chave) {
+                // Tentar carregar diretamente — se a chave for inválida, o backend vai negar
+                mostrarTelaPainel();
+                carregarLeads();
+            } else {
+                mostrarTelaLogin();
+            }
+
+            // Permitir Enter no campo de busca para filtrar
+            filtroBusca.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    aplicarFiltros();
+                }
+            });
+
+            filtroStatus.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    aplicarFiltros();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
