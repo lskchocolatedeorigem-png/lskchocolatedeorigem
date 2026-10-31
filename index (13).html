@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LSK Chocolate de Origem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --choc-900:#1a0d06; --choc-800:#2b1608; --choc-700:#3b1f0e;
+  --choc-600:#5a3418; --choc-500:#7a4a22; --choc-400:#a0622d;
+  --caramel:#c98a3d; --gold:#e8b96a; --cream:#f5e6d3; --cream-2:#efe0c9;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',sans-serif;color:var(--cream);background:var(--choc-900)}
+h1,h2,h3,.serif{font-family:'Playfair Display',serif}
+
+/* ---------- HEADER ---------- */
+header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;gap:14px;
+  padding:10px 22px;background:linear-gradient(135deg,rgba(26,13,6,.97),rgba(59,31,14,.95));
+  border-bottom:1px solid rgba(201,138,61,.35);backdrop-filter:blur(8px)}
+#logo-area{width:64px;height:64px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--caramel);border-radius:12px;overflow:hidden;background:var(--choc-800);cursor:default}
+#logo-area img{width:100%;height:100%;object-fit:cover}
+#logo-area span{font-family:'Playfair Display',serif;font-weight:700;font-size:20px;color:var(--gold)}
+.brand-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;
+  background:linear-gradient(90deg,var(--gold),var(--caramel),#f3d9a4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand-sub{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--caramel)}
+nav{margin-left:auto;display:flex;gap:22px}
+nav a{color:var(--cream);text-decoration:none;font-size:.9rem;opacity:.85;transition:.25s}
+nav a:hover{color:var(--gold);opacity:1}
+@media(max-width:720px){nav{display:none}}
+
+/* ---------- HERO ---------- */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  padding:120px 20px 60px;background:
+  radial-gradient(ellipse at 30% 20%,rgba(201,138,61,.25),transparent 55%),
+  radial-gradient(ellipse at 75% 80%,rgba(122,74,34,.35),transparent 55%),
+  linear-gradient(160deg,#1a0d06 0%,#2b1608 35%,#3b1f0e 65%,#1a0d06 100%)}
+.hero h1{font-size:clamp(2.2rem,6vw,4.2rem);font-weight:700;
+  background:linear-gradient(90deg,#f3d9a4,var(--gold),var(--caramel));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:640px;margin:18px auto 30px;color:var(--cream-2);font-weight:300;line-height:1.7}
+.btn{display:inline-block;padding:14px 34px;border-radius:50px;font-weight:500;text-decoration:none;
+  background:linear-gradient(135deg,var(--caramel),var(--choc-500));color:#fff;box-shadow:0 8px 24px rgba(201,138,61,.35);transition:.3s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(201,138,61,.5)}
+.btn.ghost{background:transparent;border:1px solid var(--caramel);color:var(--gold)}
+
+/* ---------- SECTIONS ---------- */
+section{padding:80px 20px;max-width:1100px;margin:0 auto}
+.sec-title{text-align:center;font-size:2.1rem;margin-bottom:10px;
+  background:linear-gradient(90deg,var(--gold),var(--caramel));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sec-sub{text-align:center;color:var(--cream-2);opacity:.8;margin-bottom:44px;font-weight:300}
+.card{background:linear-gradient(150deg,rgba(59,31,14,.7),rgba(26,13,6,.9));border:1px solid rgba(201,138,61,.25);
+  border-radius:18px;padding:28px;transition:.3s}
+.card:hover{border-color:var(--caramel);transform:translateY(-4px)}
+.grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+[data-edit]{outline:none;border-radius:6px;transition:.2s}
+body.admin-on [data-edit]:hover{background:rgba(201,138,61,.12);outline:1px dashed var(--caramel);cursor:text}
+
+/* ---------- GALLERY ---------- */
+.gallery{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.g-item{border-radius:14px;overflow:hidden;border:1px solid rgba(201,138,61,.3);background:var(--choc-800);position:relative}
+.g-item img,.g-item video{width:100%;height:220px;object-fit:cover;display:block}
+.g-item .g-label{padding:10px 14px;font-size:.85rem;color:var(--cream-2);display:flex;justify-content:space-between;align-items:center}
+.g-del{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);border:none;color:#ff8a8a;border-radius:8px;
+  padding:4px 10px;cursor:pointer;display:none}
+body.admin-on .g-del{display:block}
+
+/* ---------- POLICIES (retráteis) ---------- */
+.policies{background:linear-gradient(180deg,var(--choc-900),var(--choc-800));max-width:none}
+.policies-inner{max-width:800px;margin:0 auto}
+.policy{border:1px solid rgba(201,138,61,.3);border-radius:14px;margin-bottom:14px;overflow:hidden;background:rgba(43,22,8,.6)}
+.policy summary{padding:18px 22px;cursor:pointer;font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);
+  list-style:none;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.policy summary::-webkit-details-marker{display:none}
+.policy summary::after{content:'+';font-size:1.4rem;color:var(--caramel);transition:.3s}
+.policy[open] summary::after{transform:rotate(45deg)}
+.policy .p-body{padding:0 22px 20px;color:var(--cream-2);font-weight:300;line-height:1.75;font-size:.92rem;white-space:pre-line}
+
+/* ---------- FOOTER ---------- */
+footer{text-align:center;padding:34px 20px;background:var(--choc-900);border-top:1px solid rgba(201,138,61,.25);
+  color:var(--cream-2);font-size:.85rem;font-weight:300}
+
+/* ---------- FLOATING BUTTONS ---------- */
+.fab{position:fixed;z-index:90;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 20px rgba(0,0,0,.45);transition:.3s;text-decoration:none}
+.fab:hover{transform:scale(1.12)}
+.fab svg{width:30px;height:30px;fill:#fff}
+.fab-wa{right:22px;bottom:94px;background:linear-gradient(135deg,#2ee06f,#1eae52)}
+.fab-wa::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(46,224,111,.5);animation:pulse 2s infinite}
+@keyframes pulse{0%{transform:scale(.9);opacity:1}100%{transform:scale(1.35);opacity:0}}
+.fab-ig{right:22px;bottom:166px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)}
+.fab-email{right:22px;bottom:22px;background:linear-gradient(135deg,#5a3418,#a0622d)}
+
+/* ---------- ADMIN MODAL ---------- */
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(10,5,2,.85);display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.open{display:flex}
+.modal{width:100%;max-width:520px;max-height:92vh;overflow-y:auto;border-radius:18px;padding:30px;
+  background:linear-gradient(160deg,#2b1608,#1a0d06);border:1px solid var(--caramel);box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.modal h2{color:var(--gold);margin-bottom:18px;font-size:1.5rem}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.8rem;color:var(--caramel);margin-bottom:5px;letter-spacing:1px;text-transform:uppercase}
+.field input,.field textarea{width:100%;padding:11px 14px;border-radius:10px;border:1px solid rgba(201,138,61,.4);
+  background:rgba(26,13,6,.8);color:var(--cream);font-family:'Poppins',sans-serif;font-size:.9rem}
+.field textarea{min-height:110px;resize:vertical}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--gold)}
+.mbtn{width:100%;padding:12px;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:.95rem;
+  background:linear-gradient(135deg,var(--caramel),var(--choc-500));color:#fff;transition:.25s}
+.mbtn:hover{filter:brightness(1.15)}
+.mbtn.sec{background:transparent;border:1px solid var(--caramel);color:var(--gold);margin-top:8px}
+.msg{font-size:.85rem;margin:10px 0;min-height:1.2em}
+.msg.err{color:#ff9a9a}.msg.ok{color:#8ce8a8}
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tab{padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.82rem;border:1px solid rgba(201,138,61,.35);color:var(--cream-2)}
+.tab.active{background:var(--caramel);color:#fff;border-color:var(--caramel)}
+.hidden{display:none}
+.close-x{float:right;background:none;border:none;color:var(--caramel);font-size:1.4rem;cursor:pointer;line-height:1}
+.admin-hint{font-size:.72rem;color:var(--caramel);opacity:.7;text-align:center;margin-top:14px}
+#adminBadge{position:fixed;left:14px;bottom:14px;z-index:95;display:none;background:var(--caramel);color:#fff;
+  padding:8px 16px;border-radius:30px;font-size:.78rem;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+body.admin-on #adminBadge{display:flex;gap:10px;align-items:center}
+.badge-off{background:#8a2b2b;border:none;color:#fff;border-radius:20px;padding:4px 12px;cursor:pointer;font-size:.72rem}
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:300;background:var(--choc-700);
+  border:1px solid var(--caramel);color:var(--gold);padding:12px 26px;border-radius:30px;opacity:0;pointer-events:none;transition:.35s;font-size:.88rem}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     CONFIGURAÇÃO SUPABASE — preencha os 2 valores abaixo (Projeto > Settings > API)
+     Tabelas necessárias (SQL Editor no Supabase):
+
+     create table site_content (key text primary key, value text);
+     create table media (
+       id bigint generated always as identity primary key,
+       title text, url text, kind text, created_at timestamptz default now()
+     );
+     -- Storage: crie um bucket PÚBLICO chamado "media"
+     -- Authentication > Users > Add user (e-mail + senha do administrador)
+     ══════════════════════════════════════════════════════════════════ -->
+<script>
+const SUPABASE_URL = "COLE_SUA_URL_DO_SUPABASE_AQUI";
+const SUPABASE_ANON_KEY = "COLE_SUA_ANON_KEY_AQUI";
+</script>
+
+<header>
+  <div id="logo-area" title="Logo LSK"><span>LSK</span></div>
+  <div>
+    <div class="brand-name" data-edit="brand_name">LSK Chocolate de Origem</div>
+    <div class="brand-sub" data-edit="brand_sub">Cacau Selecionado • Artesanal</div>
+  </div>
+  <nav>
+    <a href="#inicio">Início</a><a href="#sobre">Sobre</a><a href="#galeria">Galeria</a><a href="#contato">Contato</a><a href="#politicas">Políticas</a>
+  </nav>
+</header>
+
+<section class="hero" id="inicio">
+  <h1 data-edit="hero_title">O Verdadeiro Sabor do Cacau de Origem</h1>
+  <p data-edit="hero_text">Descubra a riqueza de um chocolate produzido com cacais raros, de origem rastreada e processados artesanalmente. Cada tableta conta a história de uma terra, de uma família e de uma paixão.</p>
+  <a class="btn" href="#galeria" data-edit="hero_btn">Conheça Nossas Criações</a>
+</section>
+
+<section id="sobre">
+  <h2 class="sec-title" data-edit="about_title">Nossa História</h2>
+  <p class="sec-sub" data-edit="about_sub">Do bean-to-bar com amor e tradição</p>
+  <div class="grid">
+    <div class="card"><h3 style="color:var(--gold);margin-bottom:10px" data-edit="c1_t">Origem Rastreada</h3><p style="font-weight:300;line-height:1.7;color:var(--cream-2)" data-edit="c1_b">Trabalhamos diretamente com produtores de cacau fino de sabor, garantindo fair trade e qualidade excepcional em cada safra.</p></div>
+    <div class="card"><h3 style="color:var(--gold);margin-bottom:10px" data-edit="c2_t">Processo Artesanal</h3><p style="font-weight:300;line-height:1.7;color:var(--cream-2)" data-edit="c2_b">Do torra ao refino, controlamos cada etapa para preservar as notas sensoriais únicas de cada origem.</p></div>
+    <div class="card"><h3 style="color:var(--gold);margin-bottom:10px" data-edit="c3_t">Edições Especiais</h3><p style="font-weight:300;line-height:1.7;color:var(--cream-2)" data-edit="c3_b">Barras de edição limitada, pralines e bebidas de cacau — criações exclusivas para verdadeiros apreciadores.</p></div>
+  </div>
+</section>
+
+<section id="galeria">
+  <h2 class="sec-title" data-edit="gal_title">Galeria</h2>
+  <p class="sec-sub" data-edit="gal_sub">Fotos e vídeos das nossas criações</p>
+  <div class="gallery" id="gallery"><!-- itens carregados do Supabase --></div>
+</section>
+
+<section class="policies" id="politicas">
+  <div class="policies-inner">
+    <h2 class="sec-title" data-edit="pol_title">Informações Legais</h2>
+    <p class="sec-sub">Clique para expandir</p>
+    <details class="policy"><summary data-edit="pol1_h">Termos e Condições</summary><div class="p-body" data-edit="pol1_b">Ao acessar o site LSK Chocolate de Origem, você concorda com estes termos. Todos os produtos são sujeitos à disponibilidade de estoque. Preços podem ser alterados sem aviso prévio. O conteúdo deste site é protegido por direitos autorais.</div></details>
+    <details class="policy"><summary data-edit="pol2_h">Política de Privacidade</summary><div class="p-body" data-edit="pol2_b">Coletamos apenas os dados necessários para atendimento e entrega de pedidos. Não compartilhamos suas informações com terceiros sem consentimento. Utilizamos cookies para melhorar sua experiência de navegação.</div></details>
+    <details class="policy"><summary data-edit="pol3_h">Política de Devolução</summary><div class="p-body" data-edit="pol3_b">Por se tratar de alimento perecível, não realizamos trocas ou devoluções após a entrega, exceto em caso de produto com defeito de fabricação ou avaria no transporte, devidamente comprovados. Entre em contato em até 48h após o recebimento.</div></details>
+  </div>
+</section>
+
+<section id="contato" style="text-align:center">
+  <h2 class="sec-title" data-edit="cont_title">Fale Conosco</h2>
+  <p class="sec-sub" data-edit="cont_sub">Estamos prontos para adoçar o seu dia</p>
+  <a class="btn" id="cta-whats" href="#" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+</section>
+
+<footer>
+  <div data-edit="footer_txt">© 2026 LSK Chocolate de Origem — Todos os direitos reservados.</div>
+</footer>
+
+<!-- Botões flutuantes -->
+<a class="fab fab-email" id="fab-email" href="#" title="E-mail">
+  <svg viewBox="0 0 24 24" style="width:28px;height:28px;fill:none;stroke:#fff;stroke-width:1.8"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M3 7l9 6 9-6"/></svg>
+</a>
+<a class="fab fab-ig" id="fab-ig" href="#" target="_blank" rel="noopener" title="Instagram">
+  <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8 0 3.2 0 3.6-.1 4.8-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1-3.2 0-3.6 0-4.8-.1-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.8 0-3.2 0-3.6.1-4.8.1-3.2 1.7-4.8 4.9-4.9 1.2-.1 1.6-.1 4.8-.1zm0 3.6a6.2 6.2 0 100 12.4 6.2 6.2 0 000-12.4zm0 10.2a4 4 0 110-8 4 4 0 010 8zm6.4-10.5a1.4 1.4 0 100 2.9 1.4 1.4 0 000-2.9z"/></svg>
+</a>
+<a class="fab fab-wa" id="fab-wa" href="#" target="_blank" rel="noopener" title="WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18.2c-1.6 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.7.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 01-3.4-3c-.3-.4 0-.5.2-.7l.4-.5c.1-.2.2-.3.3-.5v-.5c0-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 .9-1 2.3s1 2.7 1.2 2.9c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>
+</a>
+
+<div id="adminBadge">MODO ADMIN ATIVO <button class="badge-off" id="btnLogoutBadge">Sair</button></div>
+<div class="toast" id="toast"></div>
+
+<!-- ══ LOGIN / PAINEL ADMIN ══ -->
+<div class="overlay" id="adminOverlay">
+  <div class="modal">
+
+    <!-- TELA 1: CONFIG + LOGIN -->
+    <div id="adm-login">
+      <button class="close-x" id="closeAdmin">✕</button>
+      <h2>Painel Administrativo LSK</h2>
+      <div class="msg" id="loginMsg"></div>
+      <div class="field"><label>E-mail do administrador</label><input id="adm-email" type="email"></div>
+      <div class="field"><label>Senha</label><input id="adm-pass" type="password"></div>
+      <button class="mbtn" id="btnLogin">Entrar</button>
+      <div class="admin-hint">Atalho: Ctrl + Shift + A</div>
+    </div>
+
+    <!-- TELA 2: DASHBOARD -->
+    <div id="adm-dash" class="hidden">
+      <button class="close-x" id="closeDash">✕</button>
+      <h2>Painel LSK</h2>
+      <div class="tabs">
+        <div class="tab active" data-tab="logo">Logo</div>
+        <div class="tab" data-tab="midias">Fotos & Vídeos</div>
+        <div class="tab" data-tab="links">WhatsApp/Instagram</div>
+        <div class="tab" data-tab="ajuda">Edição de Textos</div>
+        <div class="tab" data-tab="config">Config. Supabase</div>
+      </div>
+
+      <div class="tab-pane" id="pane-logo">
+        <div class="field"><label>Logo (BMP ou JPEG)</label><input id="logo-file" type="file" accept=".bmp,.jpg,.jpeg,image/bmp,image/jpeg"></div>
+        <button class="mbtn" id="btnUploadLogo">Enviar Logo</button>
+      </div>
+
+      <div class="tab-pane hidden" id="pane-midias">
+        <div class="field"><label>Título da mídia</label><input id="media-title" placeholder="Ex: Barra 70% Origem Bahia"></div>
+        <div class="field"><label>Arquivo (BMP, JPEG, PNG, MP4, AVI, MPEG...)</label>
+          <input id="media-file" type="file" accept=".bmp,.jpg,.jpeg,.png,.webp,.gif,.mp4,.avi,.mpeg,.mpg,.mov,image/*,video/*"></div>
+        <button class="mbtn" id="btnUploadMedia">Enviar para a Galeria</button>
+        <div class="msg" id="mediaMsg"></div>
+        <p style="font-size:.8rem;color:var(--gold);margin-top:14px;font-weight:600">Mídias publicadas no site:</p>
+        <div id="mediaList"></div>
+      </div>
+
+      <div class="tab-pane hidden" id="pane-links">
+        <div class="field"><label>Número do WhatsApp (com DDI/DDD, só dígitos)</label><input id="cfg-whats" placeholder="5511999998888"></div>
+        <div class="field"><label>Link do Instagram</label><input id="cfg-ig" placeholder="https://instagram.com/seuperfil"></div>
+        <div class="field"><label>E-mail de contato</label><input id="cfg-email" placeholder="contato@lskchocolate.com"></div>
+        <button class="mbtn" id="btnSaveLinks">Salvar Links</button>
+      </div>
+
+      <div class="tab-pane hidden" id="pane-ajuda">
+        <p style="font-size:.85rem;color:var(--cream-2);line-height:1.7">Com o <b style="color:var(--gold)">Modo Admin ativo</b> (botão abaixo), clique em qualquer texto do site para editá-lo. Ao terminar, clique em <b style="color:var(--gold)">"Salvar Textos Editados"</b>.<br><br>As políticas (Termos, Privacidade e Devolução) também ficam editáveis diretamente no rodapé do site.</p>
+        <button class="mbtn" id="btnAdminMode" style="margin-top:14px">Ativar Modo Admin no Site</button>
+        <button class="mbtn" id="btnSaveTexts" style="margin-top:8px">Salvar Textos Editados</button>
+      </div>
+
+      <div class="tab-pane hidden" id="pane-config">
+        <p style="font-size:.82rem;color:var(--cream-2);opacity:.8;margin-bottom:12px">Configuração de conexão (visível apenas após o login):</p>
+        <div class="field"><label>URL do Projeto Supabase</label><input id="cfg-url" placeholder="https://xyz.supabase.co"></div>
+        <div class="field"><label>Anon Key</label><input id="cfg-key" placeholder="eyJhbGciOi..."></div>
+        <button class="mbtn sec" id="btnSaveCfg">Salvar Configuração</button>
+        <button class="mbtn sec" id="btnDiag" style="margin-top:8px">🔍 Verificar Conexão com o Banco</button>
+        <div class="msg" id="diagMsg" style="line-height:1.8;font-size:.8rem"></div>
+      </div>
+
+      <button class="mbtn sec" id="btnLogout">Sair do Painel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════ NÚCLEO ═══════════ */
+let sb = null;
+const configured = () => SUPABASE_URL.startsWith('https://') && SUPABASE_ANON_KEY.length > 20;
+function connect(){
+  if(configured()){ sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); return true; }
+  const u = localStorage.getItem('lsk_sb_url'), k = localStorage.getItem('lsk_sb_key');
+  if(u && k){ sb = window.supabase.createClient(u, k); return true; }
+  return false;
+}
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2600); }
+
+const TEXT_KEYS = ['brand_name','brand_sub','hero_title','hero_text','hero_btn','about_title','about_sub',
+ 'c1_t','c1_b','c2_t','c2_b','c3_t','c3_b','gal_title','gal_sub','pol_title','pol1_h','pol1_b','pol2_h','pol2_b',
+ 'pol3_h','pol3_b','cont_title','cont_sub','footer_txt','whatsapp','instagram','email'];
+
+/* ── Carregar textos do Supabase ── */
+const SITE = {};
+async function loadTexts(){
+  if(!connect()) return;
+  const { data } = await sb.from('site_content').select('key,value');
+  if(data) data.forEach(r => { SITE[r.key] = r.value; applyText(r.key, r.value); });
+  applyLinks();
+}
+function applyText(key, val){
+  const el = document.querySelector(`[data-edit="${key}"]`);
+  if(el) el.innerText = val;
+}
+function applyLinks(){
+  const wa = (SITE.whatsapp || '').replace(/\D/g,'');
+  const ig = (SITE.instagram || '').trim();
+  const em = (SITE.email || '').trim();
+  const waHref = wa ? 'https://wa.me/' + wa : '#';
+  document.getElementById('fab-wa').href = waHref;
+  document.getElementById('cta-whats').href = waHref;
+  document.getElementById('fab-ig').href = ig || '#';
+  document.getElementById('fab-email').href = em ? 'mailto:' + em : '#';
+  // se não configurado, o botão fica apagado e não abre nada ao clicar
+  [['fab-wa', !!wa], ['fab-ig', !!ig], ['fab-email', !!em]].forEach(([id, ok]) => {
+    const a = document.getElementById(id);
+    a.style.opacity = ok ? '1' : '.35';
+    a.onclick = ok ? null : e => e.preventDefault();
+  });
+}
+
+/* ── Carregar logo e mídias ── */
+async function loadLogo(){
+  if(!connect()) return;
+  const { data } = await sb.from('site_content').select('value').eq('key','logo_url').maybeSingle();
+  if(data?.value) setLogo(data.value);
+}
+function setLogo(url){
+  const area = document.getElementById('logo-area');
+  area.innerHTML = `<img src="${url}" alt="Logo LSK">`;
+}
+async function loadMedia(){
+  if(!connect()) return;
+  const { data } = await sb.from('media').select('*').order('created_at',{ascending:false});
+  renderGallery(data || []);
+}
+function renderGallery(items){
+  const g = document.getElementById('gallery');
+  g.innerHTML = items.map(m => {
+    const isVideo = /mp4|webm|mov/i.test(m.kind||'') || /\.(mp4|webm|mov)$/i.test(m.url);
+    const isImage = /^image|\.(jpe?g|bmp|png|gif|webp)$/i.test(m.kind||m.url);
+    let media;
+    if(isVideo) media = `<video src="${m.url}" controls></video>`;
+    else if(isImage) media = `<img src="${m.url}" alt="${m.title||'mídia'}">`;
+    else media = `<div style="height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--gold)"><span style="font-size:2.4rem">🎬</span><a href="${m.url}" download style="color:var(--caramel);font-size:.82rem">Baixar ${m.kind||'arquivo'}</a></div>`;
+    return `<div class="g-item">${media}<div class="g-label"><span>${m.title||'Sem título'}</span><button class="g-del" onclick="deleteMedia(${m.id},'${m.url}')">✕</button></div></div>`;
+  }).join('');
+  if(!items.length) g.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--cream-2);opacity:.7;font-weight:300">Nenhuma mídia enviada ainda. Acesse o painel (Ctrl+Shift+A) para adicionar fotos e vídeos.</p>';
+}
+window.deleteMedia = async (id, url) => {
+  if(!confirm('Remover esta mídia do site?')) return;
+  const path = url.split('/media/')[1];
+  if(path) await sb.storage.from('media').remove([decodeURIComponent(path)]);
+  const { error } = await sb.from('media').delete().eq('id', id);
+  if(error){ toast('❌ Erro ao excluir: ' + error.message); return; }
+  loadMedia(); loadMediaList(); toast('✅ Mídia removida!');
+};
+async function loadMediaList(){
+  const box = document.getElementById('mediaList');
+  if(!sb){ box.innerHTML=''; return; }
+  const { data } = await sb.from('media').select('*').order('created_at',{ascending:false});
+  if(!data || !data.length){ box.innerHTML = '<p style="font-size:.78rem;color:var(--cream-2);opacity:.7">Nenhuma mídia cadastrada ainda.</p>'; return; }
+  box.innerHTML = data.map(m => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px;border:1px solid rgba(201,138,61,.3);border-radius:10px;margin-bottom:8px;background:rgba(26,13,6,.5)">
+      <img src="${m.url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0" onerror="this.outerHTML='&#127916;'">
+      <span style="flex:1;font-size:.8rem;color:var(--cream-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${m.title || (m.url||'').split('/').pop()}</span>
+      <button onclick="deleteMedia(${m.id},'${m.url}')" style="background:#8a2b2b;border:none;color:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:.75rem;flex-shrink:0">Excluir</button>
+    </div>`).join('');
+}
+
+/* ═══════════ ADMIN: atalho Ctrl+Shift+A ═══════════ */
+const overlay = document.getElementById('adminOverlay');
+document.addEventListener('keydown', e => {
+  if(e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a'){ e.preventDefault(); toggleAdmin(); }
+  if(e.key === 'Escape') overlay.classList.remove('open');
+});
+function toggleAdmin(){ overlay.classList.toggle('open'); syncDash(); }
+document.getElementById('closeAdmin').onclick = () => overlay.classList.remove('open');
+document.getElementById('closeDash').onclick = () => overlay.classList.remove('open');
+
+document.getElementById('btnSaveCfg').onclick = () => {
+  const u = document.getElementById('cfg-url').value.trim(), k = document.getElementById('cfg-key').value.trim();
+  if(!u || !k){ toast('⚠️ Preencha a URL e a Anon Key antes de salvar'); return; }
+  if(!/^https:\/\/.+\.supabase\.co$/.test(u)){ toast('⚠️ URL inválida — use o formato https://xxxx.supabase.co'); return; }
+  if(k.length < 20){ toast('⚠️ Anon Key muito curta — copie a chave completa (eyJ...)'); return; }
+  localStorage.setItem('lsk_sb_url', u);
+  localStorage.setItem('lsk_sb_key', k);
+  toast('✅ Configuração salva! Recarregando o site...');
+  setTimeout(() => location.reload(), 1200);
+};
+
+/* ── Login / Logout ── */
+document.getElementById('btnLogin').onclick = async () => {
+  const msg = document.getElementById('loginMsg');
+  if(!connect()){ msg.textContent='Supabase não configurado. Preencha SUPABASE_URL e SUPABASE_ANON_KEY no topo do arquivo index.html.'; msg.className='msg err'; return; }
+  const { error } = await sb.auth.signInWithPassword({
+    email: document.getElementById('adm-email').value.trim(),
+    password: document.getElementById('adm-pass').value
+  });
+  if(error){ msg.textContent = 'Erro: ' + error.message; msg.className='msg err'; }
+  else { msg.textContent=''; document.getElementById('adm-login').classList.add('hidden');
+         document.getElementById('adm-dash').classList.remove('hidden'); toast('Bem-vindo ao painel LSK!'); }
+};
+document.getElementById('btnLogout').onclick = async () => { await sb?.auth.signOut(); location.reload(); };
+document.getElementById('btnLogoutBadge').onclick = async () => { await sb?.auth.signOut(); location.reload(); };
+
+/* ── Tabs do painel ── */
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(x=>x.classList.add('hidden'));
+  t.classList.add('active');
+  document.getElementById('pane-'+t.dataset.tab).classList.remove('hidden');
+});
+async function syncDash(){
+  if(!connect()) return;
+  const { data:{ session } } = await sb.auth.getSession();
+  if(session){ document.getElementById('adm-login').classList.add('hidden');
+               document.getElementById('adm-dash').classList.remove('hidden');
+               loadMediaList(); }
+  const g = async k => { const {data}=await sb.from('site_content').select('value').eq('key',k).maybeSingle(); return data?.value||''; };
+  document.getElementById('cfg-whats').value = await g('whatsapp');
+  document.getElementById('cfg-ig').value = await g('instagram');
+  document.getElementById('cfg-email').value = await g('email');
+}
+
+/* ── Upload logo ── */
+document.getElementById('btnUploadLogo').onclick = async () => {
+  const f = document.getElementById('logo-file').files[0];
+  if(!f) return toast('Selecione um arquivo BMP ou JPEG');
+  if(!/bmp|jpe?g/i.test(f.type + f.name)) return toast('Apenas BMP ou JPEG');
+  const path = 'logo/' + Date.now() + '_' + f.name.replace(/[^\w.]/g,'_');
+  const { error } = await sb.storage.from('media').upload(path, f, { upsert:true });
+  if(error) return toast('Erro: '+error.message);
+  const { data } = sb.storage.from('media').getPublicUrl(path);
+  const { error: e2 } = await sb.from('site_content').upsert({ key:'logo_url', value:data.publicUrl });
+  if(e2){ toast('❌ Upload ok, mas falhou ao registrar: ' + e2.message); return; }
+  setLogo(data.publicUrl); toast('✅ Logo atualizado!');
+};
+
+/* ── Upload mídias (bmp, jpeg, avi, mp4, mpeg, etc.) ── */
+document.getElementById('btnUploadMedia').onclick = async () => {
+  const f = document.getElementById('media-file').files[0];
+  const title = document.getElementById('media-title').value.trim();
+  const mm = document.getElementById('mediaMsg');
+  if(!f){ mm.textContent='Selecione um arquivo.'; mm.className='msg err'; return; }
+  mm.textContent='Enviando...'; mm.className='msg ok';
+  const path = 'gallery/' + Date.now() + '_' + f.name.replace(/[^\w.]/g,'_');
+  const { error } = await sb.storage.from('media').upload(path, f);
+  if(error){ mm.textContent='Erro no upload: '+error.message; mm.className='msg err'; return; }
+  const { data } = sb.storage.from('media').getPublicUrl(path);
+  const { error: e3 } = await sb.from('media').insert({ title: title || f.name, url: data.publicUrl, kind: f.type || f.name.split('.').pop() });
+  if(e3){ mm.textContent='❌ ' + e3.message; mm.className='msg err'; return; }
+  mm.textContent=''; document.getElementById('media-title').value=''; document.getElementById('media-file').value='';
+  loadMedia(); loadMediaList(); toast('✅ Mídia publicada no site!');
+};
+
+/* ── Links WhatsApp / Instagram ── */
+document.getElementById('btnSaveLinks').onclick = async () => {
+  const { error } = await sb.from('site_content').upsert([
+    { key:'whatsapp', value: document.getElementById('cfg-whats').value.trim() },
+    { key:'instagram', value: document.getElementById('cfg-ig').value.trim() },
+    { key:'email', value: document.getElementById('cfg-email').value.trim() }
+  ]);
+  if(error){ toast('❌ Erro ao salvar: ' + error.message); return; }
+  await loadTexts(); toast('✅ Links salvos e aplicados no site!');
+};
+
+/* ── Diagnóstico de conexão ── */
+document.getElementById('btnDiag').onclick = async () => {
+  const out = document.getElementById('diagMsg');
+  out.innerHTML = 'Verificando...'; out.className = 'msg';
+  const L = [];
+  const r1 = await sb.from('site_content').select('key', { count:'exact', head:true });
+  L.push((r1.error ? '❌' : '✅') + ' Ler tabela site_content' + (r1.error ? ' — ' + r1.error.message : ''));
+  if(!r1.error){
+    const w = await sb.from('site_content').upsert({ key:'_diag', value:'ok' });
+    L.push((w.error ? '❌' : '✅') + ' Gravar no banco' + (w.error ? ' — ' + w.error.message : ''));
+    await sb.from('site_content').delete().eq('key','_diag');
+  }
+  const r3 = await sb.from('media').select('id', { count:'exact', head:true });
+  L.push((r3.error ? '❌' : '✅') + ' Ler tabela media' + (r3.error ? ' — ' + r3.error.message : ''));
+  const r4 = await sb.storage.listBuckets();
+  const names = (r4.data || []).map(b => b.name);
+  L.push((names.includes('media') ? '✅' : '❌') + ' Bucket "media"' + (names.includes('media') ? '' : ' NÃO ENCONTRADO — rode o SQL no Supabase'));
+  out.innerHTML = L.join('<br>');
+  out.className = 'msg ' + (L.some(x => x.startsWith('❌')) ? 'err' : 'ok');
+};
+
+/* ── Modo admin: editar textos clicando no site ── */
+document.getElementById('btnAdminMode').onclick = () => {
+  document.body.classList.add('admin-on');
+  document.querySelectorAll('[data-edit]').forEach(el => el.contentEditable = true);
+  overlay.classList.remove('open');
+  toast('Modo Admin ativo — clique nos textos para editar');
+};
+document.getElementById('btnSaveTexts').onclick = async () => {
+  const rows = [];
+  document.querySelectorAll('[data-edit]').forEach(el => rows.push({ key: el.dataset.edit, value: el.innerText }));
+  const { error } = await sb.from('site_content').upsert(rows);
+  toast(error ? 'Erro: '+error.message : 'Textos salvos para todos os visitantes!');
+};
+
+/* ── Inicialização ── */
+loadTexts(); loadMedia(); loadLogo();
+</script>
+</body>
+</html>
